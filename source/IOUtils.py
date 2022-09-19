@@ -7,7 +7,8 @@ def cls():
 
 def printAndSleep(bpm: int) -> int:
     cls()
-    number = print(random.randint(0, 10))
+    number = random.randint(0, 10)
+    print(number)
     time.sleep(bpmToSeconds(bpm=60))
     return number
 

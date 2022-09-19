@@ -1,23 +1,29 @@
 import csv
 from re import X
 
-from Parameter import Parameter
-from TestCase import TestCase
+from source.Parameter import Parameter
 
 def writeFile():
     f = open("output/result.csv", "x")
 
+def getFolder():
+    return "input/"
+
+def retrieveFilename():
+    return input("Give filename: ")
+
 def readFromFile() -> Parameter:
     while True:
         try:
-            filename = input("Give filename: ")
-            f = open("input/" + filename, 'r')
+            filename = retrieveFilename()
+            f = open(getFolder() + filename, 'r')
             testCases = int(f.readline())
 
             p = Parameter()
             p.testCaseList = []
 
             for i in range(testCases):
+                from source.TestCase import TestCase
                 t = TestCase(i, int(f.readline()), int(f.readline()))
                 print(t)
                 p.testCaseList.append(t)
