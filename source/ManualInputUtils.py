@@ -1,7 +1,7 @@
 from source.TestCase import TestCase
 
 def doQuestion(nBack):
-    return int(input(f"A última nota tocada é igual {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
+    return int(input(f"A última nota tocada é igual à {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
 
 def testCasesInput():
     return int(input("How many test cases? "))

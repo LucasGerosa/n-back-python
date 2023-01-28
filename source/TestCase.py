@@ -1,10 +1,16 @@
+import csv
+import string
+from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
-from enum import Enum
+
+from source import FileUtils
+
 
 class ResultEnum(Enum):
     ACERTO = 1,
     ERRO = 2
+
 
 class TestCase:
 
@@ -19,7 +25,7 @@ class TestCase:
 
     def __str__(self):
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
-    
+
     id: int
     nBack: int
     numberOfNotes: int
@@ -71,7 +77,25 @@ class TestCase:
         else:
             return True
 
-    def executeFromFile():
+    @staticmethod
+    def saveResults(testCaseList, playerName):
+        with FileUtils.createfile(playerName) as f:
+            # create the csv writer
+            writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            i = 0
+            writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result'])
+            while i < len(testCaseList):
+                t: TestCase = testCaseList[i]
+
+                # write a row to the csv file
+                writer.writerow(
+                    [t.id, t.numberOfNotes, ' '.join(str(e) for e in t.notesExecuted), t.nBack, t.answer, t.result])
+                i += 1
+
+        f.close()
+
+    @staticmethod
+    def executeFromFile(playerName: string):
         import source.FileUtils as FileUtils
         p = FileUtils.readFromFile()
         testCases = len(p.testCaseList)
@@ -79,13 +103,14 @@ class TestCase:
 
         i = 0
         while i < len(testCaseList):
-            t : TestCase = testCaseList[i]
+            t: TestCase = testCaseList[i]
             t.execute()
             i += 1
-        
+
         return testCaseList
 
-    def executeLoop():
+    @staticmethod
+    def executeLoop(playerName: string):
         import source.ManualInputUtils
         testCaseList = []
         testCases = source.ManualInputUtils.testCasesInput()
@@ -98,10 +123,11 @@ class TestCase:
                     t.execute()
                     break
                 except Exception as e:
-                    print (e)
+                    print(e)
                     pass
 
             i += 1
-        
-        return testCaseList
 
+        TestCase.saveResults(testCaseList, playerName)
+
+        return testCaseList

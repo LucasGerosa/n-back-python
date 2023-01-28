@@ -1,7 +1,18 @@
-import csv
-from re import X
+import os
 
 from source.Parameter import Parameter
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = f'{ROOT_DIR}/../output'
+RESULT_FILENAME = 'result.csv'
+def createPlayerDirectoryIfNotExist(playerName):
+    playerDir = f"{OUTPUT_DIR}/{playerName}"
+    if not os.path.exists(playerDir):
+        os.makedirs(playerDir, exist_ok=True)
+
+def createOutputDirectoryIfNotExist():
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def writeFile():
     f = open("output/result.csv", "x")
@@ -30,7 +41,13 @@ def readFromFile() -> Parameter:
 
             return p
         except TypeError as err:
-            print("Error happened when retriving filename, try again. Error: " + err)
+            print(f"Error happened when retriving filename, try again. Error: {err}")
 
 if __name__ == "__main__":
-    readFromFile("testCase1.txt")
+    readFromFile()
+
+def createfile(playerName):
+    createOutputDirectoryIfNotExist()
+    createPlayerDirectoryIfNotExist(playerName)
+    filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}'
+    return open(filename, "w", newline='')

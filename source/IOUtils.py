@@ -3,7 +3,9 @@ import random
 import time
 
 def cls():
-    os.system('cls' if os.name=='nt' else 'clear')
+    print(os.name)
+    clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
+    clear()
 
 def printAndSleep(bpm: int) -> int:
     cls()

@@ -1,10 +1,21 @@
-from unittest.mock import MagicMock, Mock, patch
-import source.FileUtils as FileUtils
+import os
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import patch
+
+import source.FileUtils as FileUtils
+
 
 class FileUtilsUnitTest(unittest.TestCase):
-    
+
+    def test_createOutputDirectory(self):
+        FileUtils.createOutputDirectoryIfNotExist()
+        self.assertTrue(os.path.exists(FileUtils.OUTPUT_DIR))
+
+    def test_createPlayerDirectory(self):
+        FileUtils.createPlayerDirectoryIfNotExist('playerDummy')
+        self.assertTrue(os.path.exists(f"{FileUtils.OUTPUT_DIR}/playerDummy"))
+        os.rmdir(f"{FileUtils.OUTPUT_DIR}/playerDummy")
+
     def test_processFile(self):
         with patch.object(FileUtils, 'retrieveFilename', return_value='testCase1.txt') as m1:
             with patch.object(FileUtils, 'getFolder', return_value='test/resources/input/') as m2:

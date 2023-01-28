@@ -1,10 +1,4 @@
-from msilib.schema import Error
-import random
-import time
-from xmlrpc.client import Boolean
-
 import source.IOUtils as IOUtils
-import source.FileUtils as FileUtils
 from source.TestCase import TestCase
 
 def retrievePlayer():
@@ -24,10 +18,10 @@ if __name__ == "__main__":
         playerName =  retrievePlayer()  
         testCaseList = []
         if option == 2:
-            TestCase.executeFromFile()
+            TestCase.executeFromFile(playerName)
             
         elif option == 1:
-            TestCase.executeLoop()
+            TestCase.executeLoop(playerName)
                         
         
 

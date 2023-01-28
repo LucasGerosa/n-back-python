@@ -1,11 +1,27 @@
+import os
+import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
-from source.TestCase import ResultEnum, TestCase
+
 import source.ManualInputUtils as ManualInputUtils
-import source.IOUtils as IOUtils
-import unittest
+from source import FileUtils
+from source.TestCase import ResultEnum, TestCase
+
+PLAYER_NAME = 'playerDummy'
+OUTPUT_FILENAME_PATH = f"{FileUtils.OUTPUT_DIR}/{PLAYER_NAME}/{FileUtils.RESULT_FILENAME}"
+OUTPUT_DIR_PATH = f"{FileUtils.OUTPUT_DIR}/{PLAYER_NAME}"
 
 class TestCaseUtilsTest(unittest.TestCase):
+    def tearDown(self):
+        if os.path.exists(OUTPUT_FILENAME_PATH):
+            os.remove(OUTPUT_FILENAME_PATH)
+
+        if os.path.exists(OUTPUT_DIR_PATH):
+            os.rmdir(OUTPUT_DIR_PATH)
+
+        self.assertFalse(os.path.exists(OUTPUT_FILENAME_PATH))
+        self.assertFalse(os.path.exists(OUTPUT_DIR_PATH))
+
     def test_isValidTestCase_nBackLessThanNotes(self):
         t = TestCase(1, 1, 2)
         self.assertTrue(t.isValidTestCase())
@@ -26,7 +42,7 @@ class TestCaseUtilsTest(unittest.TestCase):
 
         t.validateAnswer()
         self.assertEqual(ResultEnum.ACERTO, t.result)
-    
+
     # Last two notes are the same, answer was no (2), so result should be ERRO
     def test_validateAnswer_ERRO_nBackEquals1_answer2(self):
         t = TestCase(1, 1, 1)
@@ -65,9 +81,9 @@ class TestCaseUtilsTest(unittest.TestCase):
                     nBackInput=MagicMock(return_value=1),
                     notesInput=MagicMock(return_value=1),
                     doQuestion=MagicMock(return_value=1))
-    @patch("source.IOUtils", side_effect = [1])
+    @mock.patch("source.IOUtils.printAndSleep", method='printAndSleep', side_effect=[1])
     def test_shouldExecuteLoop(self, *m1, **m2):
-        testCaseList = TestCase.executeLoop()
+        testCaseList = TestCase.executeLoop(PLAYER_NAME)
 
         self.assertIsNotNone(testCaseList)
 
@@ -76,19 +92,20 @@ class TestCaseUtilsTest(unittest.TestCase):
         self.assertEqual(ResultEnum.ACERTO, t.result)
 
     @patch.multiple('source.ManualInputUtils',
-                testCasesInput=MagicMock(return_value=1),
-                nBackInput=MagicMock(return_value=1),
-                notesInput=MagicMock(return_value=5),
-                doQuestion=MagicMock(return_value=1))
-    @mock.patch("source.IOUtils.printAndSleep", method='printAndSleep', side_effect = [1, 3, 5, 4, 2])
+                    testCasesInput=MagicMock(return_value=1),
+                    nBackInput=MagicMock(return_value=1),
+                    notesInput=MagicMock(return_value=5),
+                    doQuestion=MagicMock(return_value=1))
+    @mock.patch("source.IOUtils.printAndSleep", method='printAndSleep', side_effect=[1, 3, 5, 4, 2])
     def test_shouldExecuteLoop_whenMultipleNotes(self, m1):
-        testCaseList = TestCase.executeLoop()
+        testCaseList = TestCase.executeLoop(PLAYER_NAME)
 
         self.assertIsNotNone(testCaseList)
 
         t: TestCase = testCaseList[0]
         self.assertEqual(5, len(t.notesExecuted))
         self.assertEqual(ResultEnum.ERRO, t.result)
+
 
 if __name__ == '__main__':
     unittest.main()
