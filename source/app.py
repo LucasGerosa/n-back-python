@@ -1,5 +1,5 @@
-import source.IOUtils as IOUtils
-from source.TestCase import TestCase
+import IOUtils as IOUtils
+from TestCase import TestCase
 
 def retrievePlayer():
     name = input("Player Name: ")

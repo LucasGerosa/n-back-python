@@ -1,11 +1,9 @@
 import csv
 import string
+import FileUtils
 from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
-
-from source import FileUtils
-
 
 class ResultEnum(Enum):
     ACERTO = 1,
@@ -59,13 +57,13 @@ class TestCase:
 
     def randomizeNumbers(self):
         for i in range(self.numberOfNotes):
-            import source.IOUtils as IOUtils
+            import IOUtils as IOUtils
             self.notesExecuted.append(IOUtils.printAndSleep(self.bpm))
 
     def doQuestion(self):
         while True:
             try:
-                import source.ManualInputUtils as ManualInputUtils
+                import ManualInputUtils as ManualInputUtils
                 self.answer = ManualInputUtils.doQuestion(self.nBack)
                 break
             except ValueError as e:
@@ -96,7 +94,7 @@ class TestCase:
 
     @staticmethod
     def executeFromFile(playerName: string):
-        import source.FileUtils as FileUtils
+        import FileUtils as FileUtils
         p = FileUtils.readFromFile()
         testCases = len(p.testCaseList)
         testCaseList = p.testCaseList
@@ -111,14 +109,14 @@ class TestCase:
 
     @staticmethod
     def executeLoop(playerName: string):
-        import source.ManualInputUtils
+        import ManualInputUtils
         testCaseList = []
-        testCases = source.ManualInputUtils.testCasesInput()
+        testCases = ManualInputUtils.testCasesInput()
         i = 0
         while i < testCases:
             while True:
                 try:
-                    t = source.ManualInputUtils.createManualTestCase(i)
+                    t = ManualInputUtils.createManualTestCase(i)
                     testCaseList.append(t)
                     t.execute()
                     break

@@ -1,0 +1,3 @@
+id,numberOfNotes,notesExecuted,nBack,answer,result
+0,5,10 5 9 6 1,1,1,ResultEnum.ERRO
+1,10,8 10 8 4 6 2 10 3 10 3,2,2,ResultEnum.ERRO

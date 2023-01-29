@@ -1,6 +1,5 @@
 import os
-
-from source.Parameter import Parameter
+import Parameter
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
@@ -34,7 +33,7 @@ def readFromFile() -> Parameter:
             p.testCaseList = []
 
             for i in range(testCases):
-                from source.TestCase import TestCase
+                from TestCase import TestCase
                 t = TestCase(i, int(f.readline()), int(f.readline()))
                 print(t)
                 p.testCaseList.append(t)
