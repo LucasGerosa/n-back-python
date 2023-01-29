@@ -1,5 +1,5 @@
 import os
-import Parameter
+from Parameter import Parameter
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
@@ -41,6 +41,7 @@ def readFromFile() -> Parameter:
             return p
         except TypeError as err:
             print(f"Error happened when retriving filename, try again. Error: {err}")
+
 
 if __name__ == "__main__":
     readFromFile()

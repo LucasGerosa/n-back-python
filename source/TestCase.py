@@ -93,7 +93,7 @@ class TestCase:
         f.close()
 
     @staticmethod
-    def executeFromFile(playerName: string):
+    def executeFromFile(playerName: str):
         import FileUtils as FileUtils
         p = FileUtils.readFromFile()
         testCases = len(p.testCaseList)
@@ -108,7 +108,7 @@ class TestCase:
         return testCaseList
 
     @staticmethod
-    def executeLoop(playerName: string):
+    def executeLoop(playerName: str):
         import ManualInputUtils
         testCaseList = []
         testCases = ManualInputUtils.testCasesInput()

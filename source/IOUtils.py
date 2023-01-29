@@ -2,38 +2,38 @@ import os
 import random
 import time
 import playsound
+import fnmatch
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+AUDIO_EXTENSION = 'mp3'
+
+def getNoteFiles() -> list:
+    directory = f"{ROOT_DIR}/../input/notas/"
+    files = [file for file in os.listdir(directory) if fnmatch.fnmatch(file, '*.' + AUDIO_EXTENSION)]
+    '''for file in os.listdir(directory):
+        if fnmatch.fnmatch(file, '*.' + AUDIO_EXTENSION):
+            noteWithoutExtension = file[:-len(AUDIO_EXTENSION)-1]
+            notes.append(noteWithoutExtension)
+    '''
+    return files
+
+noteFiles = getNoteFiles()
 
 def cls():
-    print(os.name)
     clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
     clear()
 
 def printAndSleep(bpm: int) -> int:
     cls()
-    number = random.randint(0, 10)
+    number = random.randint(0, len(noteFiles) - 1)
 
     # retrieve sound from id
-    filename = retrieveNote(number)
+    filename = noteFiles[number]
 
-    if (filename == None):
-        print(number)
-    else:
-        playsound(filename)
-        
+    playsound(filename) #FIXME
 
     time.sleep(bpmToSeconds(bpm=60))
     return number
 
 def bpmToSeconds(bpm: int) -> float:
     return 60 / bpm
-
-def retrieveNote(note: int):
-    filename = f"ROOT_DIR/../input/notas/"
-    if (note == 0):
-        filename += "do.aiff"
-    else:
-        filename = None
-    
-    return filename
