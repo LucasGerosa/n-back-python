@@ -1,15 +1,15 @@
 from TestCase import TestCase
 
-def doQuestion(nBack):
+def doQuestion(nBack) -> int:
     return int(input(f"A última nota tocada é igual à {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
 
-def testCasesInput():
+def testCasesInput() -> int:
     return int(input("How many test cases? "))
 
-def nBackInput():
+def nBackInput() -> int:
     return int(input("n-back: "))
 
-def notesInput():
+def notesInput() -> int:
     return int(input("notes: "))
 
 def createManualTestCase(id) -> TestCase:

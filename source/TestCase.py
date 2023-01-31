@@ -10,28 +10,19 @@ class ResultEnum(Enum):
     ACERTO = 1,
     ERRO = 2
 
-
 class TestCase:
 
     def __init__(self, id, nBack, numberOfNotes) -> None:
-        self.id = id
-        self.nBack = nBack
-        self.numberOfNotes = numberOfNotes
-        self.notesExecuted = []
-        self.result = ResultEnum.ERRO
-        self.bpm = 60
-        # todo prevent object to be created if isValidTestCase() returns FALSE
+        self.id: int = id
+        self.nBack: int = nBack
+        self.numberOfNotes: int = numberOfNotes
+        assert self.isValidTestCase(), f"numberOfNotes should be < nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
+        self.notesExecuted: List[int] = []
+        self.result: ResultEnum = ResultEnum.ERRO
+        self.bpm: int = 60
 
     def __str__(self):
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
-
-    id: int
-    nBack: int
-    numberOfNotes: int
-    notesExecuted: List[int]
-    bpm: int
-    answer: int
-    result: ResultEnum
 
     def execute(self) -> None:
         self.randomizeNumbers()
@@ -57,8 +48,8 @@ class TestCase:
                 self.result = ResultEnum.ACERTO
 
     def randomizeNumbers(self) -> None:
+        import IOUtils
         for i in range(self.numberOfNotes):
-            import IOUtils
             self.notesExecuted.append(IOUtils.printAndSleep(self.bpm))
 
     def doQuestion(self) -> None:
