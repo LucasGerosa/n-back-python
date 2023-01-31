@@ -1,5 +1,5 @@
 from cgi import test
-import source.IOUtils as IOUtils
+from source import IOUtils
 import unittest   # The test framework
 
 class IOUtilsTests(unittest.TestCase):

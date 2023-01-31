@@ -21,7 +21,6 @@ if __name__ == "__main__":
 
     while (option != '0'):
         playerName =  retrievePlayer()  
-        testCaseList = []
         if option == '2':
             TestCase.executeFromFile(playerName)
             

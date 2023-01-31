@@ -1,8 +1,7 @@
 import os
 import unittest
 from unittest.mock import patch
-
-import source.FileUtils as FileUtils
+from source import FileUtils
 
 
 class FileUtilsUnitTest(unittest.TestCase):

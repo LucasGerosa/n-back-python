@@ -20,7 +20,7 @@ def randomizeNumbers(rounds: int):
         numbers.append(printAndSleep())
         i += 1
     
-def printAndSleep() -> int:
+def printAndSleep():
     cls()
     number = print(random.randint(0, 10))
     time.sleep(5)

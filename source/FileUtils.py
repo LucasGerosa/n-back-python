@@ -4,7 +4,8 @@ from Parameter import Parameter
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
 RESULT_FILENAME = 'result.csv'
-def createPlayerDirectoryIfNotExist(playerName):
+
+def createPlayerDirectoryIfNotExist(playerName) -> None:
     playerDir = f"{OUTPUT_DIR}/{playerName}"
     if not os.path.exists(playerDir):
         os.makedirs(playerDir, exist_ok=True)
@@ -13,13 +14,13 @@ def createOutputDirectoryIfNotExist():
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def writeFile():
+def writeFile() -> None:
     f = open("output/result.csv", "x")
 
-def getFolder():
+def getFolder() -> str:
     return "input/"
 
-def retrieveFilename():
+def retrieveFilename() -> str:
     return input("Give filename: ")
 
 def readFromFile() -> Parameter:
@@ -31,16 +32,17 @@ def readFromFile() -> Parameter:
 
             p = Parameter()
             p.testCaseList = []
-
+            from TestCase import TestCase
             for i in range(testCases):
-                from TestCase import TestCase
+                
                 t = TestCase(i, int(f.readline()), int(f.readline()))
                 print(t)
                 p.testCaseList.append(t)
 
             return p
-        except TypeError as err:
+        except (TypeError, FileNotFoundError) as err:
             print(f"Error happened when retriving filename, try again. Error: {err}")
+        
 
 
 if __name__ == "__main__":

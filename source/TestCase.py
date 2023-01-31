@@ -5,6 +5,7 @@ from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
 
+
 class ResultEnum(Enum):
     ACERTO = 1,
     ERRO = 2
@@ -32,12 +33,12 @@ class TestCase:
     answer: int
     result: ResultEnum
 
-    def execute(self):
+    def execute(self) -> None:
         self.randomizeNumbers()
         self.doQuestion()
         self.validateAnswer()
 
-    def validateAnswer(self):
+    def validateAnswer(self) -> None:
         length = len(self.notesExecuted)
 
         # Check if n-back note equals to last note
@@ -55,15 +56,15 @@ class TestCase:
             else:
                 self.result = ResultEnum.ACERTO
 
-    def randomizeNumbers(self):
+    def randomizeNumbers(self) -> None:
         for i in range(self.numberOfNotes):
-            import IOUtils as IOUtils
+            import IOUtils
             self.notesExecuted.append(IOUtils.printAndSleep(self.bpm))
 
-    def doQuestion(self):
+    def doQuestion(self) -> None:
         while True:
             try:
-                import ManualInputUtils as ManualInputUtils
+                import ManualInputUtils
                 self.answer = ManualInputUtils.doQuestion(self.nBack)
                 break
             except ValueError as e:
@@ -76,7 +77,7 @@ class TestCase:
             return True
 
     @staticmethod
-    def saveResults(testCaseList, playerName):
+    def saveResults(testCaseList:list, playerName:str) -> None:
         with FileUtils.createfile(playerName) as f:
             # create the csv writer
             writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -93,22 +94,16 @@ class TestCase:
         f.close()
 
     @staticmethod
-    def executeFromFile(playerName: str):
-        import FileUtils as FileUtils
+    def executeFromFile(playerName: str) -> list:
         p = FileUtils.readFromFile()
-        testCases = len(p.testCaseList)
-        testCaseList = p.testCaseList
-
-        i = 0
-        while i < len(testCaseList):
-            t: TestCase = testCaseList[i]
-            t.execute()
-            i += 1
+        testCaseList:List[TestCase] = p.testCaseList
+        for testCase in testCaseList:
+            testCase.execute()
 
         return testCaseList
 
     @staticmethod
-    def executeLoop(playerName: str):
+    def executeLoop(playerName: str)  -> list:
         import ManualInputUtils
         testCaseList = []
         testCases = ManualInputUtils.testCasesInput()
@@ -122,7 +117,6 @@ class TestCase:
                     break
                 except Exception as e:
                     print(e)
-                    pass
 
             i += 1
 

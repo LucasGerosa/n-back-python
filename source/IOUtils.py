@@ -10,11 +10,6 @@ AUDIO_EXTENSION = 'mp3'
 def getNoteFiles() -> list:
     directory = f"{ROOT_DIR}/../input/notas/"
     files = [file for file in os.listdir(directory) if fnmatch.fnmatch(file, '*.' + AUDIO_EXTENSION)]
-    '''for file in os.listdir(directory):
-        if fnmatch.fnmatch(file, '*.' + AUDIO_EXTENSION):
-            noteWithoutExtension = file[:-len(AUDIO_EXTENSION)-1]
-            notes.append(noteWithoutExtension)
-    '''
     return files
 
 noteFiles = getNoteFiles()
@@ -30,7 +25,7 @@ def printAndSleep(bpm: int) -> int:
     # retrieve sound from id
     filename = noteFiles[number]
 
-    playsound(filename) #FIXME
+    #playsound(filename) #FIXME
 
     time.sleep(bpmToSeconds(bpm=60))
     return number
