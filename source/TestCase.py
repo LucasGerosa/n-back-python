@@ -4,6 +4,7 @@ import FileUtils
 from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
+import IOUtils
 
 
 class ResultEnum(Enum):
@@ -17,7 +18,7 @@ class TestCase:
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
         assert self.isValidTestCase(), f"numberOfNotes should be < nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
-        self.notesExecuted: List[int] = []
+        self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
         self.bpm: int = 60
 
@@ -48,8 +49,7 @@ class TestCase:
                 self.result = ResultEnum.ACERTO
 
     def randomizeNumbers(self) -> None:
-        import IOUtils
-        for i in range(self.numberOfNotes):
+        for _ in range(self.numberOfNotes): #by convention, _ is used for the iterator variable if it's not going to be used
             self.notesExecuted.append(IOUtils.printAndSleep(self.bpm))
 
     def doQuestion(self) -> None:
