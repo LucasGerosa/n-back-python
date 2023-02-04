@@ -1,0 +1,7 @@
+audioread==3.0.0
+gTTS==2.2.4
+matplotlib==3.6.2
+numpy==1.24.1
+playsound==1.2.2
+PyAudio==0.2.13
+pydub==0.25.1

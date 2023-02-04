@@ -38,7 +38,7 @@ class TestCase:
         nBackNote: int = self.notesExecuted[length - 1 - self.nBack]
 
         if (lastNote == nBackNote):
-            if (self.answer == 1):
+            if (self.answer == 1): #what does this 1 represent?
                 self.result = ResultEnum.ACERTO
             else:
                 self.result = ResultEnum.ERRO

@@ -1,3 +1,8 @@
 *.pyc
 .idea
 .vscode
+.vscode/settings.json
+aiff_learning.py
+mypy.ini
+venv
+ffmpeg
