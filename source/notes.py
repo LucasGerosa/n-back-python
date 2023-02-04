@@ -1,6 +1,7 @@
 from pydub import AudioSegment, playback #note: you might need the dependencies mentioned at https://github.com/jiaaro/pydub/blob/master/API.markdown to use pydub
 import os
 import typing
+import random
 
 
 DEFAULT_NOTE_EXTENSION = 'mp3'
@@ -92,7 +93,12 @@ class Note_group:
     def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER) -> None:
         for note in self.notes:
             note.convert(new_extension, directory)
-            
+    
+    def getRandomNote(self):
+        random_number = random.randint(0, len(self.notes) - 1)
+        # retrieve sound from id
+        random_note = self.notes[random_number]
+        return random_note
 
 ''' 
 	For future reference for working with aiff or wav

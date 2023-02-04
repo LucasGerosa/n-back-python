@@ -1,5 +1,4 @@
 import os
-import random
 import time
 #import playsound
 #import fnmatch
@@ -27,17 +26,19 @@ def cls():
 
 def printAndSleep(bpm: int) -> Note:
     cls()
-    notes = getNotes()
-    number = random.randint(0, len(notes) - 1)
-
-    # retrieve sound from id
-    note = notes[number]
-    note.play()
+    note_group = getNotes()
+    random_note = note_group.getRandomNote()
+    random_note.play()
     time.sleep(bpmToSeconds(bpm=60))
-    return note
+    return random_note
 
 def bpmToSeconds(bpm: int) -> float:
     return 60 / bpm
 
+def test() -> None:
+    note_group = getNotes()
+    note_group.play()
+
 if __name__ == '__main__':
     convertAudioFiles()
+    test()
