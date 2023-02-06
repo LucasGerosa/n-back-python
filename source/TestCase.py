@@ -8,7 +8,7 @@ import IOUtils
 
 
 class ResultEnum(Enum):
-    ACERTO = 1,
+    ACERTO = 1
     ERRO = 2
 
 class TestCase:
