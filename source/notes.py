@@ -9,8 +9,15 @@ DEFAULT_NOTE_EXTENSION = 'mp3'
 DEFAULT_AUDIO_EXTENSION = 'aiff'
 NOTES_FOLDER = 'input'
 AUDIO_FOLDER = 'aiff'
-sys.path.append(f'{ROOT_DIR}/../ffmpeg/bin')
-#TODO: add different folders for different instruments and add functionality for that.
+
+ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
+if os.path.exists(ffmpeg_path):
+    sys.path.append(ffmpeg_path)
+
+elif not os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH']):
+    import webbrowser
+    webbrowser.open('http://www.ffmpeg.org/download.html')
+    raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
 
 class Note:
 
