@@ -2,7 +2,9 @@ import os
 import time
 import typing
 import glob #module for gettiong files that match  requirement
-from .notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'source'))
+from notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
 
 
 def getNotes(instrument='piano', extension = DEFAULT_NOTE_EXTENSION) -> Note_group:

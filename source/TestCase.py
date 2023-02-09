@@ -62,11 +62,8 @@ class TestCase:
                 print('Opção não encontrada. Tente novamente./n')
 
     def isValidTestCase(self) -> Boolean:
-        if self.numberOfNotes < self.nBack:
-            return False
-        else:
-            return True
-
+        return self.numberOfNotes < self.nBack
+    
     @staticmethod
     def saveResults(testCaseList:list, playerName:str) -> None:
         with FileUtils.createfile(playerName) as f:
