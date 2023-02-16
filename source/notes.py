@@ -11,12 +11,17 @@ NOTES_FOLDER = 'input'
 AUDIO_FOLDER = 'aiff'
 
 ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
-if os.path.exists(ffmpeg_path):
+ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
+ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+if ffmpeg_in_root_dir:
     sys.path.append(ffmpeg_path)
 
-elif not os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH']):
-    import webbrowser
-    webbrowser.open('http://www.ffmpeg.org/download.html')
+elif not ffmpeg_in_path:
+    import requests
+    """import webbrowser
+    webbrowser.open('http://www.ffmpeg.org/download.html')"""
+    requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+
     raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
 
 class Note:

@@ -1,6 +1,8 @@
 from source.IOUtils import getNotes
 from utils import get_aiffs_from_web
 from source.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION
+import os
+import sys
 
 class user_input_messages:
     yes = 'y'
@@ -50,7 +52,7 @@ def main():
 
     try:
         while True:
-            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes}/{user_input_messages.no}\n')
+            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes}/{user_input_messages.no}\nYou can also press ctrl+c to skip conversion.')
 
             if user_input == user_input_messages.yes:
                 delete_old_files = True
@@ -67,6 +69,21 @@ def main():
         print(user_input_messages.KeyboardInterrupt_message + 'conversion')
     else:
         print('Completed converting audio files.')
+    
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
+    ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
+    ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+    if not ffmpeg_in_path and not ffmpeg_in_root_dir:
+        import requests
+        """import webbrowser
+        webbrowser.open('http://www.ffmpeg.org/download.html')"""
+        requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+
+        raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
+    else:
+        print("ffmpeg installed and in the correct directory.")
+
 
  #TODO: make it attempt to install ffmpeg based on the OS. On linux it should be pretty easy, but windows might not be possible.
 

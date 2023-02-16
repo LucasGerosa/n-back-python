@@ -17,7 +17,7 @@ class TestCase:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
-        assert self.isValidTestCase(), f"numberOfNotes should be < nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
+        assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
         self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
         self.bpm: int = 60
@@ -62,7 +62,7 @@ class TestCase:
                 print('Opção não encontrada. Tente novamente./n')
 
     def isValidTestCase(self) -> Boolean:
-        return self.numberOfNotes < self.nBack
+        return self.numberOfNotes > self.nBack
     
     @staticmethod
     def saveResults(testCaseList:list, playerName:str) -> None:
