@@ -74,16 +74,27 @@ def main():
     ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
     ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
     ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
-    if not ffmpeg_in_path and not ffmpeg_in_root_dir:
-        import requests
-        """import webbrowser
-        webbrowser.open('http://www.ffmpeg.org/download.html')"""
-        requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
 
-        raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
-    else:
+    if ffmpeg_in_path or ffmpeg_in_root_dir:
         print("ffmpeg installed and in the correct directory.")
-
+        return
+    
+    import requests
+    import platform
+    if platform.system() == 'Windows':
+        requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+        raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
+    
+    elif platform.system() == 'Linux':
+        import webbrowser
+        webbrowser.open("http://www.ffmpeg.org/download.html#build-linux")
+    
+    elif platform.system() == 'Darwin':
+        requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
+    
+    else:
+        raise Exception('Invalid OS.')
+            
 
  #TODO: make it attempt to install ffmpeg based on the OS. On linux it should be pretty easy, but windows might not be possible.
 

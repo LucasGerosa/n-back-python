@@ -50,7 +50,7 @@ class TestCase:
 
     def randomizeNumbers(self) -> None:
         for _ in range(self.numberOfNotes): #by convention, _ is used for the iterator variable if it's not going to be used
-            self.notesExecuted.append(IOUtils.printAndSleep(self.bpm))
+            self.notesExecuted.append(IOUtils.printAndSleep(self.bpm)) #FIXME
 
     def doQuestion(self) -> None:
         while True:
@@ -103,8 +103,9 @@ class TestCase:
                     testCaseList.append(t)
                     t.execute()
                     break
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    import traceback
+                    print(traceback.format_exc())
 
             i += 1
 

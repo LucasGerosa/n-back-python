@@ -15,7 +15,7 @@ class IOUtilsTests(unittest.TestCase):
         number = IOUtils.printAndSleep(60)
 
         self.assertIsNotNone(number)
-        self.assertLessEqual(number, 10)
+        self.assertLessEqual(number, 10) #FIXME
         self.assertGreaterEqual(number, 0)
 
 if __name__ == '__main__':

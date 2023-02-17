@@ -1,8 +1,8 @@
-from pydub import AudioSegment, playback
 import os
 import typing
 import random
 import sys
+from pydub import AudioSegment, playback
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_NOTE_EXTENSION = 'mp3'
@@ -10,20 +10,37 @@ DEFAULT_AUDIO_EXTENSION = 'aiff'
 NOTES_FOLDER = 'input'
 AUDIO_FOLDER = 'aiff'
 
-ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
-ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
-ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
-if ffmpeg_in_root_dir:
-    sys.path.append(ffmpeg_path)
+def check_ffmpeg():
+    ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
+    ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
+    ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+    
+    if ffmpeg_in_path:
+        return
+    
+    if ffmpeg_in_root_dir:
+        os.environ['PATH'] += ffmpeg_path + ';'
+        
+    else:
+        print('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
+        import requests
+        import platform
+        if platform.system() == 'Windows':
+            requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+        
+        elif platform.system() == 'Linux':
+            import webbrowser
+            webbrowser.open("http://www.ffmpeg.org/download.html#build-linux")
+        
+        elif platform.system() == 'Darwin':
+            requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
+        
+        else:
+            raise Exception('Invalid OS.')
+        
+        raise WindowsError('Download ffmpeg and/or put it in the root directory of this project.')
 
-elif not ffmpeg_in_path:
-    import requests
-    """import webbrowser
-    webbrowser.open('http://www.ffmpeg.org/download.html')"""
-    requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
-
-    raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
-
+check_ffmpeg()
 class Note:
 
     def __init__(self, path) -> None:
@@ -125,7 +142,10 @@ class Note_group:
             note.convert(new_extension, directory, delete_old_files)
     
     def getRandomNote(self):
-        random_number = random.randint(0, len(self.notes) - 1)
+        number_of_notes = len(self.notes)
+        if number_of_notes == 0:
+            return None
+        random_number = random.randint(0, number_of_notes - 1)
         # retrieve sound from id
         random_note = self.notes[random_number]
         return random_note
