@@ -6,3 +6,4 @@ aiff_learning.py
 mypy.ini
 venv
 ffmpeg
+input

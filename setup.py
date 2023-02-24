@@ -1,13 +1,13 @@
 from source.IOUtils import getNotes
 from utils import get_aiffs_from_web
-from source.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION
+from source.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
 import os
 import sys
 
 class user_input_messages:
     yes = 'y'
     no = 'n'
-    KeyboardInterrupt_message = 'Ctrl+c pressed. Canceling '
+    KeyboardInterrupt_message = '\nCtrl+c pressed. Canceling '
     @staticmethod
     def print_invalid_input():
         print('That is not a valid input. Try again.')
@@ -52,7 +52,7 @@ def main():
 
     try:
         while True:
-            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes}/{user_input_messages.no}\nYou can also press ctrl+c to skip conversion.')
+            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes}/{user_input_messages.no}\nYou can also press ctrl+c to skip conversion.\n')
 
             if user_input == user_input_messages.yes:
                 delete_old_files = True
@@ -62,7 +62,7 @@ def main():
                 break
             else:
                 user_input_messages.print_invalid_input()
-        print("Converting audio files. This might take a while; don't shut down the program")
+        print("Converting audio files. This might take a while; don't shut down the program. Press ctrl+c to cancel.")
 
         convertAllFiles(delete_old_files=delete_old_files)
     except KeyboardInterrupt:
@@ -75,28 +75,10 @@ def main():
     ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
     ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
 
-    if ffmpeg_in_path or ffmpeg_in_root_dir:
+    import shutil
+    if ffmpeg_in_path or ffmpeg_in_root_dir or shutil.which('ffmpeg'):
         print("ffmpeg installed and in the correct directory.")
         return
-    
-    import requests
-    import platform
-    if platform.system() == 'Windows':
-        requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
-        raise WindowsError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
-    
-    elif platform.system() == 'Linux':
-        import webbrowser
-        webbrowser.open("http://www.ffmpeg.org/download.html#build-linux")
-    
-    elif platform.system() == 'Darwin':
-        requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
-    
-    else:
-        raise Exception('Invalid OS.')
-            
-
- #TODO: make it attempt to install ffmpeg based on the OS. On linux it should be pretty easy, but windows might not be possible.
 
 
 if __name__ == '__main__':

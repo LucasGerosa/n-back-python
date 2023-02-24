@@ -10,35 +10,48 @@ DEFAULT_AUDIO_EXTENSION = 'aiff'
 NOTES_FOLDER = 'input'
 AUDIO_FOLDER = 'aiff'
 
+import platform
+os_name = platform.system()
+
 def check_ffmpeg():
     ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
     ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
     ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
-    
-    if ffmpeg_in_path:
-        return
-    
-    if ffmpeg_in_root_dir:
-        os.environ['PATH'] += ffmpeg_path + ';'
+    import requests
+    if os_name == 'Windows':
+
+        if ffmpeg_in_path:
+            return
         
-    else:
-        print('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project.')
-        import requests
-        import platform
-        if platform.system() == 'Windows':
+        if ffmpeg_in_root_dir:
+            os.environ['PATH'] += ffmpeg_path + ';'
+            return
+        
+        else:
             requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+
+    elif os_name == 'Linux':
+        import shutil
+
+        if ffmpeg_in_root_dir:
+            os.environ['PATH'] += ffmpeg_path + ';'
+            return
         
-        elif platform.system() == 'Linux':
+        elif shutil.which('ffmpeg'):
+            os.environ['PATH'] += shutil.which('ffmpeg') + ';'
+            return
+
+        else:
             import webbrowser
             webbrowser.open("http://www.ffmpeg.org/download.html#build-linux")
         
-        elif platform.system() == 'Darwin':
-            requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
+    elif os_name == 'Darwin':
+        requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
         
-        else:
-            raise Exception('Invalid OS.')
-        
-        raise WindowsError('Download ffmpeg and/or put it in the root directory of this project.')
+    else:
+        raise OSError('Invalid OS. Please contact the developers.')
+
+    raise OSError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
 check_ffmpeg()
 class Note:
