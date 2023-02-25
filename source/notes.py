@@ -60,11 +60,13 @@ def check_ffmpeg():
 check_ffmpeg()
 class Note:
 
-    def __init__(self, path, bpm:int=60) -> None:
+    def __init__(self, path, bpm:int=60, create_sound:bool=True) -> None:
         self.set_path(path)
         if self.extension == 'aif':
             self.change_extension('aiff')
-        self.sound = AudioSegment.from_file(self.path, self.extension)
+        if create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
+            self.sound = AudioSegment.from_file(self.path, self.extension)
+        self.create_sound:bool = create_sound
         self.bpm = bpm
     
     def __eq__(self, other_note) -> bool:
@@ -89,7 +91,9 @@ class Note:
         input('This is a test')
         if self.extension !='mp3': #TEMPORARY
             raise Exception(f"To be implemented; notes currently don't work with extensions besides mp3. Path of note: {self.path}")
-        
+    
+        if not self.create_sound:
+            self.sound = AudioSegment.from_file(self.path, self.extension)
         #playback.play(self.sound)
         current_playback = playback._play_with_simpleaudio(self.sound)
         print(current_playback)

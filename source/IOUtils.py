@@ -7,10 +7,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'source')) #hacky 
 from notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
 
 
-def getNotes(instrument='piano', extension = DEFAULT_NOTE_EXTENSION, audio_folder = AUDIO_FOLDER) -> Note_group:
+def getNotes(instrument='piano', extension = DEFAULT_NOTE_EXTENSION, audio_folder = AUDIO_FOLDER, create_sound:bool=True) -> Note_group:
     path = os.path.join(ROOT_DIR, '..', NOTES_FOLDER, instrument, audio_folder, f"*.{extension}")
     file_paths = glob.glob(path)
-    noteList = [Note(path = file_path) for file_path in file_paths] #List comprehension
+    noteList = [Note(path = file_path, create_sound=create_sound) for file_path in file_paths] #List comprehension
     note_group = Note_group(noteList)
     return note_group
 

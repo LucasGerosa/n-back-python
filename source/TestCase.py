@@ -17,7 +17,7 @@ class TestCase:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
-        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='')
+        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False)
         assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
         self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
