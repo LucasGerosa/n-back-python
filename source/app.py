@@ -23,7 +23,7 @@ if __name__ == "__main__":
         playerName =  retrievePlayer()  
         if option == '2':
             TestCase.executeFromFile(playerName)
-            
+                
         elif option == '1':
             TestCase.executeLoop(playerName)
                         

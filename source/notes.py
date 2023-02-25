@@ -3,6 +3,7 @@ import typing
 import random
 import sys
 from pydub import AudioSegment, playback
+import time
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_NOTE_EXTENSION = 'mp3'
@@ -12,6 +13,9 @@ AUDIO_FOLDER = 'aiff'
 
 import platform
 os_name = platform.system()
+
+def bpmToSeconds(bpm: int) -> float:
+    return 60 / bpm
 
 def check_ffmpeg():
     ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
@@ -56,11 +60,12 @@ def check_ffmpeg():
 check_ffmpeg()
 class Note:
 
-    def __init__(self, path) -> None:
+    def __init__(self, path, bpm:int=60) -> None:
         self.set_path(path)
         if self.extension == 'aif':
             self.change_extension('aiff')
         self.sound = AudioSegment.from_file(self.path, self.extension)
+        self.bpm = bpm
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
@@ -81,9 +86,15 @@ class Note:
             self.instrument:str = DEFAULT_AUDIO_EXTENSION_dir
     
     def play(self) -> None:
+        input('This is a test')
         if self.extension !='mp3': #TEMPORARY
             raise Exception(f"To be implemented; notes currently don't work with extensions besides mp3. Path of note: {self.path}")
-        playback.play(self.sound)
+        
+        #playback.play(self.sound)
+        current_playback = playback._play_with_simpleaudio(self.sound)
+        print(current_playback)
+        time.sleep(bpmToSeconds(self.bpm))
+        current_playback.stop()
     
     def change_extension(self, new_extension:str) -> None:
         new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)

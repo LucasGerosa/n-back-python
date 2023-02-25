@@ -51,8 +51,8 @@ def extract_url_file(input_url,folder_path=os.getcwd(), extension = '.pdf'):
     
     time_stamp = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     
+    '''
     print("Creating an Excel file with Name of FIle, Url Link and Link Text...")
-    
 
     new_excel_file=os.path.join(folder_location,"Excel_Output_"+time_stamp+".xlsx")
 
@@ -61,9 +61,9 @@ def extract_url_file(input_url,folder_path=os.getcwd(), extension = '.pdf'):
     df.to_excel(writer,sheet_name="Output")
 
     writer.save()
-
-    print(f"All {extension} files downloaded and Excel File Created")
-
+    '''
+    print(f"All {extension} files downloaded.")
+    
 def extract_url_from_instrument(instrument:str, extension:str='aiff'):
     base_url = 'https://theremin.music.uiowa.edu/MIS'
     input_url = f'{base_url}{instrument}.html'

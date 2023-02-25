@@ -18,22 +18,17 @@ def cls():
     clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
     clear()
 
-def printAndSleep(bpm: int) -> Note:
+def printAndSleep(bpm: int, note_group) -> Note|None:
     cls()
-    note_group = getNotes(audio_folder='')
     random_note = note_group.getRandomNote()
-    random_note.play()
-    time.sleep(bpmToSeconds(bpm=60))
     return random_note
-
-def bpmToSeconds(bpm: int) -> float:
-    return 60 / bpm
 
 def test() -> None: #for debugging purposes
     note_group = getNotes(audio_folder='')
     print(note_group)
     note_group.play()
 
-    
+
+
 if __name__ == '__main__':
     test()

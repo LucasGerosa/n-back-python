@@ -13,10 +13,11 @@ class ResultEnum(Enum):
 
 class TestCase:
 
-    def __init__(self, id, nBack, numberOfNotes) -> None:
+    def __init__(self, id, nBack, numberOfNotes, instrument='piano') -> None:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
+        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='')
         assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
         self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
@@ -50,7 +51,7 @@ class TestCase:
 
     def randomizeNumbers(self) -> None:
         for _ in range(self.numberOfNotes): #by convention, _ is used for the iterator variable if it's not going to be used
-            self.notesExecuted.append(IOUtils.printAndSleep(self.bpm)) #FIXME
+            self.notesExecuted.append(IOUtils.printAndSleep(self.bpm, self.note_group)) #FIXME
 
     def doQuestion(self) -> None:
         while True:
