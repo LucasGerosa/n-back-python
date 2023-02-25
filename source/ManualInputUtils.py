@@ -13,6 +13,8 @@ def notesInput() -> int:
     return int(input("notes: "))
 
 def createManualTestCase(id) -> TestCase:
+    #TODO: add functionality for choosing instrument and bpm.
+    #That can be either added as an option for the start of the program or it can be asked for every testcase.
     nBack = nBackInput()
     notes = notesInput()
 

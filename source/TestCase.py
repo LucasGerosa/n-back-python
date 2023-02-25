@@ -13,15 +13,15 @@ class ResultEnum(Enum):
 
 class TestCase:
 
-    def __init__(self, id, nBack, numberOfNotes, instrument='piano') -> None:
+    def __init__(self, id, nBack, numberOfNotes, instrument='piano', bpm=60) -> None:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
-        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False)
+        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
         assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
         self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
-        self.bpm: int = 60
+        self.bpm:int = bpm
 
     def __str__(self):
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
@@ -39,7 +39,7 @@ class TestCase:
         nBackNote: int = self.notesExecuted[length - 1 - self.nBack]
 
         if (lastNote == nBackNote):
-            if (self.answer == 1): #what does this 1 represent?
+            if (self.answer == 1):
                 self.result = ResultEnum.ACERTO
             else:
                 self.result = ResultEnum.ERRO
@@ -51,7 +51,7 @@ class TestCase:
 
     def randomizeNumbers(self) -> None:
         for _ in range(self.numberOfNotes): #by convention, _ is used for the iterator variable if it's not going to be used
-            self.notesExecuted.append(IOUtils.printAndSleep(self.bpm, self.note_group)) #FIXME
+            self.notesExecuted.append(IOUtils.printAndSleep(self.note_group))
 
     def doQuestion(self) -> None:
         while True:

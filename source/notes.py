@@ -88,15 +88,12 @@ class Note:
             self.instrument:str = DEFAULT_AUDIO_EXTENSION_dir
     
     def play(self) -> None:
-        input('This is a test')
         if self.extension !='mp3': #TEMPORARY
             raise Exception(f"To be implemented; notes currently don't work with extensions besides mp3. Path of note: {self.path}")
     
         if not self.create_sound:
             self.sound = AudioSegment.from_file(self.path, self.extension)
-        #playback.play(self.sound)
         current_playback = playback._play_with_simpleaudio(self.sound)
-        print(current_playback)
         time.sleep(bpmToSeconds(self.bpm))
         current_playback.stop()
     
@@ -176,6 +173,7 @@ class Note_group:
         random_number = random.randint(0, number_of_notes - 1)
         # retrieve sound from id
         random_note = self.notes[random_number]
+        random_note.play()
         return random_note
 
     def delete_files(self) -> None:

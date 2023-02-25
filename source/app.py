@@ -16,7 +16,7 @@ def home() -> str:
 
 if __name__ == "__main__":
     sequence = 10
-
+    #TODO: Add options for choosing the instrument and bpm  
     option = home()
 
     while (option != '0'):
