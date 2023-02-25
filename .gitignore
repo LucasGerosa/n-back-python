@@ -7,3 +7,4 @@ mypy.ini
 venv
 ffmpeg
 input
+result.csv

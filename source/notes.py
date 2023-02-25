@@ -4,6 +4,8 @@ import random
 import sys
 from pydub import AudioSegment, playback
 import time
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.defaults import *
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_NOTE_EXTENSION = 'mp3'
@@ -60,7 +62,7 @@ def check_ffmpeg():
 check_ffmpeg()
 class Note:
 
-    def __init__(self, path, bpm:int=60, create_sound:bool=True) -> None:
+    def __init__(self, path, bpm:float=DEFAULT_BPM, create_sound:bool=True) -> None:
         self.set_path(path)
         if self.extension == 'aif':
             self.change_extension('aiff')

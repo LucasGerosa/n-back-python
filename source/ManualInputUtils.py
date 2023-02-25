@@ -1,4 +1,8 @@
 from TestCase import TestCase
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.defaults import *
 
 def doQuestion(nBack) -> int:
     return int(input(f"A última nota tocada é igual à {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
@@ -12,13 +16,11 @@ def nBackInput() -> int:
 def notesInput() -> int:
     return int(input("notes: "))
 
-def createManualTestCase(id) -> TestCase:
-    #TODO: add functionality for choosing instrument and bpm.
-    #That can be either added as an option for the start of the program or it can be asked for every testcase.
+def createManualTestCase(id, bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> TestCase:
     nBack = nBackInput()
     notes = notesInput()
 
-    t = TestCase(id, nBack, notes)
+    t = TestCase(id, nBack, notes, bpm, instrument)
     if t.isValidTestCase == False:
         raise Exception("notes must be higher than n-back. Insert values again. Press enter to return.\n")
     

@@ -1,5 +1,8 @@
 import os
 from Parameter import Parameter
+import sys; import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.defaults import *
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
@@ -23,7 +26,7 @@ def getFolder() -> str:
 def retrieveFilename() -> str:
     return input("Give filename: ")
 
-def readFromFile() -> Parameter:
+def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Parameter:
     while True:
         try:
             filename = retrieveFilename()
@@ -34,8 +37,7 @@ def readFromFile() -> Parameter:
             p.testCaseList = []
             from TestCase import TestCase
             for i in range(testCases):
-                
-                t = TestCase(i, int(f.readline()), int(f.readline()))
+                t = TestCase(i, int(f.readline()), int(f.readline()), bpm=bpm, instrument=instrument)
                 print(t)
                 p.testCaseList.append(t)
 

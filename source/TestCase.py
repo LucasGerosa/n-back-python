@@ -5,7 +5,9 @@ from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
 import IOUtils
-
+import sys; import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.defaults import *
 
 class ResultEnum(Enum):
     ACERTO = 1
@@ -13,7 +15,7 @@ class ResultEnum(Enum):
 
 class TestCase:
 
-    def __init__(self, id, nBack, numberOfNotes, instrument='piano', bpm=60) -> None:
+    def __init__(self, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
@@ -21,11 +23,10 @@ class TestCase:
         assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
         self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
-        self.bpm:int = bpm
 
     def __str__(self):
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
-
+    
     def execute(self) -> None:
         self.randomizeNumbers()
         self.doQuestion()
@@ -83,16 +84,15 @@ class TestCase:
         f.close()
 
     @staticmethod
-    def executeFromFile(playerName: str) -> list:
-        p = FileUtils.readFromFile()
+    def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
+        p = FileUtils.readFromFile(bpm=bpm, instrument=instrument)
         testCaseList:List[TestCase] = p.testCaseList
         for testCase in testCaseList:
             testCase.execute()
-
         return testCaseList
 
     @staticmethod
-    def executeLoop(playerName: str)  -> list:
+    def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
         import ManualInputUtils
         testCaseList = []
         testCases = ManualInputUtils.testCasesInput()
@@ -100,7 +100,7 @@ class TestCase:
         while i < testCases:
             while True:
                 try:
-                    t = ManualInputUtils.createManualTestCase(i)
+                    t = ManualInputUtils.createManualTestCase(i, bpm, instrument)
                     testCaseList.append(t)
                     t.execute()
                     break
