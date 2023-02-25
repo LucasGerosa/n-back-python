@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+from defaults import *
 
 '''Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION'''
 
@@ -30,20 +33,20 @@ def extract_url_file(input_url,folder_path=os.getcwd(), extension = '.pdf'):
 
     for link in soup.select(f"a[href$='{extension}']"):
         #Name the pdf files using the last portion of each link which are unique in this case
-        
         filename = os.path.join(folder_location,link['href'].split('/')[-1])
-        with open(filename, 'wb') as f:
-            f.write(requests.get(urljoin(input_url,link['href'])).content)
+        if DEFAULT_INTENSITY in filename and not 'mono' in filename:
+            with open(filename, 'wb') as f:
+                f.write(requests.get(urljoin(input_url,link['href'])).content)
+                
+            link_text.append(str(link.text))
             
-        link_text.append(str(link.text))
-        
-        link_href.append(link['href'])
+            link_href.append(link['href'])
 
-        link_file.append(link['href'].split('/')[-1])
-        
-        counter+=1
+            link_file.append(link['href'].split('/')[-1])
+            
+            counter+=1
 
-        print(counter, "-Files Extracted from URL named ",link['href'].split('/')[-1])
+            print(counter, "-Files Extracted from URL named ",link['href'].split('/')[-1])
         
     table_dict={"Text":link_text,"Url_Link":link_href,"File Name":link_file}
 

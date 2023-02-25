@@ -1,3 +1,4 @@
 INSTRUMENTS = ('piano', 'guitar')
 DEFAULT_INSTRUMENT = 'piano'
 DEFAULT_BPM = 60
+DEFAULT_INTENSITY = 'mf'
