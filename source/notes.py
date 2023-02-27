@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
 DEFAULT_NOTE_EXTENSION = 'mp3'
 DEFAULT_AUDIO_EXTENSION = 'aiff'
 NOTES_FOLDER = 'input'
@@ -20,9 +21,10 @@ def bpmToSeconds(bpm: int) -> float:
     return 60 / bpm
 
 def check_ffmpeg():
-    ffmpeg_path = f'{ROOT_DIR}/../ffmpeg/bin'
+    ffmpeg_path = f'{PROJECT_DIR}/ffmpeg/bin'
     ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
     ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+    windows_ffmpeg_url = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
     import requests
     if os_name == 'Windows':
 
@@ -30,17 +32,25 @@ def check_ffmpeg():
             return
         
         if ffmpeg_in_root_dir:
-            os.environ['PATH'] += ffmpeg_path + ';'
+            os.environ['PATH'] += f';{ffmpeg_path};'
             return
         
         else:
-            requests.get('https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip')
+            print(f"ffmpeg not found. Attempting to download it...\nIf you do have it installed, please press ctrl+c and add it to path or move the ffmpeg folder to {PROJECT_DIR}")
+            request = requests.get(windows_ffmpeg_url)
+            if request.status_code == 200:
+                with open("ffmpeg-release-essentials.zip", 'wb') as f:
+                    f.write(request.content)
+                
+                raise Exception(f"Successfully downloaded the ffmpeg zip to {PROJECT_DIR}. Now extract it to that folder and run this program again.")
+            else:
+                raise Exception(f'ffmpeg zip failed to download. Check your internet connection or go to {windows_ffmpeg_url} and extract that file to {PROJECT_DIR}, and then run this file again.\nIf that doesn\'t work, contact the developers.')
 
     elif os_name == 'Linux':
         import shutil
 
         if ffmpeg_in_root_dir:
-            os.environ['PATH'] += ffmpeg_path + ';'
+            os.environ['PATH'] += f';{ffmpeg_path};'
             return
         
         elif shutil.which('ffmpeg'):
@@ -52,12 +62,13 @@ def check_ffmpeg():
             webbrowser.open("http://www.ffmpeg.org/download.html#build-linux")
         
     elif os_name == 'Darwin':
+        print('MacOS is currently not supported. Ask the developers to implement it.')
         requests.get("https://evermeet.cx/ffmpeg/ffmpeg-109856-gf8d6d0fbf1.zip")
         
     else:
         raise OSError('Invalid OS. Please contact the developers.')
 
-    raise OSError('ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
+    raise OSError(f'ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
 check_ffmpeg()
 class Note:
