@@ -8,3 +8,6 @@ venv
 ffmpeg
 input
 result.csv
+source/simpleaudio-1.0.4-cp310-cp310-win_amd64.whl
+source/build/nsis
+app

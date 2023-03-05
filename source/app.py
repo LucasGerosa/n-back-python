@@ -28,17 +28,21 @@ def retrieveInfo():
 
 def home() -> str:
     IOUtils.cls()
-    userInput = input("1 -> Start\n2 -> Import from file\n0 -> Quit\n> ")
-    if userInput.isnumeric() and 0 <= int(userInput) <= 2:
-        return userInput
-        
-    else:
-        raise TypeError(f"The input needs to be a number from 0 to 2. {userInput} was given.")
+    return input("1 -> Start\n2 -> Import from file\n0 -> Quit\n> ")
+    
 
-if __name__ == "__main__":
+def main() -> None:
     sequence = 10
     option = home()
+    if option == "debug":
+        TestCase.debug()
+        input("Debugging session finished.\nPress ENTER to continue.")
+        return
 
+    if not option.isnumeric() and 0 <= int(option) <= 2:
+    
+        raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
+    
     while (option != '0'):
         info =  retrieveInfo()  
         if option == '2':
@@ -46,6 +50,9 @@ if __name__ == "__main__":
                 
         elif option == '1':
             TestCase.executeLoop(*info)
+
+if __name__ == "__main__":
+    main()
                         
         
 

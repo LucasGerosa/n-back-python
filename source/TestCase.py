@@ -113,3 +113,16 @@ class TestCase:
         TestCase.saveResults(testCaseList, playerName)
 
         return testCaseList
+    
+    @staticmethod
+    def debug() -> None:
+        NUMBER_OF_TESTCASES = 1
+        NBACK = 4
+        NUMBER_OF_NOTES = 6
+        for id in range(NUMBER_OF_TESTCASES):
+            try:
+                testCase = TestCase(id, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
+                testCase.execute()
+            except Exception:
+                import traceback
+                print(traceback.format_exc())

@@ -16,7 +16,7 @@ def nBackInput() -> int:
 def notesInput() -> int:
     return int(input("notes: "))
 
-def createManualTestCase(id, bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> TestCase:
+def createManualTestCase(id, bpm: float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> TestCase:
     nBack = nBackInput()
     notes = notesInput()
 

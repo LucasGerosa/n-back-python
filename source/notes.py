@@ -17,7 +17,7 @@ AUDIO_FOLDER = 'aiff'
 import platform
 os_name = platform.system()
 
-def bpmToSeconds(bpm: int) -> float:
+def bpmToSeconds(bpm: float) -> float:
     return 60 / bpm
 
 def check_ffmpeg():
