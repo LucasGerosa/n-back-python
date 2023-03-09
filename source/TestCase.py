@@ -6,9 +6,10 @@ from typing import List
 from xmlrpc.client import Boolean
 import IOUtils
 import sys; import os
+import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-
+import notes
 class ResultEnum(Enum):
     ACERTO = 1
     ERRO = 2
@@ -19,25 +20,30 @@ class TestCase:
         self.id: int = id
         self.nBack: int = nBack
         self.numberOfNotes: int = numberOfNotes
-        self.note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
+        self.note_group = self.get_random_notes(instrument, bpm, numberOfNotes)
         assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
-        self.notesExecuted: IOUtils.Note_group = IOUtils.Note_group()
         self.result: ResultEnum = ResultEnum.ERRO
 
     def __str__(self):
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
     
+    def get_random_notes(self, instrument, bpm, numberOfNotes) -> notes.Note_group:
+        all_note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
+        random_notes_list = random.sample(all_note_group.notes, numberOfNotes)
+        random_notes_group = notes.Note_group(random_notes_list)
+        return random_notes_group
+
     def execute(self) -> None:
-        self.randomizeNumbers()
+        self.note_group.play()
         self.doQuestion()
         self.validateAnswer()
 
     def validateAnswer(self) -> None:
-        length = len(self.notesExecuted)
+        length = len(self.note_group)
 
         # Check if n-back note equals to last note
-        lastNote: int = self.notesExecuted[length - 1]
-        nBackNote: int = self.notesExecuted[length - 1 - self.nBack]
+        lastNote: int = self.note_group[length - 1]
+        nBackNote: int = self.note_group[length - 1 - self.nBack]
 
         if (lastNote == nBackNote):
             if (self.answer == 1):
@@ -49,10 +55,6 @@ class TestCase:
                 self.result = ResultEnum.ERRO
             else:
                 self.result = ResultEnum.ACERTO
-
-    def randomizeNumbers(self) -> None:
-        for _ in range(self.numberOfNotes): #by convention, _ is used for the iterator variable if it's not going to be used
-            self.notesExecuted.append(IOUtils.printAndSleep(self.note_group))
 
     def doQuestion(self) -> None:
         while True:
@@ -78,7 +80,7 @@ class TestCase:
 
                 # write a row to the csv file
                 writer.writerow(
-                    [t.id, t.numberOfNotes, ' '.join(str(e) for e in t.notesExecuted), t.nBack, t.answer, t.result])
+                    [t.id, t.numberOfNotes, ' '.join(str(e) for e in t.note_group), t.nBack, t.answer, t.result])
                 i += 1
 
         f.close()
@@ -107,7 +109,6 @@ class TestCase:
                 except Exception:
                     import traceback
                     print(traceback.format_exc())
-
             i += 1
 
         TestCase.saveResults(testCaseList, playerName)

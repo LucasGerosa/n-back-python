@@ -19,11 +19,6 @@ def cls():
     clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
     clear()
 
-def printAndSleep(note_group) -> Note|None:
-    cls()
-    random_note = note_group.getRandomNote()
-    return random_note
-
 def test() -> None: #for debugging purposes
     note_group = getNotes(audio_folder='')
     print(note_group)

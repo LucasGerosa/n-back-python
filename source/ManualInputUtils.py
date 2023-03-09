@@ -8,7 +8,11 @@ def doQuestion(nBack) -> int:
     return int(input(f"A última nota tocada é igual à {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
 
 def testCasesInput() -> int:
-    return int(input("How many test cases? "))
+    while True:
+        amount_test_cases = input("How many test cases? ")
+        if amount_test_cases.isnumeric():
+            return int(amount_test_cases)
+        print(f"Needs to be an integer. Got '{amount_test_cases}' instead.")
 
 def nBackInput() -> int:
     return int(input("n-back: "))
