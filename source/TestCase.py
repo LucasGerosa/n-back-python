@@ -10,6 +10,7 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 import notes
+
 class ResultEnum(Enum):
     ACERTO = 1
     ERRO = 2
@@ -39,27 +40,28 @@ class TestCase:
         self.validateAnswer()
 
     def validateAnswer(self) -> None:
-        length = len(self.note_group)
-
         # Check if n-back note equals to last note
-        lastNote: int = self.note_group[length - 1]
-        nBackNote: int = self.note_group[length - 1 - self.nBack]
+        lastNote: int = self.note_group[-1]
+        nBackNote: int = self.note_group[-1 - self.nBack]
 
-        if (lastNote == nBackNote):
-            if (self.answer == 1):
+        if lastNote == nBackNote:
+            if self.answer == 1:
                 self.result = ResultEnum.ACERTO
-            else:
+            elif self.answer == 2:
                 self.result = ResultEnum.ERRO
+            else:
+                raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
         else:
-            if (self.answer == 1):
+            if self.answer == 1:
                 self.result = ResultEnum.ERRO
-            else:
+            elif self.answer == 2:
                 self.result = ResultEnum.ACERTO
+            else:
+                raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 
     def doQuestion(self) -> None:
         while True:
             try:
-                import ManualInputUtils
                 self.answer = ManualInputUtils.doQuestion(self.nBack)
                 break
             except ValueError as e:
@@ -80,7 +82,7 @@ class TestCase:
 
                 # write a row to the csv file
                 writer.writerow(
-                    [t.id, t.numberOfNotes, ' '.join(str(e) for e in t.note_group), t.nBack, t.answer, t.result])
+                    [t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
                 i += 1
 
         f.close()
@@ -95,7 +97,6 @@ class TestCase:
 
     @staticmethod
     def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
-        import ManualInputUtils
         testCaseList = []
         testCases = ManualInputUtils.testCasesInput()
         i = 0
@@ -127,3 +128,5 @@ class TestCase:
             except Exception:
                 import traceback
                 print(traceback.format_exc())
+
+import ManualInputUtils

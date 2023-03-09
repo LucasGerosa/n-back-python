@@ -75,12 +75,14 @@ class Note:
 
     def __init__(self, path, bpm:float=DEFAULT_BPM, create_sound:bool=True) -> None:
         self.set_path(path)
+        self.name:str = self.get_name()
         if self.extension == 'aif':
             self.change_extension('aiff')
         if create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
             self.sound = AudioSegment.from_file(self.path, self.extension)
         self.create_sound:bool = create_sound
         self.bpm = bpm
+        
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
@@ -100,6 +102,10 @@ class Note:
         else:
             self.instrument:str = DEFAULT_AUDIO_EXTENSION_dir
     
+    def get_name(self) -> str: #gets the name of the note (e.g. Gb3, D4, etc)
+        name = self.fileName.split('.')[-1]
+        return name
+
     def play(self) -> None:
         if self.extension !='mp3': #TEMPORARY
             raise Exception(f"To be implemented; notes currently don't work with extensions besides mp3. Path of note: {self.path}")

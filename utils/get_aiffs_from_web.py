@@ -78,7 +78,3 @@ def download_all() -> None:
     extract_url_from_instrument('piano')
     extract_url_from_instrument('guitar', 'aif')
 
-    
-
-
-    

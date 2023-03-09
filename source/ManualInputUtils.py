@@ -5,7 +5,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 
 def doQuestion(nBack) -> int:
-    return int(input(f"A última nota tocada é igual à {nBack} nota?\n1 - Sim\n 2 - Não\n> "))
+    while True:
+        yes_or_no = input(f"A última nota tocada é igual à {nBack} nota anterior?\n1 - Sim\n 2 - Não\n> ")
+        if yes_or_no == '1' or yes_or_no == '2':
+            return int(yes_or_no)
+        print(f"Invalid answer. Expected 1 or 2; got {yes_or_no} instead.")
 
 def testCasesInput() -> int:
     while True:
