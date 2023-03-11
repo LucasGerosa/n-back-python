@@ -10,6 +10,7 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 import notes
+import numpy as np
 
 class ResultEnum(Enum):
     ACERTO = 1
@@ -30,7 +31,7 @@ class TestCase:
     
     def get_random_notes(self, instrument, bpm, numberOfNotes) -> notes.Note_group:
         all_note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
-        random_notes_list = random.sample(all_note_group.notes, numberOfNotes)
+        random_notes_list = np.random.choice(all_note_group.notes, numberOfNotes)
         random_notes_group = notes.Note_group(random_notes_list)
         return random_notes_group
 
