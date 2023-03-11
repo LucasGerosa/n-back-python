@@ -44,13 +44,18 @@ def main() -> None:
         
             raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
         
-        while (option != '0'):
+        while True:
+            if option == '0':
+                return
             info =  retrieveInfo()  
             if option == '2':
                 TestCase.executeFromFile(*info)
                     
             elif option == '1':
                 TestCase.executeLoop(*info)
+            
+            else:
+                raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
     
 
 if __name__ == "__main__":
