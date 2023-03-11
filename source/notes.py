@@ -3,6 +3,8 @@ import typing
 import random
 import sys
 from pydub import AudioSegment, playback
+from pydub.silence import detect_leading_silence
+
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
@@ -80,15 +82,22 @@ class Note:
             self.change_extension('aiff')
         if create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
             self.sound = AudioSegment.from_file(self.path, self.extension)
+
         self.create_sound:bool = create_sound
         self.bpm = bpm
-        
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
     
     def __str__(self) -> str:
         return f"Note object '{self.fileName}.{self.extension}' at {self.directory}."
+    
+    def remove_silence(self) -> None:
+        trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
+        #trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
+        #strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
+        #stripped = strip_silence(self.sound)
+        self.sound = trim_leading_silence(self.sound)
     
     def set_path(self, new_path) -> None:
         self.path = new_path
@@ -108,10 +117,11 @@ class Note:
 
     def play(self) -> None:
         if self.extension !='mp3': #TEMPORARY
-            raise Exception(f"To be implemented; notes currently don't work with extensions besides mp3. Path of note: {self.path}")
+            raise Exception(f"To be implemented; notes with extensions besides mp3 can't be played. Path of note: {self.path}")
     
         if not self.create_sound:
             self.sound = AudioSegment.from_file(self.path, self.extension)
+        self.remove_silence()
         current_playback = playback._play_with_simpleaudio(self.sound)
         time.sleep(bpmToSeconds(self.bpm))
         current_playback.stop()

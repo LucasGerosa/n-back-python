@@ -97,24 +97,27 @@ class TestCase:
 
     @staticmethod
     def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
-        testCaseList = []
-        testCases = ManualInputUtils.testCasesInput()
-        i = 0
-        while i < testCases:
-            while True:
-                try:
-                    t = ManualInputUtils.createManualTestCase(i, bpm, instrument)
-                    testCaseList.append(t)
-                    t.execute()
-                    break
-                except Exception:
-                    import traceback
-                    print(traceback.format_exc())
-            i += 1
+        try:
+            testCaseList = []
+            testCases = ManualInputUtils.testCasesInput()
+            i = 0
+            while i < testCases:
+                while True:
+                    try:
+                        t = ManualInputUtils.createManualTestCase(i, bpm, instrument)
+                        testCaseList.append(t)
+                        t.execute()
+                        break
+                    except Exception:
+                        import traceback
+                        print(traceback.format_exc())
+                i += 1
 
-        TestCase.saveResults(testCaseList, playerName)
+            TestCase.saveResults(testCaseList, playerName)
 
-        return testCaseList
+            return testCaseList
+        except KeyboardInterrupt:
+            print("Ctrl+c was pressed. Stopping now.")
     
     @staticmethod
     def debug() -> None:

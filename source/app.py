@@ -32,24 +32,26 @@ def home() -> str:
     
 
 def main() -> None:
-    sequence = 10
-    option = home()
-    if option == "debug":
-        TestCase.debug()
-        input("Debugging session finished.\nPress ENTER to continue.")
-        return
+    while True:
+        sequence = 10
+        option = home()
+        if option == "debug":
+            TestCase.debug()
+            input("Debugging session finished.\nPress ENTER to continue.")
+            return
 
-    if not option.isnumeric() and 0 <= int(option) <= 2:
+        if not option.isnumeric() and 0 <= int(option) <= 2:
+        
+            raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
+        
+        while (option != '0'):
+            info =  retrieveInfo()  
+            if option == '2':
+                TestCase.executeFromFile(*info)
+                    
+            elif option == '1':
+                TestCase.executeLoop(*info)
     
-        raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
-    
-    while (option != '0'):
-        info =  retrieveInfo()  
-        if option == '2':
-            TestCase.executeFromFile(*info)
-                
-        elif option == '1':
-            TestCase.executeLoop(*info)
 
 if __name__ == "__main__":
     main()
