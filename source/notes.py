@@ -92,7 +92,7 @@ class Note:
     def __str__(self) -> str:
         return f"Note object '{self.fileName}.{self.extension}' at {self.directory}."
     
-    def remove_silence(self) -> None:
+    def remove_silence(self) -> None: #TODO: edit the file to remove the sound, not just in runtime
         trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
         #trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
         #strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
