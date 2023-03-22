@@ -3,6 +3,7 @@ from TestCase import TestCase
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
+from utils import notes_config, note_str_utils
 
 def retrieveInfo():
         name = input("Player Name:\n")
@@ -27,11 +28,20 @@ def retrieveInfo():
         return name, bpm, instrument
 
 def home() -> str:
-    IOUtils.cls()
-    return input("1 -> Start\n2 -> Import from file\n0 -> Quit\n> ")
+    return input("1 -> Start\n2 -> Import from file\n0 -> Quit\nsettings -> to change the settings\n> ")
     
+def settings_prompt():
+    setting = input(f"""
+What setting do you want to alter? Current values:
+{notes_config.NOTES_SETTING} = {notes_config.get_setting(notes_config.NOTES_SETTING)}
+{notes_config.NOTE_INTENSITY_SETTING} = {notes_config.get_setting(notes_config.NOTE_INTENSITY_SETTING)}
+""")
+    new_value = input("What value do you want to alter it to?\n")
+    notes_config.change_setting(setting, new_value)
+
 
 def main() -> None:
+    IOUtils.cls()
     while True:
         sequence = 10
         option = home()
@@ -39,24 +49,27 @@ def main() -> None:
             TestCase.debug()
             input("Debugging session finished.\nPress ENTER to continue.")
             return
+        if option == 'settings':
+            settings_prompt()
 
-        if not option.isnumeric() and 0 <= int(option) <= 2:
+        elif not (option.isnumeric() or 0 <= int(option) <= 2):
+            print(f"The input needs to be a number from 0 to 2. {option} was given. Try again.\n\n")
         
-            raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
+        else:
+
+            while True:
+                if option == '0':
+                    return
+                info =  retrieveInfo()  
+                if option == '2':
+                    TestCase.executeFromFile(*info)
+                        
+                elif option == '1':
+                    TestCase.executeLoop(*info)
+                
+                else:
+                    raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
         
-        while True:
-            if option == '0':
-                return
-            info =  retrieveInfo()  
-            if option == '2':
-                TestCase.executeFromFile(*info)
-                    
-            elif option == '1':
-                TestCase.executeLoop(*info)
-            
-            else:
-                raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
-    
 
 if __name__ == "__main__":
     main()

@@ -20,18 +20,18 @@ def convertAllFiles(delete_old_files):
     convertAudioFiles('piano', delete_old_files=delete_old_files)
     convertAudioFiles('guitar', 'aif', delete_old_files=delete_old_files)
 
-def download_files(flag):
+def download_files(flag, only_download_default_intensity = True):
     print('Downloading notes from the web. This might take a while. Press ctrl+c to cancel.')
     try:
         if flag == 'all':
-            get_aiffs_from_web.download_all()
+            get_aiffs_from_web.download_all(only_download_default_intensity)
             return
         
         if flag == 'guitar':
-            get_aiffs_from_web.extract_url_from_instrument(flag, 'aif')
+            get_aiffs_from_web.extract_url_from_instrument(flag, 'aif', only_download_default_intensity)
             return
         
-        get_aiffs_from_web.extract_url_from_instrument(flag)
+        get_aiffs_from_web.extract_url_from_instrument(flag, only_download_default_intensity = only_download_default_intensity)
     
     except KeyboardInterrupt:
         print(user_input_messages.KeyboardInterrupt_message + 'download')
@@ -40,6 +40,7 @@ def main():
     print("Note: it's not recommended to stop the program before it's done downloading and converting all files. If you do so, you might need to do it all over again.\n")
     while True:
         user_input = input(f"Download files from the web? \n\nall -> download all files\n(instrument_name) -> Only download files from the instrument. E.g. 'piano' or 'guitar'\n{user_input_messages.no} -> don't download files\n")
+        user_input2 = input(f"Download only files from the intensity chosen in the settings (default: {user_input_messages.yes})? {user_input_messages.yes}/{user_input_messages.no}")
         if user_input == 'all':
             download_files('all')
             break
