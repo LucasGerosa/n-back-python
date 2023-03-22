@@ -33,4 +33,4 @@ If this fails, you might need to install pip
 
 - ```sudo apt install ffmpeg```
 
-- ```python3 setup.py```
+- ```python3 setup.py``` and follow the prompts to install all the mp3 files.
