@@ -3,7 +3,8 @@ from TestCase import TestCase
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import notes_config, note_str_utils
+from utils import notes_config
+import configparser
 
 def retrieveInfo():
         name = input("Player Name:\n")
@@ -28,22 +29,34 @@ def retrieveInfo():
         return name, bpm, instrument
 
 def home() -> str:
-    return input("1 -> Start\n2 -> Import from file\n0 -> Quit\nsettings -> to change the settings\n> ")
+    return input("1 -> Start\n2 -> Import from file\n0 -> Quit\nsettings -> to change the settings\nsettings_reset -> to reset all settings to default (this might fix some bugs regarding settings\n> ")
     
 def settings_prompt():
-    setting = input(f"""
+    try:
+        while True:
+            setting = input(f"""
 What setting do you want to alter? Current values:
 {notes_config.NOTES_SETTING} = {notes_config.get_setting(notes_config.NOTES_SETTING)}
 {notes_config.NOTE_INTENSITY_SETTING} = {notes_config.get_setting(notes_config.NOTE_INTENSITY_SETTING)}
-""")
-    new_value = input("What value do you want to alter it to?\n")
-    notes_config.change_setting(setting, new_value)
-
+""")    
+        
+            if notes_config.does_setting_exist(setting):
+                new_value = input("What value do you want to alter it to?\n")
+                notes_config.change_setting(setting, new_value)
+                print("Settings saved.")
+                break
+            print("Setting doesn't exist. Try again.")
+    except (KeyError, configparser.ParsingError) as e:
+        reset_bool = input(f"{e}\nsettings.ini file is probably corrupted. Reset it to default settings?\n ({user_input_messages.yes_or_no})")
+        if reset_bool == user_input_messages.yes:
+            notes_config.reset_settings()
+            print("All settings have been successfully reset.\n")
+        else:
+            print('Cancelling operation. Fix your settings.ini file or contact the developers.\n')
 
 def main() -> None:
     IOUtils.cls()
     while True:
-        sequence = 10
         option = home()
         if option == "debug":
             TestCase.debug()
@@ -51,9 +64,13 @@ def main() -> None:
             return
         if option == 'settings':
             settings_prompt()
+        
+        elif option == 'settings_reset':
+            notes_config.reset_settings()
+            print("All settings have been successfully reset.")
 
-        elif not (option.isnumeric() or 0 <= int(option) <= 2):
-            print(f"The input needs to be a number from 0 to 2. {option} was given. Try again.\n\n")
+        elif not option.isnumeric() or not 0 <= int(option) <= 2:
+            print(f"The input needs to be a number from 0 to 2. '{option}' was given. Try again.\n\n")
         
         else:
 
@@ -70,7 +87,5 @@ def main() -> None:
                 else:
                     raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
         
-
 if __name__ == "__main__":
     main()
-                        

@@ -14,3 +14,4 @@ source/build/nsis
 app
 Nback-cache
 Nback-SetupFiles
+settings.ini

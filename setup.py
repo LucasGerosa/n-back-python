@@ -3,14 +3,7 @@ from utils import get_aiffs_from_web
 from source.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
 import os
 import sys
-
-class user_input_messages:
-    yes = 'y'
-    no = 'n'
-    KeyboardInterrupt_message = '\nCtrl+c pressed. Canceling '
-    @staticmethod
-    def print_invalid_input():
-        print('That is not a valid input. Try again.')
+from utils.defaults import *
 
 def convertAudioFiles(instrument='piano', convert_from = DEFAULT_AUDIO_EXTENSION, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
     note_group = getNotes(instrument, extension=convert_from)
@@ -40,7 +33,7 @@ def main():
     print("Note: it's not recommended to stop the program before it's done downloading and converting all files. If you do so, you might need to do it all over again.\n")
     while True:
         user_input = input(f"Download files from the web? \n\nall -> download all files\n(instrument_name) -> Only download files from the instrument. E.g. 'piano' or 'guitar'\n{user_input_messages.no} -> don't download files\n")
-        user_input2 = input(f"Download only files from the intensity chosen in the settings (default: {user_input_messages.yes})? {user_input_messages.yes}/{user_input_messages.no}")
+        user_input2 = input(f"Download only files from the intensity chosen in the settings (default: {user_input_messages.yes})? {user_input_messages.yes_or_no}")
         if user_input == 'all':
             download_files('all')
             break
@@ -53,7 +46,7 @@ def main():
 
     try:
         while True:
-            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes}/{user_input_messages.no}\nYou can also press ctrl+c to skip conversion.\n')
+            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes_or_no}\nYou can also press ctrl+c to skip conversion.\n')
 
             if user_input == user_input_messages.yes:
                 delete_old_files = True
