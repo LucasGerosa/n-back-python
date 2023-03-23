@@ -9,6 +9,7 @@ import sys; import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
+from utils import notes_config, note_str_utils
 import notes
 import numpy as np
 
@@ -16,6 +17,20 @@ class ResultEnum(Enum):
     ACERTO = 1
     ERRO = 2
 
+def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
+    setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
+    intensity = notes_config.get_intensity_setting()
+    if intensity == None:
+        raise Exception(setting_not_exist_msg)
+    note_str = notes_config.get_notes_setting()
+    if note_str == 'all':
+        note_group = IOUtils.getNotes(intensity=intensity, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
+        return note_group
+    elif note_str == None:
+        raise Exception(setting_not_exist_msg)
+    note_str_list = note_str_utils.get_final_list_notes(note_str)
+    note_list = [notes.get_note_from_note_name(intensity, note_str) for note_str in note_str_list]
+    return notes.Note_group(note_list)
 class TestCase:
 
     def __init__(self, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:
@@ -30,8 +45,8 @@ class TestCase:
         return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
     
     def get_random_notes(self, instrument, bpm, numberOfNotes) -> notes.Note_group:
-        all_note_group = IOUtils.getNotes(instrument=instrument, audio_folder='', create_sound=False, bpm=bpm)
-        random_notes_list = np.random.choice(all_note_group.notes, numberOfNotes)
+        note_group = get_note_group_from_config()
+        random_notes_list = np.random.choice(note_group.notes, numberOfNotes)
         random_notes_group = notes.Note_group(random_notes_list)
         return random_notes_group
 

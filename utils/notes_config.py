@@ -8,6 +8,15 @@ CUSTOM_SETTING = 'custom'
 NOTES_SETTING = 'Notes'
 NOTE_INTENSITY_SETTING = 'Note_intensity'
 
+def get_notes_setting() -> str:
+    notes_str = get_setting(NOTES_SETTING)
+    if not notes_str:
+        raise Exception("Setting does not exist. The settings.ini file is corrupted or something is wrong with the program.")
+    return notes_str
+
+def get_intensity_setting():
+    return get_setting(NOTE_INTENSITY_SETTING)
+
 def get_setting(setting:str):
     config = ConfigParser()
     if not config.read("settings.ini"):

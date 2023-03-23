@@ -73,9 +73,11 @@ def check_ffmpeg():
     raise OSError(f'ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
 check_ffmpeg()
+
+
 class Note:
 
-    def __init__(self, path, bpm:float=DEFAULT_BPM, create_sound:bool=True) -> None:
+    def __init__(self, path:str, bpm:float=DEFAULT_BPM, create_sound:bool=True) -> None:
         self.set_path(path)
         self.name:str = self.get_name()
         if self.extension == 'aif':
@@ -144,6 +146,8 @@ class Note:
     
     def delete_file(self) -> None:
         os.remove(self.path)
+
+        
 
 class Note_group:
     '''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
@@ -219,3 +223,8 @@ class Note_group:
         Number of frames
         Values of a frame
     '''
+
+def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano') -> Note:
+    file_name = f'{PROJECT_DIR}/{NOTES_FOLDER}/{instrument}/{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}'
+
+    return Note(file_name, bpm, create_sound)
