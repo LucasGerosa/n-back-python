@@ -38,6 +38,7 @@ def settings_prompt():
 What setting do you want to alter? Current values:
 {notes_config.NOTES_SETTING} = {notes_config.get_setting(notes_config.NOTES_SETTING)}
 {notes_config.NOTE_INTENSITY_SETTING} = {notes_config.get_setting(notes_config.NOTE_INTENSITY_SETTING)}
+{notes_config.NOTE_VALUE_SETTING} = {notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)}
 """)    
         
             if notes_config.does_setting_exist(setting):

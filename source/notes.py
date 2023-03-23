@@ -74,10 +74,9 @@ def check_ffmpeg():
 
 check_ffmpeg()
 
-
 class Note:
 
-    def __init__(self, path:str, bpm:float=DEFAULT_BPM, create_sound:bool=True) -> None:
+    def __init__(self, path:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
         self.set_path(path)
         self.name:str = self.get_name()
         if self.extension == 'aif':
@@ -87,6 +86,7 @@ class Note:
 
         self.create_sound:bool = create_sound
         self.bpm = bpm
+        self.note_value = note_value #
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
@@ -125,7 +125,7 @@ class Note:
             self.sound = AudioSegment.from_file(self.path, self.extension)
         self.remove_silence()
         current_playback = playback._play_with_simpleaudio(self.sound)
-        time.sleep(bpmToSeconds(self.bpm))
+        time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
         current_playback.stop()
     
     def change_extension(self, new_extension:str) -> None:
@@ -224,7 +224,7 @@ class Note_group:
         Values of a frame
     '''
 
-def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano') -> Note:
+def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> Note:
     file_name = f'{PROJECT_DIR}/{NOTES_FOLDER}/{instrument}/{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}'
 
-    return Note(file_name, bpm, create_sound)
+    return Note(file_name, bpm, create_sound, note_value=note_value)
