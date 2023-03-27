@@ -5,6 +5,66 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import notes_config
 import configparser
+import tkinter as tk
+
+class MyGUI:
+    
+    def __init__(self) -> None:
+        
+        self.root = tk.Tk()
+        self.root.title(PROJECT_NAME)
+        self.root.geometry("800x500")
+        #self.label = tk.Label(self.root, text='')
+        #self.check_state = tk.IntVar()
+        self.set_main_menu()
+        self.set_settings()
+        self.main_menu.pack()
+        self.root.mainloop()
+        self.last_frame = None
+    
+    def destroy_all_widgets(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+    def get_main_menu_button(self, frame):
+        main_menu_button = tk.Button(frame, text='Main menu', font=('Arial', 18), command=lambda:self.main_menu.tkraise())
+        return main_menu_button
+
+    def set_main_menu(self):
+        self.main_menu = tk.Frame(self.root)
+        self.get_settings_button(self.main_menu).pack()
+    
+    def set_settings(self):
+        self.settings = tk.Frame(self.root)
+        self.get_main_menu_button(self.settings).pack()
+
+    def go_back(self):
+        if self.last_frame != None:
+            self.last_frame.tkraise()
+        else:
+            raise Exception("No last frame.")
+
+    def get_back_button(self):
+        back_arrow = tk.PhotoImage(file="static/back_button.png")
+        back_label = tk.Label(self.root, image=back_arrow)
+        back_label.bind("<Button-1>", lambda event: self.go_back())
+        return back_label
+
+    def get_settings_button(self, frame):
+        button_settings = tk.Button(frame, text='Settings', font=('Arial', 18), command=lambda:self.settings.tkraise())
+        return button_settings
+    
+''' def settings(self):
+        self.root.destroy() #destroys the window itself
+        self.destroy_all_widgets()
+        self.get_back_button().pack()
+        self.get_main_menu_button().pack()
+        notes_setting_label = notes_config.get_setting(notes_config.NOTES_SETTING)
+
+        print("Settings accessed")'''
+    
+
+
 
 def retrieveInfo():
         name = input("Player Name:\n")
@@ -55,7 +115,7 @@ What setting do you want to alter? Current values:
         else:
             print('Cancelling operation. Fix your settings.ini file or contact the developers.\n')
 
-def main() -> None:
+def old_main() -> None:
     IOUtils.cls()
     while True:
         option = home()
@@ -87,6 +147,9 @@ def main() -> None:
                 
                 else:
                     raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
+                
+def main():
+    MyGUI()
         
 if __name__ == "__main__":
     main()

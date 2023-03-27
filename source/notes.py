@@ -86,7 +86,7 @@ class Note:
 
         self.create_sound:bool = create_sound
         self.bpm = bpm
-        self.note_value = note_value #
+        self.note_value = note_value
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
