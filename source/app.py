@@ -9,18 +9,25 @@ import tkinter as tk
 class MyGUI:
     
     def __init__(self) -> None:
-        
+
         self.root = tk.Tk()
         self.root.title(PROJECT_NAME)
         self.root.geometry("800x500")
+        self.back_arrow = tk.PhotoImage(file="static/back_button.png").subsample(9)
+        self.settings_image = tk.PhotoImage(file="static/settings.png").subsample(9)
         #self.label = tk.Label(self.root, text='')
         #self.check_state = tk.IntVar()
         self.main_menu = tk.Frame(self.root)
+        self.main_menu.grid(column=0)
         self.settings = tk.Frame(self.root)
-        self.get_main_menu_button(self.settings).pack()
-        self.get_settings_button(self.main_menu).pack()
-        self.main_menu.pack()
-
+        self.get_back_button(self.settings).grid(sticky='nw')
+        self.get_back_button(self.main_menu).grid(sticky='nw')
+        self.get_main_menu_button(self.settings).grid()
+        self.get_settings_button(self.main_menu).grid(column=1, row=0)
+        main_menu_label = tk.Label(self.main_menu, text="Main menu", font=('Arial', 25))
+        main_menu_label.grid(column=2, row=0)
+        settings_label = tk.Label(self.settings, text="Settings", font=('Arial', 25))
+        settings_label.grid(column=2, row=0)
         self.last_frame = self.main_menu
         self.current_frame = self.main_menu
         self.root.mainloop()
@@ -28,28 +35,22 @@ class MyGUI:
     def destroy_all_widgets(self):
         for widget in self.root.winfo_children():
             widget.destroy()
-
-
-    def go_back(self):
-        self.current_frame.pack_forget()
-        self.last_frame.pack()
-
-    def get_back_button(self):
-        back_arrow = tk.PhotoImage(file="static/back_button.png")
-        back_label = tk.Label(self.root, image=back_arrow)
-        back_label.bind("<Button-1>", lambda event: self.go_back())
-        return back_label
-
-    def goto_frame(self, frame):
-        self.current_frame.pack_forget()
-        frame.pack()
+    
+    def goto_frame(self, frame:tk.Frame):
+        self.current_frame.grid_forget()
+        frame.grid()
         self.current_frame = frame
 
-    def get_settings_button(self, frame):
-        button_settings = tk.Button(frame, text='Settings', font=('Arial', 18), command=lambda: self.goto_frame(self.settings))
+    def get_back_button(self, frame:tk.Frame):
+        back_button = tk.Button(frame, image=self.back_arrow, command=lambda:self.goto_frame(self.last_frame), relief=tk.FLAT)
+        back_button.place(x=0, y=0)
+        return back_button
+
+    def get_settings_button(self, frame:tk.Frame):
+        button_settings = tk.Button(frame, image=self.settings_image, command=lambda: self.goto_frame(self.settings), relief=tk.FLAT)
         return button_settings
     
-    def get_main_menu_button(self, frame):
+    def get_main_menu_button(self, frame:tk.Frame):
         main_menu_button = tk.Button(frame, text='Main menu', font=('Arial', 18), command=lambda: self.goto_frame(self.main_menu))
         return main_menu_button
 
