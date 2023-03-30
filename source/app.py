@@ -6,7 +6,6 @@ from utils.defaults import *
 from utils import notes_config
 import configparser
 import tkinter as tk
-
 class MyGUI:
     
     def __init__(self) -> None:
@@ -16,33 +15,24 @@ class MyGUI:
         self.root.geometry("800x500")
         #self.label = tk.Label(self.root, text='')
         #self.check_state = tk.IntVar()
-        self.set_main_menu()
-        self.set_settings()
+        self.main_menu = tk.Frame(self.root)
+        self.settings = tk.Frame(self.root)
+        self.get_main_menu_button(self.settings).pack()
+        self.get_settings_button(self.main_menu).pack()
         self.main_menu.pack()
+
+        self.last_frame = self.main_menu
+        self.current_frame = self.main_menu
         self.root.mainloop()
-        self.last_frame = None
     
     def destroy_all_widgets(self):
         for widget in self.root.winfo_children():
             widget.destroy()
 
-    def get_main_menu_button(self, frame):
-        main_menu_button = tk.Button(frame, text='Main menu', font=('Arial', 18), command=lambda:self.main_menu.tkraise())
-        return main_menu_button
-
-    def set_main_menu(self):
-        self.main_menu = tk.Frame(self.root)
-        self.get_settings_button(self.main_menu).pack()
-    
-    def set_settings(self):
-        self.settings = tk.Frame(self.root)
-        self.get_main_menu_button(self.settings).pack()
 
     def go_back(self):
-        if self.last_frame != None:
-            self.last_frame.tkraise()
-        else:
-            raise Exception("No last frame.")
+        self.current_frame.pack_forget()
+        self.last_frame.pack()
 
     def get_back_button(self):
         back_arrow = tk.PhotoImage(file="static/back_button.png")
@@ -50,10 +40,19 @@ class MyGUI:
         back_label.bind("<Button-1>", lambda event: self.go_back())
         return back_label
 
+    def goto_frame(self, frame):
+        self.current_frame.pack_forget()
+        frame.pack()
+        self.current_frame = frame
+
     def get_settings_button(self, frame):
-        button_settings = tk.Button(frame, text='Settings', font=('Arial', 18), command=lambda:self.settings.tkraise())
+        button_settings = tk.Button(frame, text='Settings', font=('Arial', 18), command=lambda: self.goto_frame(self.settings))
         return button_settings
     
+    def get_main_menu_button(self, frame):
+        main_menu_button = tk.Button(frame, text='Main menu', font=('Arial', 18), command=lambda: self.goto_frame(self.main_menu))
+        return main_menu_button
+
 ''' def settings(self):
         self.root.destroy() #destroys the window itself
         self.destroy_all_widgets()
@@ -62,8 +61,6 @@ class MyGUI:
         notes_setting_label = notes_config.get_setting(notes_config.NOTES_SETTING)
 
         print("Settings accessed")'''
-    
-
 
 
 def retrieveInfo():
