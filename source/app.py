@@ -5,54 +5,83 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import notes_config
 import configparser
-import tkinter as tk
-class MyGUI:
-    
-    def __init__(self) -> None:
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QFont, QIcon, QPixmap
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
 
-        self.root = tk.Tk()
-        self.root.title(PROJECT_NAME)
-        self.root.geometry("800x500")
-        self.back_arrow = tk.PhotoImage(file="static/back_button.png").subsample(9)
-        self.settings_image = tk.PhotoImage(file="static/settings.png").subsample(9)
-        #self.label = tk.Label(self.root, text='')
-        #self.check_state = tk.IntVar()
-        self.main_menu = tk.Frame(self.root)
-        self.main_menu.grid(column=0)
-        self.settings = tk.Frame(self.root)
-        self.get_back_button(self.settings).grid(sticky='nw')
-        self.get_back_button(self.main_menu).grid(sticky='nw')
-        self.get_main_menu_button(self.settings).grid()
-        self.get_settings_button(self.main_menu).grid(column=1, row=0)
-        main_menu_label = tk.Label(self.main_menu, text="Main menu", font=('Arial', 25))
-        main_menu_label.grid(column=2, row=0)
-        settings_label = tk.Label(self.settings, text="Settings", font=('Arial', 25))
-        settings_label.grid(column=2, row=0)
+class MyGUI(QMainWindow):
+    #font = QFont('Arial', 25)
+    
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(PROJECT_NAME)
+        
+        #self.setGeometry(100, 100, 800, 500)
+        self.back_arrow = QIcon("static/back_button.png")#.scaledToWidth(20))
+        self.settings_image = QIcon("static/settings.png")#.scaledToWidth(20))
+        
+        self.main_menu = QFrame(self)
+        #self.setCentralWidget(self.main_menu)
+        
+        self.settings = QFrame(self)
+
+        self.settings.hide()
+        self.get_back_button(self.settings)
+        self.get_back_button(self.main_menu)
+        self.get_main_menu_button(self.settings)
+        self.get_settings_button(self.main_menu)
+        
+        main_menu_label = QLabel("Main menu", self.main_menu)
+        #main_menu_label.setFont(type(self).font)
+        main_menu_label.setGeometry(200, 0, 400, 100)
+        
+        settings_label = QLabel("Settings", self.settings)
+        #settings_label.setFont(type(self).font)
+        settings_label.setGeometry(200, 0, 400, 100)
+        
         self.last_frame = self.main_menu
         self.current_frame = self.main_menu
-        self.root.mainloop()
-    
+        
+        # configure the main_menu frame to make the center column expandable
+        main_menu_layout = QHBoxLayout(self.main_menu)
+        main_menu_layout.addStretch()
+        #main_menu_layout.setStretchFactor(main_menu_layout.itemAt(0), 1)
+        main_menu_layout.addStretch()
+        
     def destroy_all_widgets(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
+        for widget in self.children():
+            widget.deleteLater()
     
-    def goto_frame(self, frame:tk.Frame):
-        self.current_frame.grid_forget()
-        frame.grid()
+    def goto_frame(self, frame:QFrame):
+        self.current_frame.hide()
+        frame.show()
         self.current_frame = frame
-
-    def get_back_button(self, frame:tk.Frame):
-        back_button = tk.Button(frame, image=self.back_arrow, command=lambda:self.goto_frame(self.last_frame), relief=tk.FLAT)
-        back_button.place(x=0, y=0)
+    
+    def get_back_button(self, frame:QFrame):
+        back_button = QPushButton('', frame)
+        back_button.setIcon(self.back_arrow)
+        back_button.setGeometry(0, 0, 100, 100)
+        #back_button.setIconSize(QSize(20, 20))
+        #back_button.setFixedSize(25, 25)
+        back_button.clicked.connect(lambda: self.goto_frame(self.last_frame))
         return back_button
-
-    def get_settings_button(self, frame:tk.Frame):
-        button_settings = tk.Button(frame, image=self.settings_image, command=lambda: self.goto_frame(self.settings), relief=tk.FLAT)
+    
+    def get_settings_button(self, frame:QFrame):
+        button_settings = QPushButton('', frame)
+        button_settings.setIcon(self.settings_image)
+        button_settings.setGeometry(100, 0, 100, 100)
+        #button_settings.setIconSize(QSize(20, 20))
+        #button_settings.setFixedSize(50, 50)
+        button_settings.clicked.connect(lambda: self.goto_frame(self.settings))
         return button_settings
     
-    def get_main_menu_button(self, frame:tk.Frame):
-        main_menu_button = tk.Button(frame, text='Main menu', font=('Arial', 18), command=lambda: self.goto_frame(self.main_menu))
+    def get_main_menu_button(self, frame:QFrame):
+        main_menu_button = QPushButton('Main menu', frame)
+        main_menu_button.setFont(QFont('Arial', 18))
+        main_menu_button.setGeometry(200, 200, 400, 100)
+        main_menu_button.clicked.connect(lambda: self.goto_frame(self.main_menu))
         return main_menu_button
+
 
 ''' def settings(self):
         self.root.destroy() #destroys the window itself
@@ -147,7 +176,10 @@ def old_main() -> None:
                     raise TypeError(f"The input needs to be a number from 0 to 2. {option} was given.")
                 
 def main():
-    MyGUI()
+    app = QApplication([])
+    gui = MyGUI()
+    gui.show()
+    app.exec()
         
 if __name__ == "__main__":
     main()
