@@ -12,13 +12,14 @@ from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButt
 class MyGUI(QWidget):
 	FONT = QFont('Arial', 18)
 	button_size = 80
+	OFFSET_X = 8
+	OFFSET_Y = 0
 
 	def __init__(self):
 		super().__init__()
-		#self.resize(300, 200)
 		self.setWindowTitle(PROJECT_NAME)
-
-		self.setGeometry(0, 0, 800, 500)
+		self.setGeometry(0, 0, 1200, 600)
+		self.showMaximized()
 		self.back_arrow = QIcon("static/back_button.png")#.scaledToWidth(20))
 		self.settings_image = QIcon("static/settings.png")#.scaledToWidth(20))
 
@@ -38,7 +39,7 @@ class MyGUI(QWidget):
 		self.create_frame_title("Settings", self.settings)
 		self.create_frame_title("Main menu", self.main_menu)
 
-		self.last_frame = self.main_menu
+		self.states = [self.main_menu]
 		self.current_frame = self.main_menu
 		self.settings.hide()
 		self.main_menu.show()
@@ -55,15 +56,18 @@ class MyGUI(QWidget):
 		y:int = height // 2
 		return x,y
 
-	def center_widget(self, width=0, height=0):
+	def center_offset_widget(self, width=0, height=0):
 		x,y = type(self).get_center(width, height)
 		window_middle = self.width() // 2
 		return window_middle - x, window_middle - y
 	
+	def center_widget_x(self, widget:QWidget, y:int, width:int, height:int):
+		widget.setGeometry(self.center_offset_widget(width=widget.width())[0], y, width, height)
+
 	def create_frame_title(self, title:str, frame:QFrame):
 		label = QLabel(title, frame)
 		label.setFont(type(self).FONT)
-		label.setGeometry(self.center_widget(width=label.width())[0], 0, 400, 100)
+		self.center_widget_x(label, 0, 400, 80)
 		return label
 
 	def destroy_all_widgets(self):
@@ -73,23 +77,29 @@ class MyGUI(QWidget):
 	def goto_frame(self, frame:QFrame):
 		self.current_frame.hide()
 		frame.show()
-		self.last_frame = self.current_frame
+		self.states.append(self.current_frame)
 		self.current_frame = frame
+	
+	def go_back(self):
+		if not self.states == []:
+			self.current_frame.hide()
+			self.current_frame = self.states.pop()
+			self.current_frame.show()
 
 	def get_back_button(self, frame:QFrame):
 		back_button = QPushButton(frame)
 		back_button.setIcon(self.back_arrow)
-		back_button.setGeometry(0, 0, type(self).button_size, type(self).button_size)
+		back_button.setGeometry(type(self).OFFSET_X, type(self).OFFSET_Y, type(self).button_size, type(self).button_size)
 		back_button.setIconSize(back_button.size())
 		#back_button.setIconSize(QSize(20, 20))
 		#back_button.setFixedSize(25, 25)
-		back_button.clicked.connect(lambda: self.goto_frame(self.last_frame))
+		back_button.clicked.connect(self.go_back)
 		return back_button
 
 	def get_settings_button(self, frame:QFrame):
 		button_settings = QPushButton(frame)
 		button_settings.setIcon(self.settings_image)
-		button_settings.setGeometry(type(self).button_size, 0, type(self).button_size, type(self).button_size)
+		button_settings.setGeometry(type(self).button_size + type(self).OFFSET_X, type(self).OFFSET_Y, type(self).button_size, type(self).button_size)
 		button_settings.setIconSize(button_settings.size())
 		#button_settings.setIconSize(QSize(20, 20))
 		#button_settings.setFixedSize(50, 50)
@@ -99,7 +109,9 @@ class MyGUI(QWidget):
 	def get_main_menu_button(self, frame:QFrame):
 		main_menu_button = QPushButton('Main menu', frame)
 		main_menu_button.setFont(type(self).FONT)
-		main_menu_button.setGeometry(200, 200, 400, 100)
+		button_size = main_menu_button.sizeHint()
+		self.center_widget_x(main_menu_button, 100, button_size.width(), button_size.height())
+		
 		main_menu_button.clicked.connect(lambda: self.goto_frame(self.main_menu))
 		return main_menu_button
 
