@@ -6,7 +6,7 @@ from utils.defaults import *
 from utils import notes_config
 import configparser
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QFont, QIcon, QPixmap
+from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
 
 class MyGUI(QWidget):
@@ -17,11 +17,13 @@ class MyGUI(QWidget):
 
 	def __init__(self):
 		super().__init__()
+		self.primary_screen =  QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
 		self.back_arrow = QIcon("static/back_button.png")#.scaledToWidth(20))
 		self.settings_image = QIcon("static/settings.png")#.scaledToWidth(20))
+		self.play_image = QIcon("static")
 
 		self.main_menu = QFrame(self)
 
@@ -58,7 +60,7 @@ class MyGUI(QWidget):
 
 	def center_offset_widget(self, width=0, height=0):
 		x,y = type(self).get_center(width, height)
-		window_middle = self.width() // 2
+		window_middle = self.primary_screen.geometry().width() // 2
 		return window_middle - x, window_middle - y
 	
 	def center_widget_x(self, widget:QWidget, y:int, width:int, height:int):
@@ -115,6 +117,9 @@ class MyGUI(QWidget):
 		main_menu_button.clicked.connect(lambda: self.goto_frame(self.main_menu))
 		return main_menu_button
 
+	def get_play_button(self, frame:QFrame):
+		button = QPushButton(frame)
+		button.setIcon(self.play_image)
 
 ''' def settings(self):
 		self.root.destroy() #destroys the window itself
