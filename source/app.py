@@ -7,7 +7,8 @@ from utils.defaults import *
 import run
 from typing import Dict, Optional
 from utils import notes_config
-
+from TestCase import TestCase
+import asyncio
 
 class MyGUI(QWidget):
 	FONT = QFont('Arial', 18)
@@ -21,13 +22,16 @@ class MyGUI(QWidget):
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
-		self.back_arrow = QIcon("static/back_button.png")#.scaledToWidth(20))
-		self.settings_image = QIcon("static/settings.png")#.scaledToWidth(20))
+		self.back_arrow = QIcon("static/back_button.png")
+		self.settings_image = QIcon("static/settings.png")
 		self.play_image = QIcon("static/play_button.png")
+		self.debug_image = QIcon("static/debug.png")
 
 		self.setup_main_menu()
 		self.setup_settings()
 		self.setup_play_menu()
+		self.setup_debug_menu()
+		self.setup_test1_menu()
 
 		self.states = [self.main_menu]
 		self.current_frame = self.main_menu
@@ -42,9 +46,8 @@ class MyGUI(QWidget):
 	
 
 	def setup_main_menu(self): #TODO: add translations
-		self.main_menu = QFrame(self)
 		h_buttons = (self.get_settings_button(), self.get_play_button())
-		self.setup_menu(self.main_menu, "Main menu", h_buttons)
+		layout_h, layout_v, self.main_menu = self.setup_menu("Main menu", h_buttons)
 
 	def setup_settings(self):
 		def create_save_function(text_box, setting_name):
@@ -52,9 +55,9 @@ class MyGUI(QWidget):
 				notes_config.change_setting(setting_name, text_box.text())
 			return save_function
 		
-		self.settings = QFrame(self)
+		h_buttons = self.get_debug_button(),
 		v_buttons = self.get_main_menu_button(),
-		layout_h, layout_v = self.setup_menu(self.settings, "Settings", widgets_v=v_buttons)
+		layout_h, layout_v, self.settings = self.setup_menu("Settings", widgets_h=h_buttons, widgets_v=v_buttons)
 		all_settings = notes_config.get_all_settings()
 		layout_v_h = QHBoxLayout()
 			
@@ -99,11 +102,22 @@ class MyGUI(QWidget):
 		layout_v.addWidget(reset_button)
 	
 	def setup_play_menu(self):
-		self.play_menu = QFrame(self)
 		h_buttons = self.get_settings_button(),
-		self.setup_menu(self.play_menu, "Choose a test", h_buttons)
+		v_buttons = self.get_main_menu_button(), self.get_test1_button()
+		layout_h, layout_v, self.play_menu = self.setup_menu("Choose a test", h_buttons, v_buttons)
 	
-	def setup_menu(self, frame:QFrame, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
+	def setup_debug_menu(self):
+		v_buttons = ()
+		h_buttons = ()
+		layout_h, layout_v, self.debug_menu = self.setup_menu("Debug", h_buttons, v_buttons)
+
+	def setup_test1_menu(self):
+		h_buttons = (self.get_settings_button(),)
+		v_buttons = self.get_play_test1_button(),
+		layout_h, layout_v, self.test1_menu = self.setup_menu("Test1", h_buttons, v_buttons)
+
+	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
+		frame = QFrame(self)
 		layout_h = QHBoxLayout()
 		layout_v = QVBoxLayout()
 		layout_h.addWidget(self.get_back_button())
@@ -113,12 +127,13 @@ class MyGUI(QWidget):
 		layout_v.addWidget(self.create_frame_title(title))
 		for widget in widgets_v:
 			layout_v.addWidget(widget)
+		#layout_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 		layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		layout_h.addLayout(layout_v)
 		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		frame.setLayout(layout_h)
-		return layout_h, layout_v
+		return layout_h, layout_v, frame
 
 	@staticmethod
 	def get_center(width=0, height=0):
@@ -157,24 +172,40 @@ class MyGUI(QWidget):
 			self.current_frame = self.states.pop()
 			self.current_frame.show()
 
+	def get_test1_button(self):
+		return self.get_txt_button('Test 1', lambda: self.goto_frame(self.test1_menu)) #TODO
+
 	def get_main_menu_button(self):
-		button = QPushButton('Main menu')
+		return self.get_txt_button('Main menu', lambda: self.goto_frame(self.main_menu))
+	
+	def get_play_test1_button(self):
+		return self.get_txt_button("Play test 1", lambda:print("this ain't ready yet"))
+
+	def get_txt_button(self, txt, command):
+		button = QPushButton(txt)
 		button.setFont(type(self).FONT)
 		button_size = button.sizeHint()
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
-		button.clicked.connect(lambda: self.goto_frame(self.main_menu))
+		button.clicked.connect(command)
 		return button
 
 	def get_back_button(self):
-		return self.get_button_with_image(self.back_arrow, 0, self.go_back)
+		return self.get_button_with_image(self.back_arrow, self.go_back)
 
 	def get_settings_button(self):
-		return self.get_button_with_image(self.settings_image, 1, lambda: self.goto_frame(self.settings))
+		return self.get_button_with_image(self.settings_image, lambda: self.goto_frame(self.settings))
 	
 	def get_play_button(self):
-		return self.get_button_with_image(self.play_image, 2, lambda: self.goto_frame(self.play_menu))
+		return self.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
 	
-	def get_button_with_image(self,icon:QIcon, order:int, command):
+	def get_debug_button(self):
+		def debug():
+			self.goto_frame(self.debug_menu)
+			TestCase.debug()
+		
+		return self.get_button_with_image(self.debug_image, debug)
+	
+	def get_button_with_image(self,icon:QIcon, command):
 		button_size = type(self).button_size
 		button = QPushButton()
 		button.setIcon(icon)
@@ -183,7 +214,7 @@ class MyGUI(QWidget):
 		button.setIconSize(button.size())
 		button.clicked.connect(command)
 		return button
-
+	
 def main():
 	app = QApplication([])
 	gui = MyGUI()
