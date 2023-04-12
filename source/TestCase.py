@@ -120,7 +120,7 @@ class TestCase:
         return testCaseList
 
     @staticmethod
-    def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
+    def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
         try:
             testCaseList = []
             testCases = ManualInputUtils.testCasesInput()

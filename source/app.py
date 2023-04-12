@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication
-from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
@@ -60,10 +60,9 @@ class MyGUI(QWidget):
 		layout_h, layout_v, self.settings = self.setup_menu("Settings", widgets_h=h_buttons, widgets_v=v_buttons)
 		all_settings = notes_config.get_all_settings()
 		layout_v_h = QHBoxLayout()
-			
+		layout_v.addLayout(layout_v_h)
 		layout_v_h.addWidget(QLabel("Setting Name:"))
 		layout_v_h.addWidget(QLabel("Setting value:"))
-		layout_v.addLayout(layout_v_h)
 
 		setting_dict:Dict[str, QLineEdit] = {}
 
@@ -85,10 +84,13 @@ class MyGUI(QWidget):
 			return
 		
 		save_button = QPushButton("Save")
+		
 		def save_all():
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
 				notes_config.change_setting(setting_name, text_box.text())
+			self.get_msg_box("Settings saved", "Settings have been successfully saved.").exec()
+			
 		save_button.clicked.connect(save_all)
 		layout_v.addWidget(save_button)
 
@@ -98,6 +100,7 @@ class MyGUI(QWidget):
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
 				text_box.setText(config[setting_name])
+			self.get_msg_box("Settings reset", "Settings have been successfully reset.").exec()
 		reset_button.clicked.connect(reset_settings)
 		layout_v.addWidget(reset_button)
 	
@@ -112,9 +115,41 @@ class MyGUI(QWidget):
 		layout_h, layout_v, self.debug_menu = self.setup_menu("Debug", h_buttons, v_buttons)
 
 	def setup_test1_menu(self):
+
 		h_buttons = (self.get_settings_button(),)
-		v_buttons = self.get_play_test1_button(),
+
+		v_buttons = ()
 		layout_h, layout_v, self.test1_menu = self.setup_menu("Test1", h_buttons, v_buttons)
+		labels = ("Player name", "How many test cases?", "n-back (int)", "How many notes (int)", "How many bpm (float)", "Instrument (piano or guitar)")
+		set_text = ['' for _ in range(len(labels) - 2)] + [str(DEFAULT_BPM), DEFAULT_INSTRUMENT]
+		if len(set_text) != len(labels):
+			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
+		draft_forms_dict = dict(zip(labels, set_text))
+		forms_dict = self.setup_forms(layout_v, draft_forms_dict)
+		def play_test():
+			TestCase.executeLoop()
+		
+		play_test_button = self.get_txt_button("Play test 1", play_test)
+		layout_v.addWidget(play_test_button)
+	
+	def setup_forms(self, layout_v: QVBoxLayout, forms_dict:dict):
+		column_labels = []
+		column_text_box = []
+		forms_dict_keys = tuple(forms_dict.keys())
+		for label in forms_dict_keys:
+			column_labels.append(QLabel(label))
+			text_box = QLineEdit()
+			column_text_box.append(text_box)
+			text_box.setText(forms_dict[label])
+		self.setup_columns(layout_v, column_labels, column_text_box)
+		return dict(zip(column_labels, column_text_box))
+
+	def setup_columns(self, layout_v: QVBoxLayout, *columns: list[QWidget]|tuple[QWidget]):
+		for row in zip(*columns):
+			layout_v_h = QHBoxLayout()
+			for widget in row:
+				layout_v_h.addWidget(widget)
+			layout_v.addLayout(layout_v_h)
 
 	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
 		frame = QFrame(self)
@@ -177,9 +212,6 @@ class MyGUI(QWidget):
 
 	def get_main_menu_button(self):
 		return self.get_txt_button('Main menu', lambda: self.goto_frame(self.main_menu))
-	
-	def get_play_test1_button(self):
-		return self.get_txt_button("Play test 1", lambda:print("this ain't ready yet"))
 
 	def get_txt_button(self, txt, command):
 		button = QPushButton(txt)
@@ -215,6 +247,17 @@ class MyGUI(QWidget):
 		button.clicked.connect(command)
 		return button
 	
+	def get_msg_box(self, title, msg):
+		msg_box = QMessageBox()
+
+		msg_box.setIcon(QMessageBox.Icon.Information)
+		msg_box.setWindowTitle(title)
+		msg_box.setText(msg)
+
+		ok_button = msg_box.addButton(QMessageBox.StandardButton.Ok)
+		msg_box.setDefaultButton(ok_button)
+		return msg_box
+
 def main():
 	app = QApplication([])
 	gui = MyGUI()
