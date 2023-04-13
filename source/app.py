@@ -5,10 +5,11 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 import run
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from utils import notes_config
 from TestCase import TestCase
 import asyncio
+from collections.abc import Iterable
 
 class MyGUI(QWidget):
 	FONT = QFont('Arial', 18)
@@ -120,21 +121,35 @@ class MyGUI(QWidget):
 
 		v_buttons = ()
 		layout_h, layout_v, self.test1_menu = self.setup_menu("Test1", h_buttons, v_buttons)
-		labels = ("Player name", "How many test cases?", "n-back (int)", "How many notes (int)", "How many bpm (float)", "Instrument (piano or guitar)")
+		player_name_q = "Player name"
+		test_case_q = "How many test cases?"
+		n_back_q = "n-back (int)"
+		notes_quantity_q = "How many notes (int)"
+		bpm_q = "How many bpm (float)"
+		instrument_q = "Instrument (piano or guitar)"
+		labels = (player_name_q, test_case_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
 		set_text = ['' for _ in range(len(labels) - 2)] + [str(DEFAULT_BPM), DEFAULT_INSTRUMENT]
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
-		forms_dict = self.setup_forms(layout_v, draft_forms_dict)
+		column_labels, column_text_box = self.setup_forms(layout_v, draft_forms_dict)
 		def play_test():
-			TestCase.executeLoop()
+			def get_text(q):
+				return column_text_box[labels.index(q)].text()
+			player_name = get_text(player_name_q)
+			test_case = get_text(test_case_q)
+			n_back = get_text(n_back_q)
+			notes_quantity = get_text(notes_quantity_q)
+			bpm = get_text(bpm_q)
+			instrument = get_text(instrument_q)
+			TestCase.executeLoop(playerName=player_name, test_case_n=int(test_case), nBack=int(n_back), notesQuantity=int(notes_quantity), bpm=float(bpm), instrument=instrument)
 		
 		play_test_button = self.get_txt_button("Play test 1", play_test)
 		layout_v.addWidget(play_test_button)
 	
 	def setup_forms(self, layout_v: QVBoxLayout, forms_dict:dict):
 		column_labels = []
-		column_text_box = []
+		column_text_box:list[QLineEdit] = []
 		forms_dict_keys = tuple(forms_dict.keys())
 		for label in forms_dict_keys:
 			column_labels.append(QLabel(label))
@@ -142,9 +157,9 @@ class MyGUI(QWidget):
 			column_text_box.append(text_box)
 			text_box.setText(forms_dict[label])
 		self.setup_columns(layout_v, column_labels, column_text_box)
-		return dict(zip(column_labels, column_text_box))
+		return column_labels, column_text_box
 
-	def setup_columns(self, layout_v: QVBoxLayout, *columns: list[QWidget]|tuple[QWidget]):
+	def setup_columns(self, layout_v: QVBoxLayout, *columns: Iterable[QWidget|QLineEdit]):
 		for row in zip(*columns):
 			layout_v_h = QHBoxLayout()
 			for widget in row:

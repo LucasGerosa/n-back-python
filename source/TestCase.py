@@ -120,22 +120,22 @@ class TestCase:
         return testCaseList
 
     @staticmethod
-    def executeLoop(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
+    def executeLoop(playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
         try:
             testCaseList = []
-            testCases = ManualInputUtils.testCasesInput()
-            i = 0
-            while i < testCases:
+            
+            id = 0
+            while id < test_case_n:
                 while True:
                     try:
-                        t = ManualInputUtils.createManualTestCase(i, bpm, instrument)
+                        t = TestCase(id, nBack, notesQuantity, bpm, instrument)
                         testCaseList.append(t)
                         t.execute()
                         break
                     except Exception:
                         import traceback
                         print(traceback.format_exc())
-                i += 1
+                id += 1
 
             TestCase.saveResults(testCaseList, playerName)
 
