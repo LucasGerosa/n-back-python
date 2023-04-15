@@ -1,5 +1,5 @@
-from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication
+from PyQt6.QtCore import Qt, QSize, QRegularExpression
+from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication, QIntValidator, QDoubleValidator, QRegularExpressionValidator, QPalette, QColor
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -10,6 +10,7 @@ from utils import notes_config
 from TestCase import TestCase
 import asyncio
 from collections.abc import Iterable
+from fractions import Fraction
 
 class MyGUI(QWidget):
 	FONT = QFont('Arial', 18)
@@ -114,6 +115,17 @@ class MyGUI(QWidget):
 		v_buttons = ()
 		h_buttons = ()
 		layout_h, layout_v, self.debug_menu = self.setup_menu("Debug", h_buttons, v_buttons)
+	
+	@staticmethod
+	def is_float_or_fraction(value:str):
+		try:
+			return float(value)
+
+		except ValueError:
+			try:
+				return float(Fraction(value))
+			except ValueError:
+				return
 
 	def setup_test1_menu(self):
 
@@ -133,6 +145,45 @@ class MyGUI(QWidget):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
 		column_labels, column_text_box = self.setup_forms(layout_v, draft_forms_dict)
+		
+		def check_isdigit(q):
+			text_box = column_text_box[labels.index(q)]
+		#	text = text_box.text()
+			validator = QRegularExpressionValidator(QRegularExpression("[1-9]+"))
+			text_box.setValidator(validator)
+			"""
+			if not text.isdigit() or int(text) <= 0:
+				self.get_msg_box("Incorrect input", f"Please enter an integer bigger than 0, not \"{text}\"", QMessageBox.Icon.Warning).exec()
+			"""
+		def check_isfloat(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			value = self.is_float_or_fraction(text)
+			if value == None or value <= 0:
+				self.get_msg_box("Incorrect input", f"Please enter a fraction or a decimal bigger than 0, not \"{text}\"", QMessageBox.Icon.Warning).exec()
+		
+		def check_isinstrument(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			if text not in INSTRUMENTS:
+				self.get_msg_box("Incorrect input", f"Please enter a valid instrument, not \"{text}\"", QMessageBox.Icon.Warning).exec()
+		
+		def connect(q, func):
+			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
+		connect(test_case_q, check_isdigit)
+		connect(n_back_q, check_isdigit)
+		connect(notes_quantity_q, check_isdigit)
+		connect(bpm_q, check_isfloat)
+		connect(instrument_q, check_isinstrument)
+		reset_button = QPushButton("Reset")
+		layout_v.addWidget(reset_button)
+		def reset():
+			i = 0
+			for text in set_text:
+				column_text_box[i].setText(text)
+				i += 1
+		reset_button.clicked.connect(reset)
+
 		def play_test():
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
@@ -148,7 +199,7 @@ class MyGUI(QWidget):
 		layout_v.addWidget(play_test_button)
 	
 	def setup_forms(self, layout_v: QVBoxLayout, forms_dict:dict):
-		column_labels = []
+		column_labels:QLabel = []
 		column_text_box:list[QLineEdit] = []
 		forms_dict_keys = tuple(forms_dict.keys())
 		for label in forms_dict_keys:
@@ -223,7 +274,7 @@ class MyGUI(QWidget):
 			self.current_frame.show()
 
 	def get_test1_button(self):
-		return self.get_txt_button('Test 1', lambda: self.goto_frame(self.test1_menu)) #TODO
+		return self.get_txt_button('Test 1', lambda: self.goto_frame(self.test1_menu))
 
 	def get_main_menu_button(self):
 		return self.get_txt_button('Main menu', lambda: self.goto_frame(self.main_menu))
@@ -262,10 +313,10 @@ class MyGUI(QWidget):
 		button.clicked.connect(command)
 		return button
 	
-	def get_msg_box(self, title, msg):
+	def get_msg_box(self, title, msg, icon=QMessageBox.Icon.Information):
 		msg_box = QMessageBox()
 
-		msg_box.setIcon(QMessageBox.Icon.Information)
+		msg_box.setIcon(icon)
 		msg_box.setWindowTitle(title)
 		msg_box.setText(msg)
 
