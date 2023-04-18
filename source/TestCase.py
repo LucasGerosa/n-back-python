@@ -61,13 +61,6 @@ class TestCase:
 		random_notes_group = notes.Note_group(random_notes_list)
 		return random_notes_group
 
-	def execute(self, layout:QtWidgets.QBoxLayout, stop_button_func) -> None:
-		#stop_button = stop_button_func(self)
-		#layout.addWidget(stop_button)
-		self.note_group.play()
-		
-		self.doQuestion()
-
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
 		lastNote: int = self.note_group[-1]
@@ -90,39 +83,8 @@ class TestCase:
 		
 		self.answer = answer
 
-	def doQuestion(self):
-		layout_v = PyQt6_utils.find_child_layout(self.layout)
-		if layout_v == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(layout_v, QtWidgets.QVBoxLayout):
-			raise ValueError("layout_v is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
-		question = QtWidgets.QLabel(f"A última nota tocada é igual à {self.nBack} nota anterior?")
-		layout_v.addWidget(question)
-		yes_button = QtWidgets.QPushButton("Sim")
-		no_button = QtWidgets.QPushButton("Não")
-		layout_v_h = QtWidgets.QHBoxLayout()
-		layout_v.addLayout(layout_v_h)
-		layout_v_h.addWidget(yes_button)
-		layout_v_h.addWidget(no_button)
-		'''	def confirm():
-			answer = 1 if yes_button.isChecked() else 2
-			self.validateAnswer(answer=answer)'''
-		def yes():
-			self.validateAnswer(answer=1)
-			destroy_question()
 
-		def no():
-			self.validateAnswer(answer=2)
-			destroy_question()
-		
-		def destroy_question():
-			layout_v_h.deleteLater()
-			yes_button.deleteLater()
-			no_button.deleteLater()
-			question.deleteLater()
-
-		yes_button.clicked.connect(yes)
-		no_button.clicked.connect(no)
+	
 		
 
 	def isValidTestCase(self) -> Boolean:
@@ -153,31 +115,7 @@ class TestCase:
 			testCase.execute()
 		return testCaseList
 
-	@staticmethod
-	def executeLoop(layout:QtWidgets.QLayout, stop_button_func, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
-		if not isinstance(layout, QtWidgets.QBoxLayout):
-			raise ValueError("layout is not a QBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
-		try:
-			testCaseList = []
-			
-			id = 0
-			while id < test_case_n:
-				while True:
-					try:
-						t = TestCase(layout, id, nBack, notesQuantity, bpm, instrument)
-						testCaseList.append(t)
-						t.execute(layout, stop_button_func)
-						break
-					except Exception:
-						import traceback
-						print(traceback.format_exc())
-				id += 1
-
-			#FIXME TestCase.saveResults(testCaseList, playerName)
-
-			return testCaseList
-		except KeyboardInterrupt:
-			print("Ctrl+c was pressed. Stopping now.")
+	
 	
 	def stop(self) -> None:
 		self.note_group.stop_flag = True

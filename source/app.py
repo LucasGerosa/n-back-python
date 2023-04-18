@@ -1,5 +1,6 @@
-from PyQt6.QtCore import Qt, QSize, QRegularExpression, QCoreApplication
+from PyQt6.QtCore import Qt, QSize, QRegularExpression, QCoreApplication,  QThread, QObject, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication, QIntValidator, QDoubleValidator, QRegularExpressionValidator, QPalette, QColor
+from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -39,6 +40,7 @@ class MyGUI(QWidget):
 		self.current_frame = self.main_menu
 		self.settings.hide()
 		self.main_menu.show()
+		self.notes_thread = None
 		# configure the main_menu frame to make the center column expandable
 		'''
 		main_menu_layout = QHBoxLayout(self.main_menu)
@@ -117,7 +119,7 @@ class MyGUI(QWidget):
 		layout_h, layout_v, self.debug_menu = self.setup_menu("Debug", h_buttons, v_buttons)
 	
 	def setup_test1_menu(self):
-
+		
 		h_buttons = (self.get_settings_button(),)
 
 		v_buttons = ()
@@ -135,6 +137,7 @@ class MyGUI(QWidget):
 		draft_forms_dict = dict(zip(labels, set_text))
 		column_labels, column_text_box = PyQt6_utils.setup_forms(layout_v, draft_forms_dict)
 		
+		
 		def check_isdigit(q):
 			text_box = column_text_box[labels.index(q)]
 			text = text_box.text()
@@ -145,6 +148,13 @@ class MyGUI(QWidget):
 			text = text_box.text()
 			value = PyQt6_utils.is_float_or_fraction(text)
 			return not (value == None or value <= 0), text
+		
+		def is_q1_greater_than_q2(q1, q2):
+			text_box1 = column_text_box[labels.index(q1)]
+			text_box2 = column_text_box[labels.index(q2)]
+			text1 = text_box1.text()
+			text2 = text_box2.text()
+			return int(text1) > int(text2), text1, text2
 		
 		def check_isinstrument(q):
 			text_box = column_text_box[labels.index(q)]
@@ -215,15 +225,21 @@ class MyGUI(QWidget):
 				PyQt6_utils.get_msg_box("Incorrect input", f"The following fields are incorrect or incomplete:\n\n"+ '\n'.join(incorrect_fields)+".\n\n Correct them and try again", QMessageBox.Icon.Warning).exec()
 				return
 			
-			QCoreApplication.processEvents()
-			test_case = get_text(test_case_q)
-			n_back = get_text(n_back_q)
-			notes_quantity = get_text(notes_quantity_q)
-			bpm = get_text(bpm_q)
+			if not is_q1_greater_than_q2(notes_quantity_q, n_back_q)[0]:
+				PyQt6_utils.get_msg_box("Incorrect input", f"The quantity of notes needs to be greater than nback", QMessageBox.Icon.Warning).exec()
+				return
+			
+			test_case = int(get_text(test_case_q))
+			n_back = int(get_text(n_back_q))
+			notes_quantity = int(get_text(notes_quantity_q))
+			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
 
-			TestCase.executeLoop(layout=layout_h, stop_button_func=self.get_stop_button, playerName=player_name, test_case_n=int(test_case), nBack=int(n_back), notesQuantity=int(notes_quantity), bpm=float(bpm), instrument=instrument)
-
+			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
+			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question( layout_v, testCase))
+			self.notes_thread.finished.connect(self.notes_thread.deleteLater)
+			self.notes_thread.start()
+		
 		
 		play_test_button = PyQt6_utils.get_txt_button("Play test 1", play_test)
 		layout_v.addWidget(play_test_button)
@@ -241,7 +257,7 @@ class MyGUI(QWidget):
 			layout_v.addWidget(widget)
 		#layout_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-		layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
+		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		layout_h.addLayout(layout_v)
 		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		frame.setLayout(layout_h)
@@ -289,7 +305,7 @@ class MyGUI(QWidget):
 	def get_debug_button(self):
 		def debug():
 			self.goto_frame(self.debug_menu)
-			QCoreApplication.processEvents()
+			
 			TestCase.debug()
 		
 		return PyQt6_utils.get_button_with_image(self.debug_image, debug)
@@ -301,8 +317,90 @@ class MyGUI(QWidget):
 		def change_stop_flag():
 			test_case.note_group.stop_flag = True
 		return PyQt6_utils.get_button_with_image(self.stop_image, change_stop_flag)
-		
 	
+	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
+	def create_question(self, layout, testCase:TestCase):
+		question = QLabel(f"A última nota tocada é igual à {testCase.nBack} nota anterior?")
+		layout.addWidget(question)
+		yes_button = QPushButton("Sim")
+		no_button = QPushButton("Não")
+		layout_v_h = QHBoxLayout()
+		layout.addLayout(layout_v_h)
+		layout_v_h.addWidget(yes_button)
+		layout_v_h.addWidget(no_button)
+		'''	def confirm():
+			answer = 1 if yes_button.isChecked() else 2
+			self.validateAnswer(answer=answer)'''
+		def yes():
+			testCase.validateAnswer(answer=1)
+			destroy_question()
+			self.notes_thread.wait_condition.wakeOne()
+
+		def no():
+			testCase.validateAnswer(answer=2)
+			destroy_question()
+			self.notes_thread.wait_condition.wakeOne()
+		
+		def destroy_question():
+			layout_v_h.deleteLater()
+			yes_button.deleteLater()
+			no_button.deleteLater()
+			question.deleteLater()
+
+		yes_button.clicked.connect(yes)
+		no_button.clicked.connect(no)
+
+class ExecuteLoopThread(QtCore.QThread):
+	finished = QtCore.pyqtSignal() # signal to emit when the function call is complete
+	done_testCase = QtCore.pyqtSignal(TestCase)
+	wait_condition = QtCore.QWaitCondition()
+	
+	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		super().__init__()
+		self.layout = layout
+		self.playerName = playerName
+		self.test_case_n = test_case_n
+		self.nBack = nBack
+		self.notesQuantity = notesQuantity
+		self.bpm = bpm
+		self.instrument = instrument
+		
+	def run(self):
+		self.executeLoop(self.layout, self.playerName, self.test_case_n, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+	
+	def executeLoop(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
+		if layout == None:
+			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
+		if not isinstance(layout, QtWidgets.QVBoxLayout):
+			raise ValueError("layout_v is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
+		
+		
+		try:
+			testCaseList = []
+			
+			id = 0
+			while id < test_case_n:
+				while True:
+					try:
+						testCase = TestCase(layout, id, nBack, notesQuantity, bpm, instrument)
+						testCase.note_group.play()
+						testCaseList.append(testCase)
+						self.done_testCase.emit(testCase)
+
+						self.wait_condition.wait()
+						
+						break
+					except Exception:
+						import traceback
+						print(traceback.format_exc())
+				id += 1
+			#FIXME TestCase.saveResults(testCaseList, playerName)
+			self.finished.emit()
+
+			return testCaseList
+		except KeyboardInterrupt:
+			print("Ctrl+c was pressed. Stopping now.")
+		
 def main():
 	app = QApplication([])
 	gui = MyGUI()

@@ -126,7 +126,9 @@ class Note:
             self.sound = AudioSegment.from_file(self.path, self.extension)
         self.remove_silence()
         current_playback = playback._play_with_simpleaudio(self.sound)
+        
         time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
+        
         current_playback.stop()
     
     def change_extension(self, new_extension:str) -> None:
@@ -191,7 +193,7 @@ class Note_group:
 
     def play(self):
         for note in self.notes:
-            QtCore.QCoreApplication.processEvents()
+            
             if self.stop_flag:
                 self.stop_flag = False
                 break
