@@ -406,7 +406,7 @@ class ExecuteLoopThread(QtCore.QThread):
 				self.wait_for_signal()
 					
 				id += 1
-			#FIXME TestCase.saveResults(testCaseList, playerName)
+			TestCase.saveResults(testCaseList, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
