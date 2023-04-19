@@ -204,7 +204,7 @@ class MyGUI(QWidget):
 				i += 1
 		reset_button.clicked.connect(reset)
 
-		def play_test():
+		def play_test(play_test_button):
 			
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
@@ -229,19 +229,29 @@ class MyGUI(QWidget):
 				PyQt6_utils.get_msg_box("Incorrect input", f"The quantity of notes needs to be greater than nback", QMessageBox.Icon.Warning).exec()
 				return
 			
+			@QtCore.pyqtSlot()
+			def on_execute_loop_thread_finished():
+				if not isinstance(self.notes_thread, ExecuteLoopThread):
+					raise ValueError("Notes thread is not an instance of ExecuteLoopThread")
+				self.notes_thread.deleteLater()
+				play_test_button.setEnabled(True)
+			
 			test_case = int(get_text(test_case_q))
 			n_back = int(get_text(n_back_q))
 			notes_quantity = int(get_text(notes_quantity_q))
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
-
+			play_test_button.setEnabled(False)
 			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question( layout_v, testCase))
-			self.notes_thread.finished.connect(self.notes_thread.deleteLater)
+			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start()
 		
-		
-		play_test_button = PyQt6_utils.get_txt_button("Play test 1", play_test)
+		play_test_button = QPushButton("Play test 1")
+		play_test_button.setFont(PyQt6_utils.FONT)
+		button_size = play_test_button.sizeHint()
+		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
+		play_test_button.clicked.connect(lambda: play_test(play_test_button))
 		layout_v.addWidget(play_test_button)
 	
 	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
@@ -320,8 +330,8 @@ class MyGUI(QWidget):
 	
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_question(self, layout, testCase:TestCase):
-		if self.notes_thread == None:
-			raise ValueError("Notes thread is None")
+		if not isinstance(self.notes_thread, ExecuteLoopThread):
+			raise ValueError("Notes thread is not an instance of ExecuteLoopThread")
 		question = QLabel(f"A última nota tocada é igual à {testCase.nBack} nota anterior?")
 		layout.addWidget(question)
 		yes_button = QPushButton("Sim")
@@ -371,24 +381,25 @@ class ExecuteLoopThread(QtCore.QThread):
 		self.instrument = instrument
 		
 	def run(self):
-		self.executeLoop(self.layout, self.playerName, self.test_case_n, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+		self.executeLoop()
 		self.finished.emit()
 	
-	def executeLoop(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
-		if layout == None:
+	def executeLoop(self) -> list|None:
+
+		if self.layout == None:
 			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(layout, QtWidgets.QVBoxLayout):
-			raise ValueError("layout_v is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
+		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
+			raise ValueError(f"layout_v {type(self.layout)} is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
 		
 		
 		try:
 			testCaseList = []
 			
 			id = 0
-			while id < test_case_n:
+			while id < self.test_case_n:
 				while True:
 					try:
-						testCase = TestCase(layout, id, nBack, notesQuantity, bpm, instrument)
+						testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
 						testCase.note_group.play()
 						testCaseList.append(testCase)
 						self.done_testCase.emit(testCase)
