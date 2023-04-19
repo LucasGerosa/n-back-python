@@ -131,7 +131,7 @@ class MyGUI(QWidget):
 		bpm_q = "How many bpm (float)"
 		instrument_q = "Instrument (piano or guitar)"
 		labels = (player_name_q, test_case_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '1', '2', '10', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		set_text = tuple(["Gerosa", '2', '2', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
@@ -320,6 +320,8 @@ class MyGUI(QWidget):
 	
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_question(self, layout, testCase:TestCase):
+		if self.notes_thread == None:
+			raise ValueError("Notes thread is None")
 		question = QLabel(f"A última nota tocada é igual à {testCase.nBack} nota anterior?")
 		layout.addWidget(question)
 		yes_button = QPushButton("Sim")
@@ -353,9 +355,12 @@ class MyGUI(QWidget):
 class ExecuteLoopThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal() # signal to emit when the function call is complete
 	done_testCase = QtCore.pyqtSignal(TestCase)
-	wait_condition = QtCore.QWaitCondition()
 	
 	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		self.lock = QtCore.QReadWriteLock()
+		self.mutex = QtCore.QMutex()
+		self.wait_condition = QtCore.QWaitCondition()
+
 		super().__init__()
 		self.layout = layout
 		self.playerName = playerName
@@ -367,6 +372,7 @@ class ExecuteLoopThread(QtCore.QThread):
 		
 	def run(self):
 		self.executeLoop(self.layout, self.playerName, self.test_case_n, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+		self.finished.emit()
 	
 	def executeLoop(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list|None:
 		if layout == None:
@@ -387,7 +393,7 @@ class ExecuteLoopThread(QtCore.QThread):
 						testCaseList.append(testCase)
 						self.done_testCase.emit(testCase)
 
-						self.wait_condition.wait()
+						self.wait_for_signal()
 						
 						break
 					except Exception:
@@ -395,11 +401,20 @@ class ExecuteLoopThread(QtCore.QThread):
 						print(traceback.format_exc())
 				id += 1
 			#FIXME TestCase.saveResults(testCaseList, playerName)
-			self.finished.emit()
 
 			return testCaseList
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
+	
+	def wait_for_signal(self):
+		self.mutex.lock()
+		self.wait_condition.wait(self.mutex)
+		self.mutex.unlock()
+
+	def signal(self):
+		self.mutex.lock()
+		self.wait_condition.wakeAll()
+		self.mutex.unlock()
 		
 def main():
 	app = QApplication([])
