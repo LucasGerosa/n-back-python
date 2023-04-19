@@ -397,19 +397,14 @@ class ExecuteLoopThread(QtCore.QThread):
 			
 			id = 0
 			while id < self.test_case_n:
-				while True:
-					try:
-						testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
-						testCase.note_group.play()
-						testCaseList.append(testCase)
-						self.done_testCase.emit(testCase)
+				
+				testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+				testCase.note_group.play()
+				testCaseList.append(testCase)
+				self.done_testCase.emit(testCase)
 
-						self.wait_for_signal()
-						
-						break
-					except Exception:
-						import traceback
-						print(traceback.format_exc())
+				self.wait_for_signal()
+					
 				id += 1
 			#FIXME TestCase.saveResults(testCaseList, playerName)
 

@@ -57,8 +57,11 @@ class TestCase:
 	
 	def get_random_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
-		random_notes_list = np.random.choice(note_group.notes, numberOfNotes)
-		random_notes_group = notes.Note_group(random_notes_list)
+		if note_group.notes == []:
+			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+		notes_array = np.array(note_group.notes)
+		random_notes_array = np.random.choice(notes_array, numberOfNotes)
+		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
 
 	def validateAnswer(self, answer) -> None:
