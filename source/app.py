@@ -15,13 +15,78 @@ import asyncio
 from collections.abc import Iterable
 import re
 
+
+class ExecuteLoopThread(QtCore.QThread):
+	finished = QtCore.pyqtSignal()
+	done_testCase = QtCore.pyqtSignal(TestCase)
+	
+	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		self.lock = QtCore.QReadWriteLock()
+		self.mutex = QtCore.QMutex()
+		self.wait_condition = QtCore.QWaitCondition()
+		self.stop = False
+
+		super().__init__()
+		self.layout = layout
+		self.playerName = playerName
+		self.test_case_n = test_case_n
+		self.nBack = nBack
+		self.notesQuantity = notesQuantity
+		self.bpm = bpm
+		self.instrument = instrument
+		
+	def run(self):
+		self.executeLoop()
+		self.finished.emit()
+	
+	def executeLoop(self) -> list|None:
+
+		if self.layout == None:
+			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
+		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
+			raise ValueError(f"layout_v {type(self.layout)} is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
+		
+		try:
+			testCaseList = []
+			
+			id = 0
+			while id < self.test_case_n and not self.stop:
+				
+				testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+				testCase.note_group.play()
+				if self.stop:
+					print(" was interrupted. Stopping now.")
+					return
+				testCaseList.append(testCase)
+				self.done_testCase.emit(testCase)
+
+				self.wait_for_signal()
+				id += 1
+			if self.stop:
+				print("Thread was interrupted. Stopping now.")
+				return
+			TestCase.saveResults(testCaseList, self.playerName)
+
+			return testCaseList
+		except KeyboardInterrupt:
+			print("Ctrl+c was pressed. Stopping now.")
+	
+	def wait_for_signal(self):
+		self.mutex.lock()
+		self.wait_condition.wait(self.mutex)
+		self.mutex.unlock()
+
+	def signal(self):
+		self.mutex.lock()
+		self.wait_condition.wakeAll()
+		self.mutex.unlock()
 class MyGUI(QWidget):
 
 	def __init__(self):
 		super().__init__()
 		self.primary_screen =  QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
-		self.setGeometry(0, 0, 1200, 600)
+		#self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
 		self.back_arrow = QIcon("static/back_button.png")
 		self.settings_image = QIcon("static/settings.png")
@@ -243,9 +308,11 @@ class MyGUI(QWidget):
 			instrument = get_text(instrument_q)
 			play_test_button.setEnabled(False)
 			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
-			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question( layout_v, testCase))
+			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start()
+			stop_button = self.get_stop_button(self.notes_thread)
+			layout_h.insertWidget(2, stop_button)
 		
 		play_test_button = QPushButton("Play test 1")
 		play_test_button.setFont(PyQt6_utils.FONT)
@@ -323,10 +390,17 @@ class MyGUI(QWidget):
 	def get_exit_button(self):
 		return PyQt6_utils.get_txt_button('Exit', self.close)
 
-	def get_stop_button(self, test_case:TestCase):
-		def change_stop_flag():
-			test_case.note_group.stop_flag = True
-		return PyQt6_utils.get_button_with_image(self.stop_image, change_stop_flag)
+	def get_stop_button(self, thread:ExecuteLoopThread):
+		button = QPushButton()
+		button.setIcon(self.stop_image)
+		button.resize(PyQt6_utils.BUTTON_SIZE, PyQt6_utils.BUTTON_SIZE)
+		button.setIconSize(button.size())
+		def stop():
+			thread.stop = True
+			button.deleteLater()
+			PyQt6_utils.get_msg_box("Test stopped", "The test was stopped, just wait for the notes to finish playing before playing another test.", QMessageBox.Icon.Information).exec()
+		button.clicked.connect(stop) 
+		return button
 	
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_question(self, layout, testCase:TestCase):
@@ -361,67 +435,7 @@ class MyGUI(QWidget):
 
 		yes_button.clicked.connect(yes)
 		no_button.clicked.connect(no)
-
-class ExecuteLoopThread(QtCore.QThread):
-	finished = QtCore.pyqtSignal() # signal to emit when the function call is complete
-	done_testCase = QtCore.pyqtSignal(TestCase)
 	
-	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
-		self.lock = QtCore.QReadWriteLock()
-		self.mutex = QtCore.QMutex()
-		self.wait_condition = QtCore.QWaitCondition()
-
-		super().__init__()
-		self.layout = layout
-		self.playerName = playerName
-		self.test_case_n = test_case_n
-		self.nBack = nBack
-		self.notesQuantity = notesQuantity
-		self.bpm = bpm
-		self.instrument = instrument
-		
-	def run(self):
-		self.executeLoop()
-		self.finished.emit()
-	
-	def executeLoop(self) -> list|None:
-
-		if self.layout == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError(f"layout_v {type(self.layout)} is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
-		
-		
-		try:
-			testCaseList = []
-			
-			id = 0
-			while id < self.test_case_n:
-				
-				testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
-				testCase.note_group.play()
-				testCaseList.append(testCase)
-				self.done_testCase.emit(testCase)
-
-				self.wait_for_signal()
-					
-				id += 1
-			TestCase.saveResults(testCaseList, self.playerName)
-
-			return testCaseList
-		except KeyboardInterrupt:
-			print("Ctrl+c was pressed. Stopping now.")
-	
-	def wait_for_signal(self):
-		self.mutex.lock()
-		self.wait_condition.wait(self.mutex)
-		self.mutex.unlock()
-
-	def signal(self):
-		self.mutex.lock()
-		self.wait_condition.wakeAll()
-		self.mutex.unlock()
-		
 def main():
 	app = QApplication([])
 	gui = MyGUI()

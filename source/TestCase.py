@@ -86,10 +86,6 @@ class TestCase:
 		
 		self.answer = answer
 
-
-	
-		
-
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes > self.nBack
 	
@@ -102,7 +98,6 @@ class TestCase:
 			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result'])
 			while i < len(testCaseList):
 				t: TestCase = testCaseList[i]
-
 				# write a row to the csv file
 				writer.writerow(
 					[t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
@@ -118,10 +113,6 @@ class TestCase:
 			testCase.execute()
 		return testCaseList
 
-	
-	
-	def stop(self) -> None:
-		self.note_group.stop_flag = True
 	
 	@staticmethod
 	def debug() -> None:
