@@ -8,6 +8,7 @@ from pydub.silence import detect_leading_silence
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
@@ -86,7 +87,7 @@ class Note:
 
         self.create_sound:bool = create_sound
         self.bpm = bpm
-        self.note_value = note_value #
+        self.note_value = note_value
     
     def __eq__(self, other_note) -> bool:
         return self.path == other_note.path
@@ -125,7 +126,9 @@ class Note:
             self.sound = AudioSegment.from_file(self.path, self.extension)
         self.remove_silence()
         current_playback = playback._play_with_simpleaudio(self.sound)
+        
         time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
+        
         current_playback.stop()
     
     def change_extension(self, new_extension:str) -> None:
@@ -153,6 +156,7 @@ class Note_group:
     '''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
 
     def __init__(self, notes:typing.Optional[typing.List[Note]] = None):
+        self.stop_flag = False
         if notes == None:
             self.notes: typing.List[Note] = []
         else:    
@@ -189,6 +193,10 @@ class Note_group:
 
     def play(self):
         for note in self.notes:
+            
+            if self.stop_flag:
+                self.stop_flag = False
+                break
             note.play()
     
     def change_extension(self, new_extension) -> None:

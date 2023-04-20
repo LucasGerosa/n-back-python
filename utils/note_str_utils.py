@@ -135,7 +135,7 @@ def test():
 	s5 = "C4-B5"
 	s6 = "a1-b2"
 	s7 = "Ab3-Cb4"
-	s8 = "A4-G5; A1-C2" #TODO
+	s8 = "A4-G5; A1-C2"
 	s9 = "A4-G5;C####2"
 	print(get_final_list_notes(s1))
 	print(get_final_list_notes(s2))
