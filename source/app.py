@@ -14,7 +14,15 @@ from TestCase import TestCase
 import asyncio
 from collections.abc import Iterable
 import re
+import gettext
 
+# Specify the translation domain and path to the translations directory
+print(os.path.dirname(__file__),"\n")
+
+lang = gettext.translation('app', localedir='translations', languages=['pt_BR', 'en'])
+
+# Shortcut function for gettext
+_ = lang.gettext
 
 class ExecuteLoopThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
@@ -42,9 +50,9 @@ class ExecuteLoopThread(QtCore.QThread):
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
+			raise ValueError(_("Could not find layout_v. This is a bug. Please contact the developers."))
 		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError(f"layout_v {type(self.layout)} is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.")
+			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
 		
 		try:
 			testCaseList = []
@@ -55,7 +63,7 @@ class ExecuteLoopThread(QtCore.QThread):
 				testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
 				testCase.note_group.play()
 				if self.stop:
-					print(" was interrupted. Stopping now.")
+					print(_(" was interrupted. Stopping now."))
 					return
 				testCaseList.append(testCase)
 				self.done_testCase.emit(testCase)
@@ -63,13 +71,13 @@ class ExecuteLoopThread(QtCore.QThread):
 				self.wait_for_signal()
 				id += 1
 			if self.stop:
-				print("Thread was interrupted. Stopping now.")
+				print(_("Thread was interrupted. Stopping now."))
 				return
 			TestCase.saveResults(testCaseList, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
-			print("Ctrl+c was pressed. Stopping now.")
+			print(_("Ctrl+c was pressed. Stopping now."))
 	
 	def wait_for_signal(self):
 		self.mutex.lock()
@@ -80,13 +88,14 @@ class ExecuteLoopThread(QtCore.QThread):
 		self.mutex.lock()
 		self.wait_condition.wakeAll()
 		self.mutex.unlock()
+
 class MyGUI(QWidget):
 
 	def __init__(self):
 		super().__init__()
-		self.primary_screen =  QGuiApplication.primaryScreen()
+		self.primary_screen = QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
-		#self.setGeometry(0, 0, 1200, 600)
+		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
 		self.back_arrow = QIcon("static/back_button.png")
 		self.settings_image = QIcon("static/settings.png")
@@ -99,7 +108,6 @@ class MyGUI(QWidget):
 		self.setup_play_menu()
 		self.setup_debug_menu()
 		self.setup_test1_menu()
-		self.setup_play_menu()
 
 		self.states = [self.main_menu]
 		self.current_frame = self.main_menu
@@ -112,35 +120,35 @@ class MyGUI(QWidget):
 		main_menu_layout.addStretch()
 		#main_menu_layout.setStretchFactor(main_menu_layout.itemAt(0), 1)
 		main_menu_layout.addStretch()'''
-	
 
-	def setup_main_menu(self): #TODO: add translations
+	def setup_main_menu(self):  # TODO: add translations
 		h_buttons = (self.get_settings_button(), self.get_play_button())
-		layout_h, layout_v, self.main_menu = self.setup_menu("Main menu", h_buttons)
+		layout_h, layout_v, self.main_menu = self.setup_menu(_("Main menu"), h_buttons)
 
 	def setup_settings(self):
 		def create_save_function(text_box, setting_name):
 			def save_function():
 				notes_config.change_setting(setting_name, text_box.text())
+
 			return save_function
-		
+
 		h_buttons = self.get_debug_button(),
 		v_buttons = self.get_main_menu_button(),
-		layout_h, layout_v, self.settings = self.setup_menu("Settings", widgets_h=h_buttons, widgets_v=v_buttons)
+		layout_h, layout_v, self.settings = self.setup_menu(_("Settings"), widgets_h=h_buttons, widgets_v=v_buttons)
 		all_settings = notes_config.get_all_settings()
 		layout_v_h = QHBoxLayout()
 		layout_v.addLayout(layout_v_h)
-		layout_v_h.addWidget(QLabel("Setting Name:"))
-		layout_v_h.addWidget(QLabel("Setting value:"))
+		layout_v_h.addWidget(QLabel(_("Setting Name:")))
+		layout_v_h.addWidget(QLabel(_("Setting value:")))
 
-		setting_dict:Dict[str, QLineEdit] = {}
+		setting_dict: Dict[str, QLineEdit] = {}
 
 		for setting_name in all_settings:
 			layout_v_h = QHBoxLayout()
-			
+
 			setting_name_label = QLabel(setting_name)
 			layout_v_h.addWidget(setting_name_label)
-			
+
 			text_box = QLineEdit()
 			setting_value = all_settings.get(setting_name)
 			text_box.setText(setting_value)
@@ -148,61 +156,63 @@ class MyGUI(QWidget):
 			layout_v_h.addWidget(text_box)
 			setting_dict[setting_name] = text_box
 
-			layout_v.addLayout(layout_v_h)	
+			layout_v.addLayout(layout_v_h)
 		if setting_dict == {}:
 			return
-		
-		save_button = QPushButton("Save")
-		
+
+		save_button = QPushButton(_("Save"))
+
 		def save_all():
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
 				notes_config.change_setting(setting_name, text_box.text())
-			PyQt6_utils.get_msg_box("Settings saved", "Settings have been successfully saved.").exec()
-			
+			PyQt6_utils.get_msg_box(_("Settings saved"), _("Settings have been successfully saved.")).exec()
+
 		save_button.clicked.connect(save_all)
 		layout_v.addWidget(save_button)
 
-		reset_button = QPushButton("Reset settings")
+		reset_button = QPushButton(_("Reset settings"))
+
 		def reset_settings():
 			config = notes_config.reset_settings()
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
 				text_box.setText(config[setting_name])
-			PyQt6_utils.get_msg_box("Settings reset", "Settings have been successfully reset.").exec()
+			PyQt6_utils.get_msg_box(_("Settings reset"), _("Settings have been successfully reset.")).exec()
+
 		reset_button.clicked.connect(reset_settings)
 		layout_v.addWidget(reset_button)
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
 		v_buttons = self.get_main_menu_button(), self.get_test1_button()
-		layout_h, layout_v, self.play_menu = self.setup_menu("Choose a test", h_buttons, v_buttons)
-	
+		layout_h, layout_v, self.play_menu = self.setup_menu(_("Choose a test"), h_buttons, v_buttons)
+
 	def setup_debug_menu(self):
 		v_buttons = ()
 		h_buttons = ()
-		layout_h, layout_v, self.debug_menu = self.setup_menu("Debug", h_buttons, v_buttons)
-	
+		layout_h, layout_v, self.debug_menu = self.setup_menu(_("Debug"), h_buttons, v_buttons)
+
 	def setup_test1_menu(self):
-		
+
 		h_buttons = (self.get_settings_button(),)
 
 		v_buttons = ()
-		layout_h, layout_v, self.test1_menu = self.setup_menu("Test1", h_buttons, v_buttons)
-		player_name_q = "Player name"
-		test_case_q = "How many test cases?"
-		n_back_q = "n-back (int)"
-		notes_quantity_q = "How many notes (int)"
-		bpm_q = "How many bpm (float)"
-		instrument_q = "Instrument (piano or guitar)"
+		layout_h, layout_v, self.test1_menu = self.setup_menu(_("Test1"), h_buttons, v_buttons)
+		player_name_q = _("Player name")
+		test_case_q = _("How many test cases?")
+		n_back_q = _("n-back (int)")
+		notes_quantity_q = _("How many notes (int)")
+		bpm_q = _("How many bpm (float)")
+		instrument_q = _("Instrument (piano or guitar)")
 		labels = (player_name_q, test_case_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
 		set_text = tuple(["Gerosa", '2', '2', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
 		column_labels, column_text_box = PyQt6_utils.setup_forms(layout_v, draft_forms_dict)
-		
-		
+
+
 		def check_isdigit(q):
 			text_box = column_text_box[labels.index(q)]
 			text = text_box.text()
@@ -213,54 +223,55 @@ class MyGUI(QWidget):
 			text = text_box.text()
 			value = PyQt6_utils.is_float_or_fraction(text)
 			return not (value == None or value <= 0), text
-		
+
 		def is_q1_greater_than_q2(q1, q2):
 			text_box1 = column_text_box[labels.index(q1)]
 			text_box2 = column_text_box[labels.index(q2)]
 			text1 = text_box1.text()
 			text2 = text_box2.text()
 			return int(text1) > int(text2), text1, text2
-		
+
 		def check_isinstrument(q):
 			text_box = column_text_box[labels.index(q)]
 			text = text_box.text()
 			return text in INSTRUMENTS, text
-		
+
 		def check_isempty(q):
 			text_box = column_text_box[labels.index(q)]
 			text = text_box.text()
 			return text != ""
-		
+
 		def msgbox_if_digit(q):
 			is_digit, text = check_isdigit(q)
 			if not is_digit:
-				PyQt6_utils.get_msg_box("Incorrect input", f"Please enter an integer bigger than 0, not \"{text}\"", QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), f"{_('Please enter an integer bigger than 0, not')} \"{text}\"", QMessageBox.Icon.Warning).exec()
 
 		def msgbox_if_float(q):
 			is_float, text = check_isfloat(q)
 			if not is_float:
-				PyQt6_utils.get_msg_box("Incorrect input", f"Please enter a fraction or a decimal bigger than 0, not \"{text}\"", QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), f"{_('Please enter a fraction or a decimal bigger than 0, not')} \"{text}\"", QMessageBox.Icon.Warning).exec()
+
 		
 		def msgbox_if_instrument(q):
 			is_instrument, text = check_isinstrument(q)
 			if not is_instrument:
-				PyQt6_utils.get_msg_box("Incorrect input", f"Please enter a valid instrument, not \"{text}\"", QMessageBox.Icon.Warning).exec()
-		
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Please enter a valid instrument, not \"{text}\""), QMessageBox.Icon.Warning).exec()
+
 		def msgbox_if_empty(q):
 			is_empty = check_isempty(q)
 			if not is_empty:
-				PyQt6_utils.get_msg_box("Incorrect input", f"Please enter something.", QMessageBox.Icon.Warning).exec()
-		
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Please enter something."), QMessageBox.Icon.Warning).exec()
+
 		def connect(q, func):
 			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
-		
+
 		connect(test_case_q, msgbox_if_digit)
 		connect(n_back_q, msgbox_if_digit)
 		connect(notes_quantity_q, msgbox_if_digit)
 		connect(bpm_q, msgbox_if_float)
 		connect(instrument_q, msgbox_if_instrument)
 		connect(player_name_q, msgbox_if_empty)
-		reset_button = QPushButton("Reset")
+		reset_button = QPushButton(_("Reset"))
 		layout_v.addWidget(reset_button)
 		def reset():
 			i = 0
@@ -287,17 +298,17 @@ class MyGUI(QWidget):
 				incorrect_fields.append(instrument_q)
 			
 			if incorrect_fields != []:
-				PyQt6_utils.get_msg_box("Incorrect input", f"The following fields are incorrect or incomplete:\n\n"+ '\n'.join(incorrect_fields)+".\n\n Correct them and try again", QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+_(".\n\n Correct them and try again"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			if not is_q1_greater_than_q2(notes_quantity_q, n_back_q)[0]:
-				PyQt6_utils.get_msg_box("Incorrect input", f"The quantity of notes needs to be greater than nback", QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():
 				if not isinstance(self.notes_thread, ExecuteLoopThread):
-					raise ValueError("Notes thread is not an instance of ExecuteLoopThread")
+					raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
 				self.notes_thread.deleteLater()
 				play_test_button.setEnabled(True)
 			
@@ -311,10 +322,10 @@ class MyGUI(QWidget):
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start()
-			stop_button = self.get_stop_button(self.notes_thread)
-			layout_h.insertWidget(2, stop_button)
-		
-		play_test_button = QPushButton("Play test 1")
+			#stop_button = self.get_stop_button(self.notes_thread)
+			#layout_h.insertWidget(2, stop_button)
+
+		play_test_button = QPushButton(_("Play test 1"))
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
@@ -365,20 +376,20 @@ class MyGUI(QWidget):
 			self.current_frame.show()
 
 	def get_test1_button(self):
-		return PyQt6_utils.get_txt_button('Test 1', lambda: self.goto_frame(self.test1_menu))
+		return PyQt6_utils.get_txt_button(_('Test 1'), lambda: self.goto_frame(self.test1_menu))
 
 	def get_main_menu_button(self):
-		return PyQt6_utils.get_txt_button('Main menu', lambda: self.goto_frame(self.main_menu))
+		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))
 
 	def get_back_button(self):
 		return PyQt6_utils.get_button_with_image(self.back_arrow, self.go_back)
 
 	def get_settings_button(self):
 		return PyQt6_utils.get_button_with_image(self.settings_image, lambda: self.goto_frame(self.settings))
-	
+
 	def get_play_button(self):
 		return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
-	
+
 	def get_debug_button(self):
 		def debug():
 			self.goto_frame(self.debug_menu)
@@ -388,7 +399,7 @@ class MyGUI(QWidget):
 		return PyQt6_utils.get_button_with_image(self.debug_image, debug)
 
 	def get_exit_button(self):
-		return PyQt6_utils.get_txt_button('Exit', self.close)
+		return PyQt6_utils.get_txt_button(_('Exit'), self.close)
 
 	def get_stop_button(self, thread:ExecuteLoopThread):
 		button = QPushButton()
@@ -398,22 +409,23 @@ class MyGUI(QWidget):
 		def stop():
 			thread.stop = True
 			button.deleteLater()
-			PyQt6_utils.get_msg_box("Test stopped", "The test was stopped, just wait for the notes to finish playing before playing another test.", QMessageBox.Icon.Information).exec()
+			PyQt6_utils.get_msg_box(_("Test stopped"), _("The test was stopped, just wait for the notes to finish playing before playing another test."), QMessageBox.Icon.Information).exec()
 		button.clicked.connect(stop) 
 		return button
-	
+
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_question(self, layout, testCase:TestCase):
 		if not isinstance(self.notes_thread, ExecuteLoopThread):
-			raise ValueError("Notes thread is not an instance of ExecuteLoopThread")
-		question = QLabel(f"A última nota tocada é igual à {testCase.nBack} nota anterior?")
+			raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
+		question = QLabel(_("Is the last played note the same as the note {} notes ago?").format(testCase.nBack))
 		layout.addWidget(question)
-		yes_button = QPushButton("Sim")
-		no_button = QPushButton("Não")
+		yes_button = QPushButton(_("Yes"))
+		no_button = QPushButton(_("No"))
 		layout_v_h = QHBoxLayout()
 		layout.addLayout(layout_v_h)
 		layout_v_h.addWidget(yes_button)
 		layout_v_h.addWidget(no_button)
+
 		'''	def confirm():
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
@@ -434,7 +446,7 @@ class MyGUI(QWidget):
 			question.deleteLater()
 
 		yes_button.clicked.connect(yes)
-		no_button.clicked.connect(no)
+		no_button.clicked.connect(no)	
 	
 def main():
 	app = QApplication([])
