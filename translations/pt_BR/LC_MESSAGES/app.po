@@ -1,0 +1,192 @@
+# Portuguese (Brazil) translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-04-23 07:13-0300\n"
+"PO-Revision-Date: 2023-04-23 07:19-0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: source/app.py:53
+msgid "Could not find layout_v. This is a bug. Please contact the developers."
+msgstr "Não foi possível encontrar layout_v. Isso é um bug. Por favor, entre em contato com os desenvolvedores."
+
+#: source/app.py:55
+#, python-format
+msgid "layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so "
+"it's a bug. Please contact the developers."
+msgstr "layout_v %(type)s não é um QVBoxLayout. Isso ainda não foi implementado, portanto é um bug. Por favor, entre em contato com os desenvolvedores."
+
+#: source/app.py:66
+msgid " was interrupted. Stopping now."
+msgstr " foi interrompido. Parando agora."
+
+#: source/app.py:74
+msgid "Thread was interrupted. Stopping now."
+msgstr "A thread foi interrompida. Parando agora."
+
+#: source/app.py:80
+msgid "Ctrl+c was pressed. Stopping now."
+msgstr "Ctrl+c foi pressionado. Parando agora."
+
+#: source/app.py:97
+msgid "PROJECT_NAME"
+msgstr "NOME_DO_PROJETO"
+
+#: source/app.py:126 source/app.py:382
+msgid "Main menu"
+msgstr "Menu principal"
+
+#: source/app.py:137
+msgid "Settings"
+msgstr "Configurações"
+
+#: source/app.py:141
+msgid "Setting Name:"
+msgstr "Nome da configuração:"
+
+#: source/app.py:142
+msgid "Setting value:"
+msgstr "Valor da configuração:"
+
+#: source/app.py:163
+msgid "Save"
+msgstr "Salvar"
+
+#: source/app.py:169
+msgid "Settings saved"
+msgstr "Configurações salvas"
+
+#: source/app.py:169
+msgid "Settings have been successfully saved."
+msgstr "As configurações foram salvas com sucesso."
+
+#: source/app.py:174
+msgid "Reset settings"
+msgstr "Redefinir configurações"
+
+#: source/app.py:181
+msgid "Settings reset"
+msgstr "Configurações redefinidas"
+
+#: source/app.py:181
+msgid "Settings have been successfully reset."
+msgstr "As configurações foram redefinidas com sucesso."
+
+#: source/app.py:189
+msgid "Choose a test"
+msgstr "Escolha um teste"
+
+#: source/app.py:194
+msgid "Debug"
+msgstr "Depurar"
+
+#: source/app.py:201
+msgid "Test1"
+msgstr "Teste1"
+
+#: source/app.py:202
+msgid "Player name"
+msgstr "Nome do jogador"
+
+#: source/app.py:203
+msgid "How many test cases?"
+msgstr "Quantos casos de teste?"
+
+#: source/app.py:204
+msgid "n-back (int)"
+msgstr "n-back (int)"
+
+#: source/app.py:205
+msgid "How many notes (int)"
+msgstr "Quantas notas (int)"
+
+#: source/app.py:206
+msgid "How many bpm (float)"
+msgstr "Quantos bpm (float)"
+
+#: source/app.py:207
+msgid "Instrument (piano or guitar)"
+msgstr "Instrumento (piano ou guitarra)"
+
+#: source/app.py:247 source/app.py:252 source/app.py:258 source/app.py:263
+#: source/app.py:301 source/app.py:305
+msgid "Incorrect input"
+msgstr "Entrada incorreta"
+
+#: source/app.py:258
+msgid "Please enter a valid instrument, not \"{text}\""
+msgstr "Por favor, digite um instrumento válido, não \"{text}\""
+
+#: source/app.py:263
+msgid "Please enter something."
+msgstr "Por favor, digite algo."
+
+#: source/app.py:274
+msgid "Reset"
+msgstr "Resetar"
+
+#: source/app.py:301
+msgid "The following fields are incorrect or incomplete:\n\n"
+msgstr "Os seguintes campos estão incorretos ou incompletos:\n\n"
+
+#: source/app.py:301
+msgid ""
+".\n"
+"\n"
+" Correct them and try again"
+msgstr ""
+".\n"
+"\n"
+" Corrija-os e tente novamente"
+
+#: source/app.py:305
+msgid "The quantity of notes needs to be greater than nback"
+msgstr "A quantidade de notas precisa ser maior que a de nback"
+
+#: source/app.py:311 source/app.py:419
+msgid "Notes thread is not an instance of ExecuteLoopThread"
+msgstr "A thread de notas não é uma instância de ExecuteLoopThread"
+
+#: source/app.py:328
+msgid "Play test 1"
+msgstr "Tocar teste 1"
+
+#: source/app.py:379
+msgid "Test 1"
+msgstr "Teste 1"
+
+#: source/app.py:402
+msgid "Exit"
+msgstr "Sair"
+
+#: source/app.py:412
+msgid "Test stopped"
+msgstr "Teste interrompido"
+
+#: source/app.py:412
+msgid "The test was stopped, just wait for the notes to finish playing before playing another test."
+msgstr "O teste foi interrompido. Aguarde as notas terminarem de tocar antes de iniciar outro teste."
+
+#: source/app.py:420
+msgid "Is the last played note the same as the note {} notes ago?"
+msgstr "A última nota tocada é igual à nota {} notas atrás?"
+
+#: source/app.py:422
+msgid "Yes"
+msgstr "Sim"
+
+#: source/app.py:423
+msgid "No"
+msgstr "Não"
