@@ -279,8 +279,10 @@ class MyGUI(QWidget):
 				column_text_box[i].setText(text)
 				i += 1
 		reset_button.clicked.connect(reset)
-
-		def play_test(play_test_button):
+		play_test_button = QPushButton(_("Play test 1"))
+		play_test_button.setFont(PyQt6_utils.FONT)
+		button_size = play_test_button.sizeHint()
+		def play_test():
 			
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
@@ -322,14 +324,35 @@ class MyGUI(QWidget):
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start()
-			#stop_button = self.get_stop_button(self.notes_thread)
-			#layout_h.insertWidget(2, stop_button)
+			stop_button = self.get_stop_button(self.notes_thread)
+			layout_h.insertWidget(2, stop_button)
+		
+		def countdown():
+			play_test_button.setEnabled(False)
+			seconds_remaining = 3
+			timer = QtCore.QTimer(self)
+			label = QLabel('3', self)
+			label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+			label.setStyleSheet("font-size: 24px;")
+			#nonlocal layout_h
+			layout_h.addWidget(label)
+			
+			def update_countdown():
+				nonlocal seconds_remaining 
+				#nonlocal timer
+				seconds_remaining -= 1
+				label.setText(str(seconds_remaining))
 
-		play_test_button = QPushButton(_("Play test 1"))
-		play_test_button.setFont(PyQt6_utils.FONT)
-		button_size = play_test_button.sizeHint()
+				if seconds_remaining == 0:
+					timer.stop()
+					label.deleteLater()
+						
+					play_test()
+			timer.timeout.connect(update_countdown)
+			timer.start(1000)
+
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
-		play_test_button.clicked.connect(lambda: play_test(play_test_button))
+		play_test_button.clicked.connect(countdown)
 		layout_v.addWidget(play_test_button)
 	
 	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
