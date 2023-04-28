@@ -19,11 +19,6 @@ import gettext
 # Specify the translation domain and path to the translations directory
 print(os.path.dirname(__file__),"\n")
 
-lang = gettext.translation('app', localedir='translations', languages=['pt_BR', 'en'])
-
-# Shortcut function for gettext
-_ = lang.gettext
-
 class ExecuteLoopThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	done_testCase = QtCore.pyqtSignal(TestCase)
@@ -93,6 +88,7 @@ class MyGUI(QWidget):
 
 	def __init__(self):
 		super().__init__()
+		set_language(notes_config.get_all_settings()["language"])
 		self.primary_screen = QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
@@ -121,7 +117,7 @@ class MyGUI(QWidget):
 		#main_menu_layout.setStretchFactor(main_menu_layout.itemAt(0), 1)
 		main_menu_layout.addStretch()'''
 
-	def setup_main_menu(self):  # TODO: add translations
+	def setup_main_menu(self):
 		h_buttons = (self.get_settings_button(), self.get_play_button())
 		layout_h, layout_v, self.main_menu = self.setup_menu(_("Main menu"), h_buttons)
 
@@ -165,7 +161,16 @@ class MyGUI(QWidget):
 		def save_all():
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
-				notes_config.change_setting(setting_name, text_box.text())
+				user_input = text_box.text()
+				if setting_name == "language":
+					language_path = os.path.join(TRANSLATIONS_FOLDER, user_input)
+					if not os.path.isdir(language_path):
+						PyQt6_utils.get_msg_box(_("Settings failed to save"), _("Language doesn't exist; Please enter a valid language."), QMessageBox.Icon.Warning).exec()
+						return
+						
+				notes_config.change_setting(setting_name, user_input)
+
+				
 			PyQt6_utils.get_msg_box(_("Settings saved"), _("Settings have been successfully saved.")).exec()
 
 		save_button.clicked.connect(save_all)
@@ -470,7 +475,19 @@ class MyGUI(QWidget):
 
 		yes_button.clicked.connect(yes)
 		no_button.clicked.connect(no)	
-	
+
+def set_language(language_code):
+
+	try:
+		translation = gettext.translation('app', TRANSLATIONS_FOLDER, languages=[language_code])
+	except FileNotFoundError:
+		# Fallback to default English language if the translation catalog is not found
+		raise FileNotFoundError(f'Could not find translation catalog for language code {language_code}')
+
+	#translation.install()
+	global _
+	_ = translation.gettext
+
 def main():
 	app = QApplication([])
 	gui = MyGUI()

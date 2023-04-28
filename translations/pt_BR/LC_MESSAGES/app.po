@@ -190,3 +190,15 @@ msgstr "Sim"
 #: source/app.py:423
 msgid "No"
 msgstr "Não"
+
+msgid "Language doesn't exist"
+msgstr "Linguagem não existe"
+
+msgid "Please enter a valid language."
+msgstr "Por favor, digite uma linguagem válida."
+
+msgid "Settings failed to save"
+msgstr "Falha ao salvar configurações"
+
+msgid "Language doesn't exist; Please enter a valid language."
+msgstr "Linguagem não existe; Por favor, digite uma linguagem válida."
