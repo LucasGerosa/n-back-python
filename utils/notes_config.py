@@ -9,6 +9,7 @@ NOTES_SETTING = 'Notes'
 NOTE_INTENSITY_SETTING = 'Note_intensity'
 DEFAULT = 'DEFAULT'
 NOTE_VALUE_SETTING = 'Note value'
+LANGUAGE_SETTING = 'Language'
 
 def get_notes_setting(section = CUSTOM_SETTING) -> str:
     notes_str = get_setting(NOTES_SETTING, section = section)
@@ -47,7 +48,8 @@ def reset_settings():
     config[DEFAULT] = {
         NOTES_SETTING : "all",
         NOTE_INTENSITY_SETTING : "mf",
-        NOTE_VALUE_SETTING : "1/4"
+        NOTE_VALUE_SETTING : "1/4",
+        LANGUAGE_SETTING : "en"
     }
     config[CUSTOM_SETTING] = config["DEFAULT"]
     write_config(config)
