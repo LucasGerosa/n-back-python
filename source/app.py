@@ -88,6 +88,7 @@ class MyGUI(QMainWindow):
 
 	def __init__(self):
 		super().__init__()
+		self.removed_widgets = []
 		set_language(notes_config.get_all_settings()["language"])
 		self.primary_screen = QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
@@ -106,7 +107,6 @@ class MyGUI(QMainWindow):
 		self.setup_test1_menu()
 
 		self.states = [self.main_menu]
-		self.current_frame = self.main_menu
 		self.setCentralWidget(self.main_menu)
 		#self.main_menu.show()
 		self.notes_thread = None
@@ -401,16 +401,17 @@ class MyGUI(QMainWindow):
 			widget.deleteLater()
 
 	def goto_frame(self, frame:QFrame):
-		self.current_frame.hide()
-		frame.show()
-		self.states.append(self.current_frame)
-		self.current_frame = frame
+		#self.current_frame.hide()
+		#frame.show() # Remove the current central widget without deleting it
+		#self.removed_widgets.append(removed_widget)
+		self.states.append(self.takeCentralWidget())
+		self.setCentralWidget(frame)
 	
 	def go_back(self):
 		if not self.states == []:
-			self.current_frame.hide()
-			self.current_frame = self.states.pop()
-			self.current_frame.show()
+			current_frame = self.states.pop()
+			self.removed_widgets.append(self.takeCentralWidget())
+			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
 		return PyQt6_utils.get_txt_button(_('Test 1'), lambda: self.goto_frame(self.test1_menu))
