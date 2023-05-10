@@ -84,7 +84,7 @@ class ExecuteLoopThread(QtCore.QThread):
 		self.wait_condition.wakeAll()
 		self.mutex.unlock()
 
-class MyGUI(QWidget):
+class MyGUI(QMainWindow):
 
 	def __init__(self):
 		super().__init__()
@@ -107,8 +107,8 @@ class MyGUI(QWidget):
 
 		self.states = [self.main_menu]
 		self.current_frame = self.main_menu
-		self.settings.hide()
-		self.main_menu.show()
+		self.setCentralWidget(self.main_menu)
+		#self.main_menu.show()
 		self.notes_thread = None
 		# configure the main_menu frame to make the center column expandable
 		'''
@@ -116,6 +116,14 @@ class MyGUI(QWidget):
 		main_menu_layout.addStretch()
 		#main_menu_layout.setStretchFactor(main_menu_layout.itemAt(0), 1)
 		main_menu_layout.addStretch()'''
+
+	def keyPressEvent(self, event):
+		if event.key() == Qt.Key.Key_F11:
+			if self.isFullScreen():
+				self.showNormal()
+				self.showMaximized()
+			else:
+				self.showFullScreen()
 
 	def setup_main_menu(self):
 		h_buttons = (self.get_settings_button(), self.get_play_button())
@@ -377,6 +385,7 @@ class MyGUI(QWidget):
 		layout_h.addLayout(layout_v)
 		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		frame.setLayout(layout_h)
+		layout_h.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		return layout_h, layout_v, frame
 
 	def center_offset_widget(self, width=0, height=0):
