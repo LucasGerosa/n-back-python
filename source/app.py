@@ -467,11 +467,14 @@ class MyGUI(QMainWindow):
 		question = QLabel(_("Is the last played note the same as the note {} notes ago?").format(testCase.nBack))
 		layout.addWidget(question)
 		yes_button = QPushButton(_("Yes"))
+		yes_button.setStyleSheet("background-color: green;")
 		no_button = QPushButton(_("No"))
+		no_button.setStyleSheet("background-color: red;")
 		layout_v_h = QHBoxLayout()
 		layout.addLayout(layout_v_h)
 		layout_v_h.addWidget(yes_button)
 		layout_v_h.addWidget(no_button)
+		layout_v_h.setSpacing(300)
 
 		'''	def confirm():
 			answer = 1 if yes_button.isChecked() else 2
