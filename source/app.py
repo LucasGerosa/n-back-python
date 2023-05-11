@@ -22,13 +22,13 @@ print(os.path.dirname(__file__),"\n")
 class ExecuteLoopThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	done_testCase = QtCore.pyqtSignal(TestCase)
+	start_execution = QtCore.pyqtSignal()
 	
 	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
 		self.stop = False
-
 		super().__init__()
 		self.layout = layout
 		self.playerName = playerName
@@ -50,12 +50,13 @@ class ExecuteLoopThread(QtCore.QThread):
 			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
 		
 		try:
-			testCaseList = []
+			testCaseList = [TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument) for id in range(self.test_case_n)] #will load all testCases before starting them
+			self.start_execution.emit()
+			self.wait_for_signal()
 			
 			id = 0
 			while id < self.test_case_n and not self.stop:
-				
-				testCase = TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument)
+				testCase = testCaseList[id]
 				testCase.note_group.play()
 				if self.stop:
 					print(_(" was interrupted. Stopping now."))
@@ -105,6 +106,7 @@ class MyGUI(QMainWindow):
 		self.setup_play_menu()
 		self.setup_debug_menu()
 		self.setup_test1_menu()
+
 
 		self.states = [self.main_menu]
 		self.setCentralWidget(self.main_menu)
@@ -327,6 +329,29 @@ class MyGUI(QMainWindow):
 				self.notes_thread.deleteLater()
 				play_test_button.setEnabled(True)
 			
+			def countdown():
+
+				play_test_button.setEnabled(False)
+				seconds_remaining = 3
+				timer = QtCore.QTimer(self)
+				label = QLabel('3', self)
+				label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+				label.setStyleSheet("font-size: 24px;")
+				layout_h.addWidget(label)
+
+				def update_countdown():
+					nonlocal seconds_remaining
+					seconds_remaining -= 1
+					label.setText(str(seconds_remaining))
+
+					if seconds_remaining == 0:
+						timer.stop()
+						label.deleteLater()
+						self.notes_thread.wait_condition.wakeOne()
+
+				timer.timeout.connect(update_countdown)
+				timer.start(1000)
+			
 			test_case = int(get_text(test_case_q))
 			n_back = int(get_text(n_back_q))
 			notes_quantity = int(get_text(notes_quantity_q))
@@ -336,57 +361,41 @@ class MyGUI(QMainWindow):
 			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
+			self.notes_thread.start_execution.connect(countdown)
 			self.notes_thread.start()
+			()
 			stop_button = self.get_stop_button(self.notes_thread)
 			layout_h.insertWidget(2, stop_button)
-		
-		def countdown():
-			play_test_button.setEnabled(False)
-			seconds_remaining = 3
-			timer = QtCore.QTimer(self)
-			label = QLabel('3', self)
-			label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-			label.setStyleSheet("font-size: 24px;")
-			#nonlocal layout_h
-			layout_h.addWidget(label)
-			
-			def update_countdown():
-				nonlocal seconds_remaining 
-				#nonlocal timer
-				seconds_remaining -= 1
-				label.setText(str(seconds_remaining))
 
-				if seconds_remaining == 0:
-					timer.stop()
-					label.deleteLater()
-						
-					play_test()
-			timer.timeout.connect(update_countdown)
-			timer.start(1000)
 
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
-		play_test_button.clicked.connect(countdown)
+		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
 	
 	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
 		frame = QFrame(self)
-		layout_h = QHBoxLayout()
-		layout_v = QVBoxLayout()
-		layout_h.addWidget(self.get_back_button())
+		layout_h_v = QHBoxLayout()
+		layout_v_h_v = QVBoxLayout()
+		layout_v = QVBoxLayout(frame)
+		layout_h_v.addWidget(self.get_back_button())
 		for widget in widgets_h:
-			layout_h.addWidget(widget)
+			layout_h_v.addWidget(widget)
+		#layout_h_v.addStretch()
 		
-		layout_v.addWidget(PyQt6_utils.create_frame_title(title))
+		layout_v_h_v.addWidget(PyQt6_utils.create_frame_title(title))
 		for widget in widgets_v:
-			layout_v.addWidget(widget)
-		#layout_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
+			layout_v_h_v.addWidget(widget)
+		#layout_h_v.addStretch()
+		#layout_v_h_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
-		layout_h.addLayout(layout_v)
-		#layout_h.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
-		frame.setLayout(layout_h)
-		layout_h.setAlignment(Qt.AlignmentFlag.AlignCenter)
-		return layout_h, layout_v, frame
+		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
+		layout_h_v.addLayout(layout_v_h_v)
+		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
+		layout_v.addLayout(layout_h_v)
+		layout_v.addStretch()
+		#frame.setLayout(layout_h_v)
+		layout_h_v.setAlignment(Qt.AlignmentFlag.AlignCenter)
+		return layout_h_v, layout_v_h_v, frame
 
 	def center_offset_widget(self, width=0, height=0):
 		x,y = PyQt6_utils.get_center(width, height)

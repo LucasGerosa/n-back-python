@@ -90,7 +90,7 @@ class TestCase:
 		return self.numberOfNotes > self.nBack
 	
 	@staticmethod
-	def saveResults(testCaseList:list, playerName:str) -> None:
+	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
 		with FileUtils.createfile(playerName) as f:
 			# create the csv writer
 			writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
