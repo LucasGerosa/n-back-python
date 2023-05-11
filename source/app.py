@@ -59,9 +59,9 @@ class ExecuteLoopThread(QtCore.QThread):
 				testCase = testCaseList[id]
 				testCase.note_group.play()
 				if self.stop:
-					print(_(" was interrupted. Stopping now."))
+					print(_("Thread was interrupted. Stopping now."))
 					return
-				testCaseList.append(testCase)
+				
 				self.done_testCase.emit(testCase)
 
 				self.wait_for_signal()

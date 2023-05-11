@@ -53,5 +53,15 @@ if __name__ == "__main__":
 def createfile(playerName):
     createOutputDirectoryIfNotExist()
     createPlayerDirectoryIfNotExist(playerName)
-    filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}'
+
+    # Initialize the base filename and the counter
+    base_filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}'
+    counter = 1
+    filename = base_filename
+
+    # Check if the file exists, and if it does, increment the counter and try again
+    while os.path.isfile(filename):
+        filename = f'{base_filename[:-4]}{counter}{base_filename[-4:]}'  # Insert counter before file extension
+        counter += 1
+
     return open(filename, "w", newline='')
