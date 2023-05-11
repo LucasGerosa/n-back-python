@@ -202,3 +202,6 @@ msgstr "Falha ao salvar configurações"
 
 msgid "Language doesn't exist; Please enter a valid language."
 msgstr "Linguagem não existe; Por favor, digite uma linguagem válida."
+
+msgid "The quantity of notes + test case - 1 needs to be greater than nback"
+msgstr "A quantidade de notas + casos de teste - 1 precisa ser maior que a de nback"

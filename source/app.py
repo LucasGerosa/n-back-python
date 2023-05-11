@@ -50,7 +50,7 @@ class ExecuteLoopThread(QtCore.QThread):
 			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
 		
 		try:
-			testCaseList = [TestCase(self.layout, id, self.nBack, self.notesQuantity, self.bpm, self.instrument) for id in range(self.test_case_n)] #will load all testCases before starting them
+			testCaseList = [TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument) for id in range(self.test_case_n)] #will load all testCases before starting them
 			self.start_execution.emit()
 			self.wait_for_signal()
 			
@@ -221,7 +221,7 @@ class MyGUI(QMainWindow):
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
 		labels = (player_name_q, test_case_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '2', '2', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		set_text = tuple(["Gerosa", '2', '1', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
@@ -238,13 +238,6 @@ class MyGUI(QMainWindow):
 			text = text_box.text()
 			value = PyQt6_utils.is_float_or_fraction(text)
 			return not (value == None or value <= 0), text
-
-		def is_q1_greater_than_q2(q1, q2):
-			text_box1 = column_text_box[labels.index(q1)]
-			text_box2 = column_text_box[labels.index(q2)]
-			text1 = text_box1.text()
-			text2 = text_box2.text()
-			return int(text1) > int(text2), text1, text2
 
 		def check_isinstrument(q):
 			text_box = column_text_box[labels.index(q)]
@@ -318,8 +311,14 @@ class MyGUI(QMainWindow):
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+_(".\n\n Correct them and try again"), QMessageBox.Icon.Warning).exec()
 				return
 			
-			if not is_q1_greater_than_q2(notes_quantity_q, n_back_q)[0]:
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+			def is_notes_quantity_valid():
+				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
+				n_back = column_text_box[labels.index(n_back_q)].text()
+				test_case = column_text_box[labels.index(test_case_q)].text()
+				return int(notes_quantity) > int(n_back) + int(test_case) - 1
+
+			if not is_notes_quantity_valid():
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + test case - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			@QtCore.pyqtSlot()
