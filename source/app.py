@@ -209,7 +209,6 @@ class MyGUI(QMainWindow):
 		layout_h, layout_v, self.debug_menu = self.setup_menu(_("Debug"), h_buttons, v_buttons)
 
 	def setup_test1_menu(self):
-
 		h_buttons = (self.get_settings_button(),)
 
 		v_buttons = ()
@@ -226,7 +225,6 @@ class MyGUI(QMainWindow):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
 		column_labels, column_text_box = PyQt6_utils.setup_forms(layout_v, draft_forms_dict)
-
 
 		def check_isdigit(q):
 			text_box = column_text_box[labels.index(q)]
@@ -270,7 +268,7 @@ class MyGUI(QMainWindow):
 			if not is_empty:
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Please enter something."), QMessageBox.Icon.Warning).exec()
 
-		def connect(q, func):
+		def connect(q, func): # Tells python what to do when the user finishes typing in the msg boxes
 			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
 
 		connect(test_case_q, msgbox_if_digit)
@@ -291,7 +289,9 @@ class MyGUI(QMainWindow):
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
 		def play_test():
-			
+			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
+			self.states.append(self.takeCentralWidget())
+			self.setCentralWidget(test1_test)
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
 			
@@ -326,16 +326,17 @@ class MyGUI(QMainWindow):
 				if not isinstance(self.notes_thread, ExecuteLoopThread):
 					raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
 				self.notes_thread.deleteLater()
-				play_test_button.setEnabled(True)
+				self.setCentralWidget(self.states.pop())
+				
+				#play_test_button.setEnabled(True)
 			
 			def countdown():
-
-				play_test_button.setEnabled(False)
+				#play_test_button.setEnabled(False)
 				seconds_remaining = 3
 				timer = QtCore.QTimer(self)
 				label = QLabel('3', self)
 				label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-				label.setStyleSheet("font-size: 24px;")
+				label.setStyleSheet("font-size: 100px;")
 				layout_h.addWidget(label)
 
 				def update_countdown():
@@ -356,27 +357,27 @@ class MyGUI(QMainWindow):
 			notes_quantity = int(get_text(notes_quantity_q))
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
-			play_test_button.setEnabled(False)
+			#play_test_button.setEnabled(False)
 			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
-			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(countdown)
+			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
 			self.notes_thread.start()
-			()
-			stop_button = self.get_stop_button(self.notes_thread)
-			layout_h.insertWidget(2, stop_button)
-
+			#stop_button = self.get_stop_button(self.notes_thread)
+			#layout_h.insertWidget(2, stop_button)
 
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
 	
-	def setup_menu(self, title:str, widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=()):
+	def setup_menu(self, title:str="", widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=(), back_button:bool=True):
 		frame = QFrame(self)
 		layout_h_v = QHBoxLayout()
 		layout_v_h_v = QVBoxLayout()
 		layout_v = QVBoxLayout(frame)
-		layout_h_v.addWidget(self.get_back_button())
+		if back_button:
+			layout_h_v.addWidget(self.get_back_button())
+
 		for widget in widgets_h:
 			layout_h_v.addWidget(widget)
 		#layout_h_v.addStretch()
@@ -464,11 +465,12 @@ class MyGUI(QMainWindow):
 		if not isinstance(self.notes_thread, ExecuteLoopThread):
 			raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
 		question = QLabel(_("Is the last played note the same as the note {} notes ago?").format(testCase.nBack))
+		question.setStyleSheet("font-size: 35px;")
 		layout.addWidget(question)
 		yes_button = QPushButton(_("Yes"))
-		yes_button.setStyleSheet("background-color: green;")
+		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 		no_button = QPushButton(_("No"))
-		no_button.setStyleSheet("background-color: red;")
+		no_button.setStyleSheet("background-color: red; font-size: 50px;")
 		layout_v_h = QHBoxLayout()
 		layout.addLayout(layout_v_h)
 		layout_v_h.addWidget(yes_button)
