@@ -1,14 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+from PyInstaller.utils.hooks import collect_data_files
 
 block_cipher = None
-
 
 a = Analysis(
     ['source\\app.py'],
     pathex=['source'],
     binaries=[('ffmpeg/bin/ffmpeg.exe', 'ffmpeg/bin/'), ('ffmpeg/bin/ffprobe.exe', 'ffmpeg/bin/')],
-    datas=[('input/piano/*.mp3', 'input/piano/'), ('input/guitar/*.mp3', 'input/guitar/')],
+    datas=[
+        ('input/piano/*.mp3', 'input/piano/'), 
+        ('input/guitar/*.mp3', 'input/guitar/'), 
+        ('settings.ini', '.'),  # Add the settings.ini file to the root of the output directory
+    ],
     hiddenimports=['simpleaudio'],
     hookspath=[],
     hooksconfig={},
@@ -38,6 +41,26 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+
+import os
+import glob
+
+translations_path = 'translations'
+for root, dirs, files in os.walk(translations_path):
+    for file in files:
+        src = os.path.join(root, file)
+        dst = os.path.join(translations_path, os.path.relpath(src, translations_path))
+        a.datas.append((src, dst, 'DATA'))
+
+# Add static folder and its contents
+static_path = 'static'
+for root, dirs, files in os.walk(static_path):
+    for file in files:
+        src = os.path.join(root, file)
+        dst = os.path.join(static_path, os.path.relpath(src, static_path))
+        a.datas.append((src, dst, 'DATA'))
+
+
 coll = COLLECT(
     exe,
     a.binaries,

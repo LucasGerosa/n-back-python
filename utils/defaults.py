@@ -4,6 +4,7 @@ DEFAULT_BPM = 60.0
 DEFAULT_NOTE_VALUE = 1/4
 PROJECT_NAME = "nback"
 TRANSLATIONS_FOLDER = 'translations'
+
 class user_input_messages:
     yes = 'y'
     no = 'n'

@@ -8,7 +8,6 @@ from pydub.silence import detect_leading_silence
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from PyQt6 import QtCore, QtGui, QtWidgets
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
@@ -23,8 +22,18 @@ os_name = platform.system()
 def bpmToSeconds(bpm: float) -> float:
     return 60 / bpm
 
+def get_app_path():
+    if getattr(sys, 'frozen', False):
+        # If the application is an executable created by PyInstaller
+        app_path = os.path.dirname(sys.executable)
+        return app_path
+    # If the application is running as a script
+    return PROJECT_DIR
+    
 def check_ffmpeg():
-    ffmpeg_path = f'{PROJECT_DIR}/ffmpeg/bin'
+    app_path = get_app_path()  # Use the get_app_path() function we'll create in step 2
+    ffmpeg_path = os.path.join(app_path, 'ffmpeg', 'bin')
+    #ffmpeg_path = f'{PROJECT_DIR}/ffmpeg/bin'
     ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
     ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
     windows_ffmpeg_url = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
@@ -149,7 +158,6 @@ class Note:
     
     def delete_file(self) -> None:
         os.remove(self.path)
-
         
 
 class Note_group:
@@ -233,6 +241,8 @@ class Note_group:
     '''
 
 def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> Note:
-    file_name = f'{PROJECT_DIR}/{NOTES_FOLDER}/{instrument}/{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}'
+    app_path = get_app_path()
+    file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}")
 
     return Note(file_name, bpm, create_sound, note_value=note_value)
+

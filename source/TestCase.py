@@ -15,6 +15,7 @@ import numpy as np
 from fractions import Fraction
 from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils
+import io
 
 class ResultEnum(Enum):
 	ACERTO = 1
@@ -91,19 +92,29 @@ class TestCase:
 	
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
-		with FileUtils.createfile(playerName) as f:
-			# create the csv writer
-			writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			i = 0
+		def write_content_to_csv(writer, testCaseList):
 			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result'])
-			while i < len(testCaseList):
-				t: TestCase = testCaseList[i]
-				# write a row to the csv file
-				writer.writerow(
-					[t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
-				i += 1
+			for t in testCaseList:
+				writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
 
-		f.close()
+		try:
+			f = FileUtils.createfile(playerName)
+		
+		except PermissionError:
+			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
+			buffer = io.StringIO()
+			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			write_content_to_csv(writer, testCaseList)
+			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
+			buffer.close()
+
+		else:
+			with f:
+				# create the csv writer
+				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				write_content_to_csv(writer, testCaseList)
+
+			f.close()
 
 	@staticmethod
 	def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
