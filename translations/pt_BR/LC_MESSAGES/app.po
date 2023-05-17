@@ -211,3 +211,9 @@ msgstr "Pronto para o próximo caso de teste?"
 
 msgid "Loading"
 msgstr "Carregando"
+
+msgid "test"
+msgstr "teste"
+
+msgid "Test"
+msgstr "Teste"

@@ -109,7 +109,7 @@ class MyGUI(QMainWindow):
 		self.setup_play_menu()
 		self.setup_debug_menu()
 		self.setup_test1_menu()
-
+		self.setup_test2_menu()
 
 		self.states = [self.main_menu]
 		self.setCentralWidget(self.main_menu)
@@ -204,7 +204,7 @@ class MyGUI(QMainWindow):
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
-		v_buttons = self.get_main_menu_button(), self.get_test1_button()
+		v_buttons = self.get_main_menu_button(), self.get_test1_button(), self.get_test2_button()
 		layout_h, layout_v, self.play_menu = self.setup_menu(_("Choose a test"), h_buttons, v_buttons)
 
 	def setup_debug_menu(self):
@@ -216,7 +216,7 @@ class MyGUI(QMainWindow):
 		h_buttons = (self.get_settings_button(),)
 
 		v_buttons = ()
-		layout_h, layout_v, self.test1_menu = self.setup_menu(_("Test1"), h_buttons, v_buttons)
+		layout_h, layout_v, self.test1_menu = self.setup_menu(_("Test") + ' 1', h_buttons, v_buttons)
 		player_name_q = _("Player name")
 		test_case_q = _("How many test cases?")
 		n_back_q = _("n-back (int)")
@@ -394,6 +394,11 @@ class MyGUI(QMainWindow):
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
 	
+	def setup_test2_menu(self):
+		h_buttons = (self.get_settings_button(),)
+		v_buttons = ()
+		layout_h, layout_v, self.test2_menu = self.setup_menu(_("Test") + ' 2', h_buttons, v_buttons)
+	
 	def setup_menu(self, title:str="", widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=(), back_button:bool=True):
 		frame = QFrame(self)
 		layout_h_v = QHBoxLayout()
@@ -447,8 +452,12 @@ class MyGUI(QMainWindow):
 			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
-		return PyQt6_utils.get_txt_button(_('Test 1'), lambda: self.goto_frame(self.test1_menu))
+		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test1_menu))
 
+
+	def get_test2_button(self):
+		return PyQt6_utils.get_txt_button(_('Test') + ' 2', lambda: self.goto_frame(self.test2_menu))
+	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))
 
