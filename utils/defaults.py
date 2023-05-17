@@ -13,3 +13,15 @@ class user_input_messages:
     @staticmethod
     def print_invalid_input():
         print('That is not a valid input. Try again.')
+
+def set_language(language_code):
+
+	try:
+		translation = gettext.translation('app', TRANSLATIONS_FOLDER, languages=[language_code])
+	except FileNotFoundError:
+		# Fallback to default English language if the translation catalog is not found
+		raise FileNotFoundError(f'Could not find translation catalog for language code {language_code}')
+
+	#translation.install()
+	global _
+	_ = translation.gettext

@@ -88,3 +88,25 @@ def find_child_layout(parent_layout:QtWidgets.QLayout):
 			return child_layout
 	# No child layout found
 	return None
+
+
+def create_question(layout, question_str:str, *answer_str):
+	question = QLabel(question_str)
+	question.setStyleSheet("font-size: 50px;")
+	layout.addWidget(question)
+	layout_v_h = QHBoxLayout()
+	layout.addLayout(layout_v_h)
+	answers = []
+	for s in answer_str:
+		answer = QPushButton(s)
+		answer.setStyleSheet("font-size: 50px;")
+		layout_v_h.addWidget(answer)
+		answers.append(answer)
+	layout_v_h.setSpacing(300)
+	
+	def destroy_all():
+		question.deleteLater()
+		for answer in answers:
+			answer.deleteLater()
+		layout_v_h.deleteLater()
+	return answers, question, layout_v_h, destroy_all

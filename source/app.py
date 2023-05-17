@@ -23,6 +23,7 @@ class ExecuteLoopThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	done_testCase = QtCore.pyqtSignal(TestCase)
 	start_execution = QtCore.pyqtSignal()
+	pre_start_execution = QtCore.pyqtSignal()
 	
 	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		self.lock = QtCore.QReadWriteLock()
@@ -50,13 +51,15 @@ class ExecuteLoopThread(QtCore.QThread):
 			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
 		
 		try:
-			testCaseList = [TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument) for id in range(self.test_case_n)] #will load all testCases before starting them
-			self.start_execution.emit()
-			self.wait_for_signal()
-			
+			testCaseList = []
 			id = 0
 			while id < self.test_case_n and not self.stop:
-				testCase = testCaseList[id]
+				self.pre_start_execution.emit()
+				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument)
+				testCaseList.append(testCase)
+				self.start_execution.emit()
+				self.wait_for_signal()
+				
 				testCase.note_group.play()
 				if self.stop:
 					print(_("Thread was interrupted. Stopping now."))
@@ -112,6 +115,7 @@ class MyGUI(QMainWindow):
 		self.setCentralWidget(self.main_menu)
 		#self.main_menu.show()
 		self.notes_thread = None
+
 		# configure the main_menu frame to make the center column expandable
 		'''
 		main_menu_layout = QHBoxLayout(self.main_menu)
@@ -351,6 +355,24 @@ class MyGUI(QMainWindow):
 
 				timer.timeout.connect(update_countdown)
 				timer.start(1000)
+
+			def ask_continue_test():
+				nonlocal loadingLabel
+				loadingLabel.deleteLater()
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next test case?"), _("Yes"))
+				yes_button = answers[0]
+				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+				def continue_test():
+					destroy_question()
+					countdown()
+				yes_button.clicked.connect(continue_test)
+			
+			def create_loading_label():
+				nonlocal loadingLabel
+				loadingLabel = QLabel(_("Loading")+ '...')
+				loadingLabel.setStyleSheet("font-size: 50px;")
+				loadingLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+				layout_v.addWidget(loadingLabel)
 			
 			test_case = int(get_text(test_case_q))
 			n_back = int(get_text(n_back_q))
@@ -358,10 +380,12 @@ class MyGUI(QMainWindow):
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
 			#play_test_button.setEnabled(False)
+			loadingLabel = None
 			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
-			self.notes_thread.start_execution.connect(countdown)
-			self.notes_thread.done_testCase.connect(lambda testCase:self.create_question(layout_v, testCase))
+			self.notes_thread.start_execution.connect(ask_continue_test)
+			self.notes_thread.pre_start_execution.connect(create_loading_label)
+			self.notes_thread.done_testCase.connect(lambda testCase:self.create_questions(layout_v, testCase))
 			self.notes_thread.start()
 			#stop_button = self.get_stop_button(self.notes_thread)
 			#layout_h.insertWidget(2, stop_button)
@@ -461,40 +485,25 @@ class MyGUI(QMainWindow):
 		return button
 
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
-	def create_question(self, layout, testCase:TestCase):
+	def create_questions(self, layout, testCase:TestCase):
 		if not isinstance(self.notes_thread, ExecuteLoopThread):
 			raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
-		question = QLabel(_("Is the last played note the same as the note {} notes ago?").format(testCase.nBack))
-		question.setStyleSheet("font-size: 35px;")
-		layout.addWidget(question)
-		yes_button = QPushButton(_("Yes"))
+		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, _("Is the last played note the same as the note {} notes ago?").format(testCase.nBack), _("Yes"), _("No"))
+		yes_button, no_button = answers
 		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
-		no_button = QPushButton(_("No"))
 		no_button.setStyleSheet("background-color: red; font-size: 50px;")
-		layout_v_h = QHBoxLayout()
-		layout.addLayout(layout_v_h)
-		layout_v_h.addWidget(yes_button)
-		layout_v_h.addWidget(no_button)
-		layout_v_h.setSpacing(300)
-
 		'''	def confirm():
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
 		def yes():
 			testCase.validateAnswer(answer=1)
-			destroy_question()
+			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
 		def no():
 			testCase.validateAnswer(answer=2)
-			destroy_question()
+			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
-		
-		def destroy_question():
-			layout_v_h.deleteLater()
-			yes_button.deleteLater()
-			no_button.deleteLater()
-			question.deleteLater()
 
 		yes_button.clicked.connect(yes)
 		no_button.clicked.connect(no)	
