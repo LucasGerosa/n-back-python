@@ -19,7 +19,7 @@ import gettext
 # Specify the translation domain and path to the translations directory
 print(os.path.dirname(__file__),"\n")
 
-class ExecuteLoopThread(QtCore.QThread):
+class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	done_testCase = QtCore.pyqtSignal(TestCase)
 	start_execution = QtCore.pyqtSignal()
@@ -38,10 +38,25 @@ class ExecuteLoopThread(QtCore.QThread):
 		self.notesQuantity = notesQuantity
 		self.bpm = bpm
 		self.instrument = instrument
-		
+	
+	def wait_for_signal(self):
+		self.mutex.lock()
+		self.wait_condition.wait(self.mutex)
+		self.mutex.unlock()
+
+	def signal(self):
+		self.mutex.lock()
+		self.wait_condition.wakeAll()
+		self.mutex.unlock()
+	
 	def run(self):
 		self.executeLoop()
 		self.finished.emit()
+	
+	def executeLoop(self):
+		pass
+
+class Test1Thread(TestThread):
 	
 	def executeLoop(self) -> list|None:
 
@@ -77,17 +92,9 @@ class ExecuteLoopThread(QtCore.QThread):
 			return testCaseList
 		except KeyboardInterrupt:
 			print(_("Ctrl+c was pressed. Stopping now."))
-	
-	def wait_for_signal(self):
-		self.mutex.lock()
-		self.wait_condition.wait(self.mutex)
-		self.mutex.unlock()
 
-	def signal(self):
-		self.mutex.lock()
-		self.wait_condition.wakeAll()
-		self.mutex.unlock()
-
+class Test2Thread(TestThread):
+	pass
 class MyGUI(QMainWindow):
 
 	def __init__(self):
@@ -104,6 +111,7 @@ class MyGUI(QMainWindow):
 		self.debug_image = QIcon("static/debug.png")
 		self.stop_image = QIcon("static/stop_button.jpg")
 
+		self.test_menus = []
 		self.setup_main_menu()
 		self.setup_settings()
 		self.setup_play_menu()
@@ -213,10 +221,17 @@ class MyGUI(QMainWindow):
 		layout_h, layout_v, self.debug_menu = self.setup_menu(_("Debug"), h_buttons, v_buttons)
 
 	def setup_test1_menu(self):
-		h_buttons = (self.get_settings_button(),)
+		self.setup_test_menu(1, Test1Thread)
 
+	def setup_test2_menu(self):
+		self.setup_test_menu(2, Test2Thread)
+		
+	def setup_test_menu(self, test_number:int, Thread):
+		h_buttons = (self.get_settings_button(),)
 		v_buttons = ()
-		layout_h, layout_v, self.test1_menu = self.setup_menu(_("Test") + ' 1', h_buttons, v_buttons)
+		test_number_str = ' ' + str(test_number)
+		layout_h, layout_v, test_menu= self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
+		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
 		test_case_q = _("How many test cases?")
 		n_back_q = _("n-back (int)")
@@ -289,7 +304,7 @@ class MyGUI(QMainWindow):
 				column_text_box[i].setText(text)
 				i += 1
 		reset_button.clicked.connect(reset)
-		play_test_button = QPushButton(_("Play test 1"))
+		play_test_button = QPushButton(_("Play test") + test_number_str)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
 		def play_test():
@@ -327,8 +342,8 @@ class MyGUI(QMainWindow):
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():
-				if not isinstance(self.notes_thread, ExecuteLoopThread):
-					raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
+				if not isinstance(self.notes_thread, Test1Thread):
+					raise ValueError(_("Notes thread is not an instance of Test1Thread"))
 				self.notes_thread.deleteLater()
 				self.setCentralWidget(self.states.pop())
 				
@@ -381,7 +396,7 @@ class MyGUI(QMainWindow):
 			instrument = get_text(instrument_q)
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
-			self.notes_thread = ExecuteLoopThread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
+			self.notes_thread = Thread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
@@ -393,12 +408,7 @@ class MyGUI(QMainWindow):
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
-	
-	def setup_test2_menu(self):
-		h_buttons = (self.get_settings_button(),)
-		v_buttons = ()
-		layout_h, layout_v, self.test2_menu = self.setup_menu(_("Test") + ' 2', h_buttons, v_buttons)
-	
+
 	def setup_menu(self, title:str="", widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=(), back_button:bool=True):
 		frame = QFrame(self)
 		layout_h_v = QHBoxLayout()
@@ -452,11 +462,10 @@ class MyGUI(QMainWindow):
 			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
-		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test1_menu))
-
+		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test_menus[0]))
 
 	def get_test2_button(self):
-		return PyQt6_utils.get_txt_button(_('Test') + ' 2', lambda: self.goto_frame(self.test2_menu))
+		return PyQt6_utils.get_txt_button(_('Test') + ' 2', lambda: self.goto_frame(self.test_menus[1]))
 	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))
@@ -481,7 +490,7 @@ class MyGUI(QMainWindow):
 	def get_exit_button(self):
 		return PyQt6_utils.get_txt_button(_('Exit'), self.close)
 
-	def get_stop_button(self, thread:ExecuteLoopThread):
+	def get_stop_button(self, thread:Test1Thread):
 		button = QPushButton()
 		button.setIcon(self.stop_image)
 		button.resize(PyQt6_utils.BUTTON_SIZE, PyQt6_utils.BUTTON_SIZE)
@@ -495,8 +504,8 @@ class MyGUI(QMainWindow):
 
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_questions(self, layout, testCase:TestCase):
-		if not isinstance(self.notes_thread, ExecuteLoopThread):
-			raise ValueError(_("Notes thread is not an instance of ExecuteLoopThread"))
+		if not isinstance(self.notes_thread, Test1Thread):
+			raise ValueError(_("Notes thread is not an instance of Test1Thread"))
 		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, _("Is the last played note the same as the note {} notes ago?").format(testCase.nBack), _("Yes"), _("No"))
 		yes_button, no_button = answers
 		yes_button.setStyleSheet("background-color: green; font-size: 50px;")

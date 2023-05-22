@@ -160,12 +160,8 @@ msgid "Notes thread is not an instance of ExecuteLoopThread"
 msgstr "A thread de notas não é uma instância de ExecuteLoopThread"
 
 #: source/app.py:328
-msgid "Play test 1"
-msgstr "Tocar teste 1"
-
-#: source/app.py:379
-msgid "Test 1"
-msgstr "Teste 1"
+msgid "Play test"
+msgstr "Tocar teste"
 
 #: source/app.py:402
 msgid "Exit"
