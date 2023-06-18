@@ -94,7 +94,54 @@ class Test1Thread(TestThread):
 			print(_("Ctrl+c was pressed. Stopping now."))
 
 class Test2Thread(TestThread):
-	pass
+	print_note_signal = QtCore.pyqtSignal(str)
+	delete_note_signal = QtCore.pyqtSignal()
+	def executeLoop(self) -> list|None:
+
+		if self.layout == None:
+			raise ValueError(_("Could not find layout_v. This is a bug. Please contact the developers."))
+		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
+			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
+		
+		try:
+			testCaseList = []
+			id = 0
+			while id < self.test_case_n and not self.stop:
+				self.pre_start_execution.emit()
+				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument)
+				testCaseList.append(testCase)
+				self.start_execution.emit()
+				self.wait_for_signal()
+				
+				i = 1
+				note_group_length = len(testCase.note_group.notes)
+				for note in testCase.note_group.notes:
+					if i == note_group_length:
+						self.print_note_signal.emit(note.name)
+						note.play()
+						self.delete_note_signal.emit()
+					else:
+						note.play()
+					i += 1
+				del note_group_length
+					
+				if self.stop:
+					print(_("Thread was interrupted. Stopping now."))
+					return
+				
+				self.done_testCase.emit(testCase)
+
+				self.wait_for_signal()
+				id += 1
+			if self.stop:
+				print(_("Thread was interrupted. Stopping now."))
+				return
+			TestCase.saveResults(testCaseList, self.playerName)
+
+			return testCaseList
+		except KeyboardInterrupt:
+			print(_("Ctrl+c was pressed. Stopping now."))
+	
 class MyGUI(QMainWindow):
 
 	def __init__(self):
@@ -225,12 +272,12 @@ class MyGUI(QMainWindow):
 
 	def setup_test2_menu(self):
 		self.setup_test_menu(2, Test2Thread)
-		
-	def setup_test_menu(self, test_number:int, Thread):
+
+	def setup_test_menu(self, test_number:int, Thread:TestThread):
 		h_buttons = (self.get_settings_button(),)
 		v_buttons = ()
 		test_number_str = ' ' + str(test_number)
-		layout_h, layout_v, test_menu= self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
+		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
 		test_case_q = _("How many test cases?")
@@ -307,8 +354,11 @@ class MyGUI(QMainWindow):
 		play_test_button = QPushButton(_("Play test") + test_number_str)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
+		test_layout = None
 		def play_test():
+			nonlocal test_layout
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
+			test_layout = layout_v
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
 			def get_text(q):
@@ -342,8 +392,8 @@ class MyGUI(QMainWindow):
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():
-				if not isinstance(self.notes_thread, Test1Thread):
-					raise ValueError(_("Notes thread is not an instance of Test1Thread"))
+				if not isinstance(self.notes_thread, TestThread):
+					raise ValueError(_("Notes thread is not an instance of TestThread"))
 				self.notes_thread.deleteLater()
 				self.setCentralWidget(self.states.pop())
 				
@@ -401,6 +451,19 @@ class MyGUI(QMainWindow):
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_questions(layout_v, testCase))
+			if Thread is Test2Thread:
+				note_label = None
+				def print_note_label(note_name):
+					nonlocal note_label
+					note_label = QLabel(note_name)
+					layout_v.addWidget(note_label)
+				
+				def delete_note_label():
+					note_label.deleteLater()
+					
+				self.notes_thread.print_note_signal.connect(print_note_label)
+				self.notes_thread.delete_note_signal.connect(delete_note_label)
+				
 			self.notes_thread.start()
 			#stop_button = self.get_stop_button(self.notes_thread)
 			#layout_h.insertWidget(2, stop_button)
@@ -408,6 +471,7 @@ class MyGUI(QMainWindow):
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
+		return test_layout
 
 	def setup_menu(self, title:str="", widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=(), back_button:bool=True):
 		frame = QFrame(self)
@@ -462,6 +526,7 @@ class MyGUI(QMainWindow):
 			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
+		print(self.test_menus)
 		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test_menus[0]))
 
 	def get_test2_button(self):
@@ -504,8 +569,8 @@ class MyGUI(QMainWindow):
 
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_questions(self, layout, testCase:TestCase):
-		if not isinstance(self.notes_thread, Test1Thread):
-			raise ValueError(_("Notes thread is not an instance of Test1Thread"))
+		if not isinstance(self.notes_thread, TestThread):
+			raise ValueError(_("Notes thread is not an instance of TestThread"))
 		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, _("Is the last played note the same as the note {} notes ago?").format(testCase.nBack), _("Yes"), _("No"))
 		yes_button, no_button = answers
 		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
