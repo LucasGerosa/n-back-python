@@ -81,7 +81,6 @@ class Test1Thread(TestThread):
 					return
 				
 				self.done_testCase.emit(testCase)
-
 				self.wait_for_signal()
 				id += 1
 			if self.stop:
@@ -95,7 +94,9 @@ class Test1Thread(TestThread):
 
 class Test2Thread(TestThread):
 	print_note_signal = QtCore.pyqtSignal(str)
+	print_hint_signal = QtCore.pyqtSignal(str)
 	delete_note_signal = QtCore.pyqtSignal()
+	delete_hint_signal = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
@@ -116,12 +117,13 @@ class Test2Thread(TestThread):
 				i = 1
 				note_group_length = len(testCase.note_group.notes)
 				for note in testCase.note_group.notes:
-					if i == note_group_length:
-						self.print_note_signal.emit(note.name)
-						note.play()
-						self.delete_note_signal.emit()
-					else:
-						note.play()
+					self.print_note_signal.emit(note.name)
+					if i < note_group_length - 1:
+						self.print_hint_signal.emit(testCase.note_group.notes[i].name)
+					note.play()
+					self.delete_note_signal.emit()
+					if i < note_group_length - 1:
+						self.delete_hint_signal.emit()
 					i += 1
 				del note_group_length
 					
@@ -453,17 +455,44 @@ class MyGUI(QMainWindow):
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_questions(layout_v, testCase))
 			if Thread is Test2Thread:
 				note_label = None
+				spacer = None
 				def print_note_label(note_name):
 					nonlocal note_label
+					nonlocal spacer
 					note_label = QLabel(note_name)
+					note_label.setStyleSheet("font-size: 100px;")
+					
 					layout_v.addWidget(note_label)
+					spacer = QtWidgets.QSpacerItem(20, 300, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+					layout_v.addItem(spacer)
 				
 				def delete_note_label():
+					if note_label is None:
+						raise ValueError(_("note_label should not be None. This means that you tried to delete the note without printing it to the interface first"))
+					
+					if spacer is None:
+						raise ValueError(_("spacer should not be None."))
+					layout_v.removeItem(spacer)
 					note_label.deleteLater()
+				
+				hint_label = None
+				def print_hint_label(note_name):
+					nonlocal hint_label
+					hint_label = QLabel(note_name)
+					hint_label.setStyleSheet("font-size: 65px;")
+					layout_v.addStretch(1)
+					layout_v.addWidget(hint_label)
+				
+				def delete_hint_label():
+					if hint_label is None:
+						raise ValueError(_("hint_label should not be None. This means that you tried to delete the note without printing it to the interface first"))
+					hint_label.deleteLater()
 					
 				self.notes_thread.print_note_signal.connect(print_note_label)
+				self.notes_thread.print_hint_signal.connect(print_hint_label)
 				self.notes_thread.delete_note_signal.connect(delete_note_label)
-				
+				self.notes_thread.delete_hint_signal.connect(delete_hint_label)
+			#layout_v.addStretch(1)
 			self.notes_thread.start()
 			#stop_button = self.get_stop_button(self.notes_thread)
 			#layout_h.insertWidget(2, stop_button)
@@ -526,7 +555,6 @@ class MyGUI(QMainWindow):
 			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
-		print(self.test_menus)
 		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test_menus[0]))
 
 	def get_test2_button(self):
