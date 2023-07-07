@@ -78,15 +78,13 @@ class MyGUI(QMainWindow):
 		spacer1_h.setMinimumSize(minimum_x, minimum_y)
 		spacer2_h = QWidget()
 		spacer2_h.setMinimumSize(minimum_x, minimum_y)
-		spacer3_h = QWidget()
-		spacer3_h.setMinimumSize(minimum_x, minimum_y)
 		spacer1_v = QWidget()
-		spacer1_v.setMinimumSize(100, minimum_y)
+		spacer1_v.setMinimumSize(200, minimum_y)
 		spacer2_v = QWidget()
-		spacer2_v.setMinimumSize(100, minimum_y)
+		spacer2_v.setMinimumSize(200, minimum_y)
 		layout_grid.addWidget(spacer1_h, 0, 1)
 		layout_grid.addWidget(spacer2_h, 2, 1)
-		layout_grid.addWidget(spacer3_h, 3, 1)
+
 		layout_grid.addWidget(spacer1_v, 1, 0)
 		layout_grid.addWidget(spacer2_v, 1, 2)
 
@@ -357,11 +355,8 @@ class MyGUI(QMainWindow):
 					nonlocal note_label
 					note_label = QLabel(note_name)
 					note_label.setStyleSheet("font-size: 300px;")
-					layout_grid.addWidget(note_label, 1, 1)
-					#layout_v.addWidget(note_label)
-					#spacer = QtWidgets.QSpacerItem(20, 300, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-					#layout_v.addItem(spacer)
-				
+					layout_grid.addWidget(note_label, 1, 1, Qt.AlignmentFlag.AlignTop)
+
 				def delete_note_label():
 					if note_label is None:
 						raise ValueError(_("note_label should not be None. This means that you tried to delete the note without printing it to the interface first"))
@@ -372,7 +367,8 @@ class MyGUI(QMainWindow):
 					nonlocal hint_label
 					hint_label = QLabel(note_name)
 					hint_label.setStyleSheet("font-size: 65px;")
-					layout_grid.addWidget(hint_label, 4, 2)
+					#hint_label.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
+					layout_grid.addWidget(hint_label, 2, 2, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 				
 				def delete_hint_label():
 					if hint_label is None:
