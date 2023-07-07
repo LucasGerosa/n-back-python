@@ -3,6 +3,7 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from TestCase import TestCase
 from utils.defaults import *
+import math
 
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
@@ -106,7 +107,11 @@ class Test2Thread(TestThread):
 					self.print_note_signal.emit(note.name)
 					if i < note_group_length - 1:
 						self.print_hint_signal.emit(testCase.note_group.notes[i].name)
-					note.play()
+					for _ in range(math.floor(note.note_value * 4)):
+						if self.stop:
+							print(_("Thread was interrupted. Stopping now."))
+							return
+						note.play()
 					self.delete_note_signal.emit()
 					if i < note_group_length - 1:
 						self.delete_hint_signal.emit()
