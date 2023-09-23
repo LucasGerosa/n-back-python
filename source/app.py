@@ -359,7 +359,7 @@ class MyGUI(QMainWindow):
 			instrument = get_text(instrument_q)
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
-			self.notes_thread = Thread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument)
+			self.notes_thread = Thread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=C_MAJOR_MODE if c_major_radio_button.isChecked() else RANDOM_MODE)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)

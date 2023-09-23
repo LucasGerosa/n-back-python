@@ -11,7 +11,7 @@ class TestThread(QtCore.QThread):
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
 	
-	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+	def __init__(self, layout:QtWidgets.QLayout, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, mode:str = RANDOM_MODE):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
@@ -24,6 +24,7 @@ class TestThread(QtCore.QThread):
 		self.notesQuantity = notesQuantity
 		self.bpm = bpm
 		self.instrument = instrument
+		self.mode = mode
 	
 	def wait_for_signal(self):
 		self.mutex.lock()
@@ -56,7 +57,7 @@ class Test1Thread(TestThread):
 			id = 0
 			while id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument)
+				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument, self.mode)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
@@ -95,7 +96,7 @@ class Test2Thread(TestThread):
 			id = 0
 			while id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument)
+				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument, self.mode)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

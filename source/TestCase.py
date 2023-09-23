@@ -42,15 +42,23 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 	note_str_list = note_str_utils.get_final_list_notes(note_str)
 	note_list = [notes.get_note_from_note_name(intensity, note_str, note_value=note_value) for note_str in note_str_list]
 	return notes.Note_group(note_list)
+
 class TestCase:
 
-	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE) -> None:
 		self.layout = layout
 		self.id: int = id
 		self.nBack: int = nBack
 		self.numberOfNotes: int = numberOfNotes
-		self.note_group = self.get_random_notes(bpm, instrument, numberOfNotes)
-		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."        
+		if mode == RANDOM_MODE:
+			self.note_group = self.get_random_notes(bpm, instrument, numberOfNotes)
+		elif mode == C_MAJOR_MODE:
+			self.note_group = self.get_C_major_notes(bpm, instrument, numberOfNotes)
+		else:
+			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{C_MAJOR_MODE}'. Got '{mode}' instead.")
+		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
+
+
 		self.result: ResultEnum = ResultEnum.ERRO
 
 	def __str__(self):
@@ -61,6 +69,25 @@ class TestCase:
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
 		notes_array = np.array(note_group.notes)
+		random_notes_array = np.random.choice(notes_array, numberOfNotes)
+		random_notes_group = notes.Note_group(random_notes_array.tolist())
+		return random_notes_group
+
+	def get_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
+		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
+		if note_group.notes == []:
+			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+		filtered_notes = []
+		for note in note_group:
+			print(note.name) #for debugging
+			if not "#" in note.name and not "b" in note.name:
+				filtered_notes.append(note)
+		
+		for note in filtered_notes: #for debugging
+			print(note.name)
+
+		filtered_note_group = notes.Note_group(filtered_notes)
+		notes_array = np.array(filtered_note_group.notes)
 		random_notes_array = np.random.choice(notes_array, numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
@@ -137,3 +164,13 @@ class TestCase:
 			except Exception:
 				import traceback
 				print(traceback.format_exc())
+
+
+if __name__ == "__main__":
+	note_group = get_note_group_from_config()
+	filtered_notes = []
+	for note in note_group:
+		print(note.name)
+		if not "#" in note.name and not "b" in note.name:
+			filtered_notes.append(note)
+	filtered_note_group = notes.Note_group(filtered_notes)

@@ -137,6 +137,7 @@ def test():
 	s7 = "Ab3-Cb4"
 	s8 = "A4-G5; A1-C2"
 	s9 = "A4-G5;C####2"
+	s10 = "C4-C6"
 	print(get_final_list_notes(s1))
 	print(get_final_list_notes(s2))
 	print(get_final_list_notes(s3))
@@ -146,6 +147,7 @@ def test():
 	print(get_final_list_notes(s7))
 	print(get_final_list_notes(s8))
 	print(get_final_list_notes(s9))
+	print("s10: ", get_final_list_notes(s10))
 
 if __name__ == '__main__':
 	test()
