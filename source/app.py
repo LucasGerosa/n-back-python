@@ -241,6 +241,20 @@ class MyGUI(QMainWindow):
 		connect(bpm_q, msgbox_if_float)
 		connect(instrument_q, msgbox_if_instrument)
 		connect(player_name_q, msgbox_if_empty)
+
+		layout_v_h = QtWidgets.QHBoxLayout()
+		random_radio_button = QtWidgets.QRadioButton(_("Random"))
+		random_radio_button.setFont(PyQt6_utils.FONT)
+		random_radio_button.setStyleSheet("font-size: 20px;")
+		random_radio_button.setChecked(True)
+		layout_v_h.addWidget(random_radio_button)
+
+		c_major_radio_button = QtWidgets.QRadioButton(_("C major scale"))
+		c_major_radio_button.setFont(PyQt6_utils.FONT)
+		c_major_radio_button.setStyleSheet("font-size: 20px;")
+		layout_v_h.addWidget(c_major_radio_button)
+		layout_v.addLayout(layout_v_h)
+
 		reset_button = QPushButton(_("Reset"))
 		layout_v.addWidget(reset_button)
 		def reset():
@@ -252,6 +266,7 @@ class MyGUI(QMainWindow):
 		play_test_button = QPushButton(_("Play test") + test_number_str)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
+
 		test_layout = None
 		def play_test():
 			nonlocal test_layout
