@@ -249,10 +249,17 @@ class MyGUI(QMainWindow):
 		random_radio_button.setChecked(True)
 		layout_v_h.addWidget(random_radio_button)
 
-		c_major_radio_button = QtWidgets.QRadioButton(_("C major scale"))
-		c_major_radio_button.setFont(PyQt6_utils.FONT)
-		c_major_radio_button.setStyleSheet("font-size: 20px;")
-		layout_v_h.addWidget(c_major_radio_button)
+		random_c_major_radio_button = QtWidgets.QRadioButton(_("Random C major scale"))
+		random_c_major_radio_button.setFont(PyQt6_utils.FONT)
+		random_c_major_radio_button.setStyleSheet("font-size: 20px;")
+		layout_v_h.addWidget(random_c_major_radio_button)
+
+		tonal_c_major_radio_button = QtWidgets.QRadioButton(_("Tonal C major scale"))
+		tonal_c_major_radio_button.setFont(PyQt6_utils.FONT)
+		tonal_c_major_radio_button.setStyleSheet("font-size: 20px;")
+		layout_v_h.addWidget(tonal_c_major_radio_button)
+
+		
 		layout_v.addLayout(layout_v_h)
 
 		reset_button = QPushButton(_("Reset"))
@@ -359,7 +366,14 @@ class MyGUI(QMainWindow):
 			instrument = get_text(instrument_q)
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
-			self.notes_thread = Thread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=C_MAJOR_MODE if c_major_radio_button.isChecked() else RANDOM_MODE)
+			if random_c_major_radio_button.isChecked():
+				mode = RANDOM_C_MAJOR_MODE
+			elif tonal_c_major_radio_button.isChecked():
+				mode = TONAL_C_MAJOR_MODE
+			else:
+				mode = RANDOM_MODE
+
+			self.notes_thread = Thread(layout_v, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=mode)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)

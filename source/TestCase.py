@@ -52,10 +52,12 @@ class TestCase:
 		self.numberOfNotes: int = numberOfNotes
 		if mode == RANDOM_MODE:
 			self.note_group = self.get_random_notes(bpm, instrument, numberOfNotes)
-		elif mode == C_MAJOR_MODE:
-			self.note_group = self.get_C_major_notes(bpm, instrument, numberOfNotes)
+		elif mode == RANDOM_C_MAJOR_MODE:
+			self.note_group = self.get_random_C_major_notes(bpm, instrument, numberOfNotes)
+		elif mode == TONAL_C_MAJOR_MODE:
+			self.note_group = self.get_tonal_C_major_notes(bpm, instrument, numberOfNotes)
 		else:
-			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{C_MAJOR_MODE}'. Got '{mode}' instead.")
+			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{RANDOM_C_MAJOR_MODE}' or '{TONAL_C_MAJOR_MODE}'. Got '{mode}' instead.")
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
 
 
@@ -73,7 +75,7 @@ class TestCase:
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
 
-	def get_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
+	def get_random_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
@@ -91,6 +93,13 @@ class TestCase:
 		random_notes_array = np.random.choice(notes_array, numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
+	
+	def get_tonal_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
+		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCE * ((numberOfNotes // len(TONAL_C_MAJOR_DEFAULT_SEQUENCE)) + 1))[:numberOfNotes]
+		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
+		tonal_notes_group = notes.Note_group(notes_list)
+		return tonal_notes_group
+	
 
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note

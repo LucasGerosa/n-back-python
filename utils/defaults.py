@@ -5,7 +5,10 @@ DEFAULT_NOTE_VALUE = 1/4
 PROJECT_NAME = "nback"
 TRANSLATIONS_FOLDER = 'translations'
 RANDOM_MODE = 'random'
-C_MAJOR_MODE = 'c_major'
+RANDOM_C_MAJOR_MODE = 'random_c_major'
+TONAL_C_MAJOR_MODE = 'tonal_c_major'
+TONAL_C_MAJOR_DEFAULT_SEQUENCE = ["G4", "F4", "E4", "E4", "D4", "E4", "F4", "G4", "C5", "C5"]
+
 
 class user_input_messages:
     yes = 'y'
