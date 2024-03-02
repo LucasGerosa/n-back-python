@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtWidgets
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import TestCase
+from TestCase import TestCase, TonalDiscriminationTaskTestCase
 from utils.defaults import *
 import math
 
@@ -133,5 +133,43 @@ class Test2Thread(TestThread):
 			TestCase.saveResults(testCaseList, self.playerName)
 
 			return testCaseList
+		except KeyboardInterrupt:
+			print(_("Ctrl+c was pressed. Stopping now."))
+
+class Test3Thread(TestThread):
+	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
+	between_note_groups = QtCore.pyqtSignal()
+	def executeLoop(self) -> list|None:
+		try:
+			testCaseList = []
+			id = 0
+			while id < self.test_case_n and not self.stop:
+				self.pre_start_execution.emit()
+				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.bpm, self.instrument)
+				testCaseList.append(testCase)
+				self.start_execution.emit()
+				self.wait_for_signal()
+				
+				testCase.note_group1.play()
+				if self.stop:
+					print(_("Thread was interrupted. Stopping now."))
+					return
+				
+				self.between_note_groups.emit()
+				self.wait_for_signal()
+
+				testCase.note_group2.play()
+				self.done_testCase.emit(testCase)
+				self.wait_for_signal()
+
+				id += 1
+			if self.stop:
+				print(_("Thread was interrupted. Stopping now."))
+				return
+			TonalDiscriminationTaskTestCase.saveResults(testCaseList, self.playerName)
+
+			return testCaseList
+
+
 		except KeyboardInterrupt:
 			print(_("Ctrl+c was pressed. Stopping now."))

@@ -7,11 +7,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import notes
 from utils.defaults import *
 from utils import PyQt6_utils
-from test_threads import Test1Thread, Test2Thread, TestThread
+from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread
 import run
 from typing import Dict, Optional, List
 from utils import notes_config
-from TestCase import TestCase
+from TestCase import TestCase, TonalDiscriminationTaskTestCase
 import asyncio
 from collections.abc import Iterable
 import re
@@ -43,6 +43,7 @@ class MyGUI(QMainWindow):
 		self.setup_debug_menu()
 		self.setup_test1_menu()
 		self.setup_test2_menu()
+		self.setup_test3_menu()
 		self.setup_test2_frame()
 
 		self.states = [self.main_menu]
@@ -157,7 +158,7 @@ class MyGUI(QMainWindow):
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
-		v_buttons = self.get_main_menu_button(), self.get_test1_button(), self.get_test2_button()
+		v_buttons = self.get_main_menu_button(), self.get_test1_button(), self.get_test2_button(), self.get_test3_button()
 		layout_h, layout_v, self.play_menu = self.setup_menu(_("Choose a test"), h_buttons, v_buttons)
 
 	def setup_debug_menu(self):
@@ -170,6 +171,190 @@ class MyGUI(QMainWindow):
 
 	def setup_test2_menu(self):
 		self.setup_test_menu(2, Test2Thread)
+	
+	def setup_test3_menu(self):
+		Thread = Test3Thread
+		h_buttons = (self.get_settings_button(),)
+		v_buttons = ()
+		test_number_str = ' ' + str(3)
+		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
+		self.test_menus.append(test_menu)
+		player_name_q = _("Player name")
+		test_case_q = _("How many test cases?")
+		bpm_q = _("How many bpm (float)")
+		instrument_q = _("Instrument (piano or guitar)")
+		labels = (player_name_q, test_case_q, bpm_q, instrument_q)
+		set_text = tuple(["Gerosa", '2', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		if len(set_text) != len(labels):
+			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
+		draft_forms_dict = dict(zip(labels, set_text))
+		column_labels, column_text_box = PyQt6_utils.setup_forms(layout_v, draft_forms_dict)
+
+		def check_isdigit(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			return text.isdigit() and int(text) > 0, text
+
+		def check_isfloat(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			value = PyQt6_utils.is_float_or_fraction(text)
+			return not (value == None or value <= 0), text
+
+		def check_isinstrument(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			return text in INSTRUMENTS, text
+
+		def check_isempty(q):
+			text_box = column_text_box[labels.index(q)]
+			text = text_box.text()
+			return text != ""
+
+		def msgbox_if_digit(q):
+			is_digit, text = check_isdigit(q)
+			if not is_digit:
+				PyQt6_utils.get_msg_box(_("Incorrect input"), f"{_('Please enter an integer bigger than 0, not')} \"{text}\"", QMessageBox.Icon.Warning).exec()
+
+		def msgbox_if_float(q):
+			is_float, text = check_isfloat(q)
+			if not is_float:
+				PyQt6_utils.get_msg_box(_("Incorrect input"), f"{_('Please enter a fraction or a decimal bigger than 0, not')} \"{text}\"", QMessageBox.Icon.Warning).exec()
+	
+		def msgbox_if_instrument(q):
+			is_instrument, text = check_isinstrument(q)
+			if not is_instrument:
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Please enter a valid instrument, not \"{text}\""), QMessageBox.Icon.Warning).exec()
+
+		def msgbox_if_empty(q):
+			is_empty = check_isempty(q)
+			if not is_empty:
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Please enter something."), QMessageBox.Icon.Warning).exec()
+
+		def connect(q, func): # Tells python what to do when the user finishes typing in the msg boxes
+			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
+
+		connect(test_case_q, msgbox_if_digit)
+		connect(bpm_q, msgbox_if_float)
+		connect(instrument_q, msgbox_if_instrument)
+		connect(player_name_q, msgbox_if_empty)
+
+		reset_button = QPushButton(_("Reset"))
+		layout_v.addWidget(reset_button)
+		def reset():
+			i = 0
+			for text in set_text:
+				column_text_box[i].setText(text)
+				i += 1
+		reset_button.clicked.connect(reset)
+		play_test_button = QPushButton(_("Play test") + test_number_str)
+		play_test_button.setFont(PyQt6_utils.FONT)
+		button_size = play_test_button.sizeHint()
+
+		test_layout = None
+		def play_test():
+			nonlocal test_layout
+			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
+			test_layout = layout_v
+			self.states.append(self.takeCentralWidget())
+			self.setCentralWidget(test1_test)
+			def get_text(q):
+				return column_text_box[labels.index(q)].text()
+			
+			incorrect_fields:list[str] = []
+			player_name = get_text(player_name_q)
+			if player_name == "":
+				incorrect_fields.append(player_name_q)
+			for q in (test_case_q,):
+				if not check_isdigit(q)[0]:
+					incorrect_fields.append(q)
+			if not check_isfloat(bpm_q)[0]:
+				incorrect_fields.append(bpm_q)
+			if not check_isinstrument(instrument_q)[0]:
+				incorrect_fields.append(instrument_q)
+			
+			if incorrect_fields != []:
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+_(".\n\n Correct them and try again"), QMessageBox.Icon.Warning).exec()
+				return
+			
+			@QtCore.pyqtSlot()
+			def on_execute_loop_thread_finished():
+				if not isinstance(self.notes_thread, TestThread):
+					raise ValueError(_("Notes thread is not an instance of TestThread"))
+				self.notes_thread.deleteLater()
+				self.setCentralWidget(self.states.pop())
+			
+			def countdown():
+				seconds_remaining = 3
+				timer = QtCore.QTimer(self)
+				label = QLabel('3', self)
+				label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+				label.setStyleSheet("font-size: 100px;")
+				layout_h.addWidget(label)
+
+				def update_countdown():
+					nonlocal seconds_remaining
+					seconds_remaining -= 1
+					label.setText(str(seconds_remaining))
+
+					if seconds_remaining == 0:
+						timer.stop()
+						label.deleteLater()
+						self.notes_thread.wait_condition.wakeOne()
+
+				timer.timeout.connect(update_countdown)
+				timer.start(1000)
+
+			def ask_continue_test():
+				nonlocal loadingLabel
+				loadingLabel.deleteLater()
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next test case?"), _("Yes"))
+				yes_button = answers[0]
+				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+				def continue_test():
+					destroy_question()
+					countdown()
+				yes_button.clicked.connect(continue_test)
+			
+			def ask_continue_test_between_note_groups():
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next sequence?"), _("Yes"))
+				yes_button = answers[0]
+				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+				def continue_test():
+					destroy_question()
+					countdown()
+				yes_button.clicked.connect(continue_test)
+			
+			def create_loading_label():
+				nonlocal loadingLabel
+				loadingLabel = QLabel(_("Loading")+ '...')
+				loadingLabel.setStyleSheet("font-size: 50px;")
+				loadingLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+				layout_v.addWidget(loadingLabel)
+			
+			test_case = int(get_text(test_case_q))
+			bpm = float(get_text(bpm_q))
+			instrument = get_text(instrument_q)
+			#play_test_button.setEnabled(False)
+			loadingLabel = None
+
+			self.notes_thread = Thread(layout_v, player_name, test_case, 0,	0, bpm, instrument) #0, 0  are placeholders for nback and notesQuantity, which are not used in this test
+			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
+			self.notes_thread.start_execution.connect(ask_continue_test)
+			self.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
+			self.notes_thread.pre_start_execution.connect(create_loading_label)
+
+
+			self.notes_thread.done_testCase.connect(lambda testCase:self.create_questions_tonal_discrimination_task(layout_v, testCase))
+			#layout_v.addStretch(1)
+			self.notes_thread.start()
+			#stop_button = self.get_stop_button(self.notes_thread)
+			#layout_h.insertWidget(2, stop_button)
+
+		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
+		play_test_button.clicked.connect(play_test)
+		layout_v.addWidget(play_test_button)
+		return test_layout
 
 	def setup_test_menu(self, test_number:int, Thread:TestThread):
 		h_buttons = (self.get_settings_button(),)
@@ -316,11 +501,8 @@ class MyGUI(QMainWindow):
 					raise ValueError(_("Notes thread is not an instance of TestThread"))
 				self.notes_thread.deleteLater()
 				self.setCentralWidget(self.states.pop())
-				
-				#play_test_button.setEnabled(True)
 			
 			def countdown():
-				#play_test_button.setEnabled(False)
 				seconds_remaining = 3
 				timer = QtCore.QTimer(self)
 				label = QLabel('3', self)
@@ -483,6 +665,9 @@ class MyGUI(QMainWindow):
 	def get_test2_button(self):
 		return PyQt6_utils.get_txt_button(_('Test') + ' 2', lambda: self.goto_frame(self.test_menus[1]))
 	
+	def get_test3_button(self):
+		return PyQt6_utils.get_txt_button(_('Test') + ' 3', lambda: self.goto_frame(self.test_menus[2]))
+	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))
 
@@ -536,6 +721,30 @@ class MyGUI(QMainWindow):
 
 		def no():
 			testCase.validateAnswer(answer=2)
+			destroy_yes_no()
+			self.notes_thread.wait_condition.wakeOne()
+
+		yes_button.clicked.connect(yes)
+		no_button.clicked.connect(no)
+	
+	@QtCore.pyqtSlot(QVBoxLayout, TonalDiscriminationTaskTestCase)
+	def create_questions_tonal_discrimination_task(self, layout, testCase:TonalDiscriminationTaskTestCase):
+		if not isinstance(self.notes_thread, TestThread):
+			raise ValueError(_("Notes thread is not an instance of TestThread"))
+		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, _("Are both the sequences the same?"), _("Yes"), _("No"))
+		yes_button, no_button = answers
+		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+		no_button.setStyleSheet("background-color: red; font-size: 50px;")
+		'''	def confirm():
+			answer = 1 if yes_button.isChecked() else 2
+			self.validateAnswer(answer=answer)'''
+		def yes():
+			testCase.validateAnswer(answer="same")
+			destroy_yes_no()
+			self.notes_thread.wait_condition.wakeOne()
+
+		def no():
+			testCase.validateAnswer(answer="different")
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 

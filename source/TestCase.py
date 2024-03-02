@@ -99,7 +99,6 @@ class TestCase:
 		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
 		tonal_notes_group = notes.Note_group(notes_list)
 		return tonal_notes_group
-	
 
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
@@ -174,6 +173,72 @@ class TestCase:
 				import traceback
 				print(traceback.format_exc())
 
+class TonalDiscriminationTaskTestCase:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> None:
+		self.layout = layout
+		self.id: int = id
+		sequence, sequence_mismatch = self.get_random_sequence()
+		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
+		self.is_sequence_mismatch = random.choice([True, False])
+		if self.is_sequence_mismatch:
+			self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
+		else:
+			self.note_group2 = self.note_group1
+	
+	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
+		note_group = notes.Note_group([notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
+		return note_group
+
+	def get_random_sequence(self):
+		sequence_index = random.randint(0, len(TONAL_DISCRIMINATION_TASK_SEQUENCES) - 1)
+		sequence = TONAL_DISCRIMINATION_TASK_SEQUENCES[sequence_index]
+		sequence_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES_MISMATCH[sequence_index]
+		return sequence, sequence_mismatch
+	
+	def validateAnswer(self, answer) -> None:
+
+		if self.is_sequence_mismatch:
+			if answer == 'same':
+				self.result = ResultEnum.ERRO
+			elif answer == 'different':
+				self.result = ResultEnum.ACERTO
+			else:
+				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+		else:
+			if answer == 'different':
+				self.result = ResultEnum.ERRO
+			elif answer == 'same':
+				self.result = ResultEnum.ACERTO
+			else:
+				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+		
+		self.answer = answer
+	
+	@staticmethod
+	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
+		def write_content_to_csv(writer, testCaseList):
+			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result'])
+			for t in testCaseList:
+				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result]) #FIXME: add 1st and 2nd sequence
+
+		try:
+			f = FileUtils.createfile(playerName)
+		
+		except PermissionError:
+			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
+			buffer = io.StringIO()
+			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			write_content_to_csv(writer, testCaseList)
+			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
+			buffer.close()
+
+		else:
+			with f:
+				# create the csv writer
+				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				write_content_to_csv(writer, testCaseList)
+
+			f.close()
 
 if __name__ == "__main__":
 	note_group = get_note_group_from_config()
