@@ -181,10 +181,11 @@ class MyGUI(QMainWindow):
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
 		test_case_q = _("How many test cases?")
+		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
-		labels = (player_name_q, test_case_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '2', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		labels = (player_name_q, test_case_q, notes_quantity_q, bpm_q, instrument_q)
+		set_text = tuple(["Gerosa", '2', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
@@ -235,6 +236,7 @@ class MyGUI(QMainWindow):
 			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
 
 		connect(test_case_q, msgbox_if_digit)
+		connect(notes_quantity_q, msgbox_if_digit)
 		connect(bpm_q, msgbox_if_float)
 		connect(instrument_q, msgbox_if_instrument)
 		connect(player_name_q, msgbox_if_empty)
@@ -265,7 +267,7 @@ class MyGUI(QMainWindow):
 			player_name = get_text(player_name_q)
 			if player_name == "":
 				incorrect_fields.append(player_name_q)
-			for q in (test_case_q,):
+			for q in (test_case_q, notes_quantity_q):
 				if not check_isdigit(q)[0]:
 					incorrect_fields.append(q)
 			if not check_isfloat(bpm_q)[0]:
@@ -275,6 +277,14 @@ class MyGUI(QMainWindow):
 			
 			if incorrect_fields != []:
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+_(".\n\n Correct them and try again"), QMessageBox.Icon.Warning).exec()
+				return
+			
+			def is_notes_quantity_valid():
+				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
+				return int(notes_quantity) <= len(TONAL_DISCRIMINATION_TASK_SEQUENCES[0])
+
+			if not is_notes_quantity_valid():
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + test case - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			@QtCore.pyqtSlot()
@@ -333,12 +343,13 @@ class MyGUI(QMainWindow):
 				layout_v.addWidget(loadingLabel)
 			
 			test_case = int(get_text(test_case_q))
+			notes_quantity = int(get_text(notes_quantity_q))
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
 
-			self.notes_thread = Thread(layout_v, player_name, test_case, 0,	0, bpm, instrument) #0, 0  are placeholders for nback and notesQuantity, which are not used in this test
+			self.notes_thread = Thread(layout_v, player_name, test_case, 0, notes_quantity, bpm, instrument) #0  is a placeholder for nback, which is not used in this test
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)

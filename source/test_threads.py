@@ -145,7 +145,7 @@ class Test3Thread(TestThread):
 			id = 0
 			while id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.bpm, self.instrument)
+				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

@@ -174,10 +174,10 @@ class TestCase:
 				print(traceback.format_exc())
 
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, id:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> None:
 		self.layout = layout
 		self.id: int = id
-		sequence, sequence_mismatch = self.get_random_sequence()
+		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
 		self.is_sequence_mismatch = random.choice([True, False])
 		if self.is_sequence_mismatch:
@@ -189,11 +189,16 @@ class TonalDiscriminationTaskTestCase:
 		note_group = notes.Note_group([notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
 		return note_group
 
-	def get_random_sequence(self):
+	def get_random_sequence(self, notesQuantity:int):
 		sequence_index = random.randint(0, len(TONAL_DISCRIMINATION_TASK_SEQUENCES) - 1)
 		sequence = TONAL_DISCRIMINATION_TASK_SEQUENCES[sequence_index]
 		sequence_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES_MISMATCH[sequence_index]
-		return sequence, sequence_mismatch
+		sliced_sequence = self.slice_sequence(sequence, notesQuantity)
+		sliced_sequence_mismatch = self.slice_sequence(sequence_mismatch, notesQuantity)
+		return sliced_sequence, sliced_sequence_mismatch
+	
+	def slice_sequence(self, sequence, notesQuantity):
+		return sequence[:notesQuantity]
 	
 	def validateAnswer(self, answer) -> None:
 
