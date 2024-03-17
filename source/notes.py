@@ -5,9 +5,11 @@ import sys
 from pydub import AudioSegment, playback
 from pydub.silence import detect_leading_silence
 
+
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
+from utils import note_str_utils
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
@@ -126,6 +128,10 @@ class Note:
     def get_name(self) -> str: #gets the name of the note (e.g. Gb3, D4, etc)
         name = self.fileName.split('.')[-1]
         return name
+    
+    def get_intensity(self) -> str: #gets the intensity of the note (e.g. pp, mf, f, etc)
+        intensity = self.fileName.split('.')[1]
+        return intensity
 
     def play(self) -> None:
         if self.extension !='mp3': #TEMPORARY
@@ -158,6 +164,18 @@ class Note:
     
     def delete_file(self) -> None:
         os.remove(self.path)
+    
+    def add_semitone(self, semitones:int) -> None:
+        #makes a note with the same atribute but with one semitone of difference
+        note_str, octave = self.name[:-1], self.name[-1]
+        if semitones < 0 or self.name == 'B7': #Gb6 is the last possible note on the program, so this ensures instead of going higher, it goes one lower
+            note_str += "b"
+        elif semitones > 0 or self.name == 'C1': 
+            note_str += "#"
+        note_str = note_str_utils.convert_sharps_to_flats(note_str, octave)
+        print("add_semitone(): Previous note:" + self.name + "; Altered note:" + note_str)
+        return get_note_from_note_name(self.get_intensity(), note_str, self.bpm, self.create_sound, self.instrument, self.note_value)
+            
         
 
 class Note_group:

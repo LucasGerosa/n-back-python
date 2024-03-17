@@ -49,7 +49,10 @@ class TestCase:
 		self.layout = layout
 		self.id: int = id
 		self.nBack: int = nBack
-		self.numberOfNotes: int = numberOfNotes
+		if numberOfNotes < 2:
+			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
+		self.numberOfNotes: int = numberOfNotes - 1
+
 		if mode == RANDOM_MODE:
 			self.note_group = self.get_random_notes(bpm, instrument, numberOfNotes)
 		elif mode == RANDOM_C_MAJOR_MODE:
@@ -60,7 +63,7 @@ class TestCase:
 			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{RANDOM_C_MAJOR_MODE}' or '{TONAL_C_MAJOR_MODE}'. Got '{mode}' instead.")
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
 
-
+		self.note_group.notes.append(self.get_last_note(self.nBack))
 		self.result: ResultEnum = ResultEnum.ERRO
 
 	def __str__(self):
@@ -95,10 +98,21 @@ class TestCase:
 		return random_notes_group
 	
 	def get_tonal_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
-		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCE * ((numberOfNotes // len(TONAL_C_MAJOR_DEFAULT_SEQUENCE)) + 1))[:numberOfNotes]
+		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCES * ((numberOfNotes // len(TONAL_C_MAJOR_DEFAULT_SEQUENCES)) + 1))[:numberOfNotes]
 		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
 		tonal_notes_group = notes.Note_group(notes_list)
 		return tonal_notes_group
+
+	def get_last_note(self, nBack:int) -> notes.Note: 
+		note = self.note_group.notes[-nBack]
+		if random.choice(["same note", "different note"]) == "same note":
+			return note
+		else:
+			if random.choice(["up", "down"]) == "up": #if up, will go up a half step (semitone)
+				return note.add_semitone(1)
+			else:
+				return note.add_semitone(-1)
+		
 
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
@@ -123,7 +137,7 @@ class TestCase:
 		self.answer = answer
 
 	def isValidTestCase(self) -> Boolean:
-		return self.numberOfNotes > self.nBack
+		return self.numberOfNotes >= self.nBack
 	
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
