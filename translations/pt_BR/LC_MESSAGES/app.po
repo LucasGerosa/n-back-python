@@ -219,3 +219,12 @@ msgstr "teste"
 
 msgid "Test"
 msgstr "Teste"
+
+msgid "Random"
+msgstr "Aleatório"
+
+msgid "Random C major scale"
+msgstr "Escala de C maior aleatória"
+
+msgid "Tonal C major scale"
+msgstr "Escala tonal de C maior"
