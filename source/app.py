@@ -718,7 +718,16 @@ class MyGUI(QMainWindow):
 	def create_questions(self, layout, testCase:TestCase):
 		if not isinstance(self.notes_thread, TestThread):
 			raise ValueError(_("Notes thread is not an instance of TestThread"))
-		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, _("Is the last played note the same as the note {} notes ago?").format(testCase.nBack), _("Yes"), _("No"))
+		nback = testCase.nBack
+		if nback == 1:
+			question_text = _("Is the last played note the same as the previous note?")
+		elif nback == 2:
+			question_text = _("Is the last played note the same as the note before the previous note?")
+		elif nback == 3:
+			question_text = _("Is the last played note the same as the note three places before it?")
+		else:
+			question_text = _("Is the last played note the same as the {}th note before the last?").format(nback)
+		answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(layout, question_text, _("Yes"), _("No"))
 		yes_button, no_button = answers
 		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 		no_button.setStyleSheet("background-color: red; font-size: 50px;")

@@ -83,11 +83,13 @@ class TestCase:
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
 		filtered_notes = []
+		print('Notes in the note group:')
 		for note in note_group:
 			print(note.name) #for debugging
 			if not "#" in note.name and not "b" in note.name:
 				filtered_notes.append(note)
 		
+		print('Filtered notes:')
 		for note in filtered_notes: #for debugging
 			print(note.name)
 

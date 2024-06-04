@@ -18,6 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
+# To make the mo file, run the following command:
+#	cd translations/pt_BR/LC_MESSAGES/ && msgfmt app.po -o app.mo
+
 #: source/app.py:53
 msgid "Could not find layout_v. This is a bug. Please contact the developers."
 msgstr "Não foi possível encontrar layout_v. Isso é um bug. Por favor, entre em contato com os desenvolvedores."
@@ -237,3 +240,15 @@ msgstr "Teste nback visuotonal"
 
 msgid "Tonal discrimination task"
 msgstr "Teste de discriminação tonal"
+
+msgid "Is the last played note the same as the note three places before it?"
+msgstr "A última nota tocada é igual à antepenúltima nota?"	
+
+msgid "Is the last played note the same as the note before the previous note?"
+msgstr "A última nota tocada é igual à penúltima nota?"
+
+msgid "Is the last played note the same as the previous note?"
+msgstr "A última nota tocada é igual à nota anterior?"
+
+msgid "Is the last played note the same as the {}th note before the last?"
+msgstr "A última nota tocada é igual à nota {} antes da última?"
