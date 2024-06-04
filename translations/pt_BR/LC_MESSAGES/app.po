@@ -228,3 +228,12 @@ msgstr "Escala de C maior aleatória"
 
 msgid "Tonal C major scale"
 msgstr "Escala tonal de C maior"
+
+msgid "Tonal nback test"
+msgstr "Teste nback tonal"
+
+msgid "Visuotonal nback test"
+msgstr "Teste nback visuotonal"
+
+msgid "Tonal discrimination task"
+msgstr "Teste de discriminação tonal"

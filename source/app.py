@@ -671,13 +671,13 @@ class MyGUI(QMainWindow):
 			self.setCentralWidget(current_frame)
 
 	def get_test1_button(self):
-		return PyQt6_utils.get_txt_button(_('Test') + ' 1', lambda: self.goto_frame(self.test_menus[0]))
+		return PyQt6_utils.get_txt_button(_('Tonal nback test'), lambda: self.goto_frame(self.test_menus[0]))
 
 	def get_test2_button(self):
-		return PyQt6_utils.get_txt_button(_('Test') + ' 2', lambda: self.goto_frame(self.test_menus[1]))
+		return PyQt6_utils.get_txt_button(_('Visuotonal nback test'), lambda: self.goto_frame(self.test_menus[1]))
 	
 	def get_test3_button(self):
-		return PyQt6_utils.get_txt_button(_('Test') + ' 3', lambda: self.goto_frame(self.test_menus[2]))
+		return PyQt6_utils.get_txt_button(_('Tonal discrimination task'), lambda: self.goto_frame(self.test_menus[2]))
 	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))
