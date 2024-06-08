@@ -45,6 +45,9 @@ def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Pa
 		except (TypeError, FileNotFoundError) as err:
 			print(f"Error happened when retriving filename, try again. Error: {err}")
 
+def isEven(number:int) -> bool:
+	return number % 2 == 0
+
 
 if __name__ == "__main__":
 	readFromFile()

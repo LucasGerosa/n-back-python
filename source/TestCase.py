@@ -45,10 +45,12 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 
 class TestCase:
 
-	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = True, isLastNoteUp = None) -> None:
 		self.layout = layout
 		self.id: int = id
 		self.nBack: int = nBack
+		self.isLastNoteDifferent = isLastNoteDifferent
+		self.isLastNoteUp = isLastNoteUp
 		if numberOfNotes < 2:
 			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
 		self.numberOfNotes: int = numberOfNotes - 1
@@ -64,6 +66,10 @@ class TestCase:
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
 
 		self.note_group.notes.append(self.get_last_note(self.nBack))
+		print("Note group:")
+		for note in self.note_group:
+			print(note.name)
+		print()
 		self.result: ResultEnum = ResultEnum.ERRO
 
 	def __str__(self):
@@ -83,20 +89,22 @@ class TestCase:
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
 		filtered_notes = []
-		print('Notes in the note group:')
+		#print('Notes in the note group:')
 		for note in note_group:
-			print(note.name) #for debugging
+			#print(note.name) #for debugging
 			if not "#" in note.name and not "b" in note.name:
 				filtered_notes.append(note)
 		
+		'''
 		print('Filtered notes:')
 		for note in filtered_notes: #for debugging
-			print(note.name)
+			print(note.name)'''
 
 		filtered_note_group = notes.Note_group(filtered_notes)
 		notes_array = np.array(filtered_note_group.notes)
 		random_notes_array = np.random.choice(notes_array, numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
+		
 		return random_notes_group
 	
 	def get_tonal_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
@@ -107,13 +115,15 @@ class TestCase:
 
 	def get_last_note(self, nBack:int) -> notes.Note: 
 		note = self.note_group.notes[-nBack]
-		if random.choice(["same note", "different note"]) == "same note":
+		if not self.isLastNoteDifferent:
 			return note
 		else:
-			if random.choice(["up", "down"]) == "up": #if up, will go up a half step (semitone)
+			if self.isLastNoteUp == True: #if up, will go up a half step (semitone)
 				return note.add_semitone(1)
-			else:
+			elif self.isLastNoteUp == False:
 				return note.add_semitone(-1)
+			else:
+				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
 		
 
 	def validateAnswer(self, answer) -> None:
@@ -137,6 +147,11 @@ class TestCase:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self.answer = answer
+		if answer == 1:
+			answer = 'same'
+		elif answer == 2:
+			answer = 'different'
+		print(f"Answer: {answer}; Result: {self.result}")
 
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes >= self.nBack
