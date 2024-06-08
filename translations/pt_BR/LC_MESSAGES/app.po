@@ -202,8 +202,8 @@ msgstr "Falha ao salvar configurações"
 msgid "Language doesn't exist; Please enter a valid language."
 msgstr "Linguagem não existe; Por favor, digite uma linguagem válida."
 
-msgid "The quantity of notes + test case - 1 needs to be greater than nback"
-msgstr "A quantidade de notas + casos de teste - 1 precisa ser maior que a de nback"
+msgid "The quantity of notes + trials - 1 needs to be greater than nback"
+msgstr "A quantidade de notas + séries - 1 precisa ser maior que a de nback"
 
 msgid "Are both the sequences the same?"
 msgstr "As duas sequências são iguais?"
@@ -211,8 +211,8 @@ msgstr "As duas sequências são iguais?"
 msgid "Ready for the next sequence?"
 msgstr "Pronto para a próxima sequência?"
 
-msgid "Ready for the next test case?"
-msgstr "Pronto para o próximo caso de teste?"
+msgid "Ready for the next trial?"
+msgstr "Pronto para a próxima série?"
 
 msgid "Loading"
 msgstr "Carregando"
@@ -252,3 +252,6 @@ msgstr "A última nota tocada é igual à nota anterior?"
 
 msgid "Is the last played note the same as the {}th note before the last?"
 msgstr "A última nota tocada é igual à nota {} antes da última?"
+
+msgid "How many trials?"
+msgstr "Quantas séries?"

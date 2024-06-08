@@ -180,7 +180,7 @@ class MyGUI(QMainWindow):
 		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
-		test_case_q = _("How many test cases?")
+		test_case_q = _("How many trials?")
 		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
@@ -284,7 +284,7 @@ class MyGUI(QMainWindow):
 				return int(notes_quantity) <= len(TONAL_DISCRIMINATION_TASK_SEQUENCES[0])
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + test case - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + trial - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			@QtCore.pyqtSlot()
@@ -318,7 +318,7 @@ class MyGUI(QMainWindow):
 			def ask_continue_test():
 				nonlocal loadingLabel
 				loadingLabel.deleteLater()
-				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next test case?"), _("Yes"))
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next trial?"), _("Yes"))
 				yes_button = answers[0]
 				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				def continue_test():
@@ -374,7 +374,7 @@ class MyGUI(QMainWindow):
 		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
-		test_case_q = _("How many test cases?")
+		test_case_q = _("How many trials?")
 		n_back_q = _("n-back (int)")
 		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
@@ -503,7 +503,7 @@ class MyGUI(QMainWindow):
 				return int(notes_quantity) > int(n_back) + int(test_case) - 1
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + test case - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + trials - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			
 			@QtCore.pyqtSlot()
@@ -537,7 +537,7 @@ class MyGUI(QMainWindow):
 			def ask_continue_test():
 				nonlocal loadingLabel
 				loadingLabel.deleteLater()
-				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next test case?"), _("Yes"))
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next trial?"), _("Yes"))
 				yes_button = answers[0]
 				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				def continue_test():
