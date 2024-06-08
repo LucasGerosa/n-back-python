@@ -164,7 +164,7 @@ class TestCase:
 				writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
 
 		try:
-			f = FileUtils.createfile(playerName)
+			f = FileUtils.createfile(playerName, "nback")
 		
 		except PermissionError:
 			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
@@ -205,16 +205,18 @@ class TestCase:
 				print(traceback.format_exc())
 
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, is_sequence_mismatch=None) -> None:
 		self.layout = layout
 		self.id: int = id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
-		self.is_sequence_mismatch = random.choice([True, False])
-		if self.is_sequence_mismatch:
+		self.is_sequence_mismatch = is_sequence_mismatch
+		if is_sequence_mismatch == True:
 			self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
-		else:
+		elif is_sequence_mismatch == False:
 			self.note_group2 = self.note_group1
+		else:
+			raise ValueError(f"is_sequence_mismatch should be either True or False. Got {is_sequence_mismatch} instead.")
 	
 	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
 		note_group = notes.Note_group([notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
@@ -258,7 +260,7 @@ class TonalDiscriminationTaskTestCase:
 				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result]) #FIXME: add 1st and 2nd sequence
 
 		try:
-			f = FileUtils.createfile(playerName)
+			f = FileUtils.createfile(playerName, "tonal_discrimination_task")
 		
 		except PermissionError:
 			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")

@@ -6,7 +6,8 @@ from utils.defaults import *
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
-RESULT_FILENAME = 'result.csv'
+RESULT_FILENAME = 'result'
+EXTENSION = '.csv'
 
 def createPlayerDirectoryIfNotExist(playerName) -> None:
 	playerDir = f"{OUTPUT_DIR}/{playerName}"
@@ -45,19 +46,19 @@ def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Pa
 		except (TypeError, FileNotFoundError) as err:
 			print(f"Error happened when retriving filename, try again. Error: {err}")
 
-def isEven(number:int) -> bool:
-	return number % 2 == 0
-
 
 if __name__ == "__main__":
 	readFromFile()
 
-def createfile(playerName):
+def createfile(playerName, test = None):
 	createOutputDirectoryIfNotExist()
 	createPlayerDirectoryIfNotExist(playerName)
 
 	# Initialize the base filename and the counter
-	base_filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}'
+	if test:
+		base_filename = f'{OUTPUT_DIR}/{playerName}/{test}{EXTENSION}'
+	else:
+		base_filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}{EXTENSION}'
 	counter = 1
 	filename = base_filename
 

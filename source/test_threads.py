@@ -2,10 +2,9 @@ from PyQt6 import QtCore, QtWidgets
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from TestCase import TestCase, TonalDiscriminationTaskTestCase
-import FileUtils
+import IOUtils
 from utils.defaults import *
 import math
-import random
 
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
@@ -47,21 +46,6 @@ class TestThread(QtCore.QThread):
 
 class Test1Thread(TestThread):
 
-	def create_random_boolean_list(self,size): #will create a list of booleans with half of the values being True and the other half False, in a random order, unless the size is odd, in which case it will be approximately half True and half False (rounded up)
-		# Ensure size is even
-		#if size % 2 != 0:
-		#	raise ValueError("The size must be an even number.")
-		
-		# Create a list with half True and half False values
-		half_size = math.ceil(size / 2)
-		boolean_list = [True] * half_size + [False] * half_size
-		
-		# Shuffle the list to randomize the order
-		random.shuffle(boolean_list)
-		
-		return boolean_list
-
-	
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
@@ -72,12 +56,12 @@ class Test1Thread(TestThread):
 		try:
 			testCaseList = []
 			id = 0
-			boolean_list = self.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
+			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			quantity_of_true = 0
 			for true_or_false in  boolean_list:
 				if true_or_false == True: 
 					quantity_of_true += 1
-			boolean_list2 = self.create_random_boolean_list(quantity_of_true) #list for which trials that are different are going to be up a semitone
+			boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which trials that are different are going to be up a semitone
 			boolean_list2_id = 0
 
 			while id < self.test_case_n and not self.stop:
@@ -175,9 +159,10 @@ class Test3Thread(TestThread):
 		try:
 			testCaseList = []
 			id = 0
+			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			while id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument)
+				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument, is_sequence_mismatch=boolean_list[id])
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

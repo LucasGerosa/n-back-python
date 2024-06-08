@@ -176,8 +176,8 @@ class MyGUI(QMainWindow):
 		Thread = Test3Thread
 		h_buttons = (self.get_settings_button(),)
 		v_buttons = ()
-		test_number_str = ' ' + str(3)
-		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
+		test_name = _("Tonal Discrimination Task")
+		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
 		test_case_q = _("How many trials?")
@@ -249,7 +249,7 @@ class MyGUI(QMainWindow):
 				column_text_box[i].setText(text)
 				i += 1
 		reset_button.clicked.connect(reset)
-		play_test_button = QPushButton(_("Play test") + test_number_str)
+		play_test_button = QPushButton(_("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
 
@@ -370,8 +370,14 @@ class MyGUI(QMainWindow):
 	def setup_test_menu(self, test_number:int, Thread:TestThread):
 		h_buttons = (self.get_settings_button(),)
 		v_buttons = ()
-		test_number_str = ' ' + str(test_number)
-		layout_h, layout_v, test_menu = self.setup_menu(_("Test") + test_number_str, h_buttons, v_buttons)
+		if test_number == 1:
+			test_name = _("Teste nback tonal")
+		elif test_number == 2:
+			test_name = _("Visuotonal nback test")
+		else:
+			raise ValueError("test_number should be 1 or 2")
+		
+		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
 		test_case_q = _("How many trials?")
@@ -466,7 +472,7 @@ class MyGUI(QMainWindow):
 				column_text_box[i].setText(text)
 				i += 1
 		reset_button.clicked.connect(reset)
-		play_test_button = QPushButton(_("Play test") + test_number_str)
+		play_test_button = QPushButton(_("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		button_size = play_test_button.sizeHint()
 
