@@ -110,7 +110,7 @@ class MyGUI(QMainWindow):
 		for setting_name in all_settings:
 			layout_v_h = QHBoxLayout()
 
-			setting_name_label = QLabel(setting_name)
+			setting_name_label = QLabel(_(setting_name.capitalize()))
 			layout_v_h.addWidget(setting_name_label)
 
 			text_box = QLineEdit()

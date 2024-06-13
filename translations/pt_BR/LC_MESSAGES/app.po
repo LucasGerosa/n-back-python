@@ -255,3 +255,18 @@ msgstr "A última nota tocada é igual à nota {} antes da última?"
 
 msgid "How many trials?"
 msgstr "Quantas séries?"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Note intensity"
+msgstr "Intensidade da nota"
+
+msgid "Note duration"
+msgstr "Duração da nota"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "All"
+msgstr "Todas"

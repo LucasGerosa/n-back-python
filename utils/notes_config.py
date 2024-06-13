@@ -6,9 +6,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 CUSTOM_SETTING = 'custom'
 NOTES_SETTING = 'Notes'
-NOTE_INTENSITY_SETTING = 'Note_intensity'
+NOTE_INTENSITY_SETTING = 'Note intensity'
 DEFAULT = 'DEFAULT'
-NOTE_VALUE_SETTING = 'Note value'
+NOTE_VALUE_SETTING = 'Note duration'
 LANGUAGE_SETTING = 'Language'
 
 def get_notes_setting(section = CUSTOM_SETTING) -> str:
@@ -46,7 +46,7 @@ def reset_settings():
     config = ConfigParser()
 
     config[DEFAULT] = {
-        NOTES_SETTING : "all",
+        NOTES_SETTING : "All",
         NOTE_INTENSITY_SETTING : "mf",
         NOTE_VALUE_SETTING : "1/4",
         LANGUAGE_SETTING : "en"
