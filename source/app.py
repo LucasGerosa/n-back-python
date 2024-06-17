@@ -32,6 +32,7 @@ class MyGUI(QMainWindow):
 		self.showMaximized()
 		self.back_arrow = QIcon("static/back_button.png")
 		self.settings_image = QIcon("static/settings.png")
+		self.info_image = QIcon("static/information_button.png")
 		self.play_image = QIcon("static/play_button.png")
 		self.debug_image = QIcon("static/debug.png")
 		self.stop_image = QIcon("static/stop_button.jpg")
@@ -45,6 +46,8 @@ class MyGUI(QMainWindow):
 		self.setup_test2_menu()
 		self.setup_test3_menu()
 		self.setup_test2_frame()
+		self.setup_info_frame1()
+		self.setup_info_frame3()
 
 		self.states = [self.main_menu]
 		self.setCentralWidget(self.main_menu)
@@ -160,6 +163,22 @@ class MyGUI(QMainWindow):
 		h_buttons = self.get_settings_button(),
 		v_buttons = self.get_main_menu_button(), self.get_test1_button(), self.get_test2_button(), self.get_test3_button()
 		layout_h, layout_v, self.play_menu = self.setup_menu(_("Choose a test"), h_buttons, v_buttons)
+	
+	def setup_info_frame1(self):
+		title = _("Tonal nback test")
+		text_body = _("""In this test, you will hear a sequence of notes. 
+After the notes are played, you will be asked if the last note in the 
+sequence is the same as another specific note in the sequence.
+		""")
+		v_widgets = (QLabel(text_body),)
+		layout_h, layout_v, self.info_frame1 = self.setup_menu(title, widgets_v=v_widgets)
+	
+	def setup_info_frame3(self):
+		title = _("Tonal discrimination task")
+		text_body = _("In this test, you will hear a sequence of notes. \nThen, there will be a 1-second pause, and you will hear another sequence of notes. \nYou will be asked if the second sequence is the same as the first one.")
+		v_widgets = (QLabel(text_body),)
+		layout_h, layout_v, self.info_frame3 = self.setup_menu(title, widgets_v=v_widgets)
+
 
 	def setup_debug_menu(self):
 		v_buttons = ()
@@ -167,14 +186,14 @@ class MyGUI(QMainWindow):
 		layout_h, layout_v, self.debug_menu = self.setup_menu(_("Debug"), h_buttons, v_buttons)
 
 	def setup_test1_menu(self):
-		self.setup_test_menu(1, Test1Thread)
+		self.setup_test_menu(1, Test1Thread, h_buttons=(self.get_info_button_1(),))
 
 	def setup_test2_menu(self):
 		self.setup_test_menu(2, Test2Thread)
 	
 	def setup_test3_menu(self):
 		Thread = Test3Thread
-		h_buttons = (self.get_settings_button(),)
+		h_buttons = (self.get_settings_button(), self.get_info_button_3())
 		v_buttons = ()
 		test_name = _("Tonal Discrimination Task")
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
@@ -367,8 +386,8 @@ class MyGUI(QMainWindow):
 		layout_v.addWidget(play_test_button)
 		return test_layout
 
-	def setup_test_menu(self, test_number:int, Thread:TestThread):
-		h_buttons = (self.get_settings_button(),)
+	def setup_test_menu(self, test_number:int, Thread:TestThread, h_buttons:tuple[QPushButton, ...]=()):
+		h_buttons = (self.get_settings_button(),) + h_buttons
 		v_buttons = ()
 		if test_number == 1:
 			test_name = _("Teste nback tonal")
@@ -719,6 +738,16 @@ class MyGUI(QMainWindow):
 			PyQt6_utils.get_msg_box(_("Test stopped"), _("The test was stopped, just wait for the notes to finish playing before playing another test."), QMessageBox.Icon.Information).exec()
 		button.clicked.connect(stop) 
 		return button
+	
+	def get_info_button_1(self):
+		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(_("Help"), info_text, QMessageBox.Icon.Information).exec()
+		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame1))
+		return info_button
+
+	def get_info_button_3(self):
+		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(_("Help"), info_text, QMessageBox.Icon.Information).exec()
+		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame3))
+		return info_button
 
 	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
 	def create_questions(self, layout, testCase:TestCase):

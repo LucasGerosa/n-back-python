@@ -270,3 +270,9 @@ msgstr "Idioma"
 
 msgid "All"
 msgstr "Todas"
+
+msgid "Information"
+msgstr "Informação"
+
+msgid "Help"
+msgstr "Ajuda"
