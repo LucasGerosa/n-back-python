@@ -276,3 +276,6 @@ msgstr "Informação"
 
 msgid "Help"
 msgstr "Ajuda"
+
+msgid "How many sequences?"
+msgstr "Quantas sequências?"
