@@ -3,7 +3,7 @@ from _collections_abc import Iterable
 
 notes = "[A-G|a-g][b|#]*[0-9]"
 note_range_pattern = re.compile(f"{notes}[-|–]{notes}")
-note_list = [	#TODO: add functionality for equality of sharp and flat notes
+note_list = [
 	'C',
 	'Db',
 	'D',
@@ -91,11 +91,11 @@ def get_final_list_notes(notes_string:str) -> list[str]:
 			list_note_names = get_range_pattern("-", range_notes)
 			if not list_note_names:
 				raise Exception(f"{range_notes} is not a valid string.")
-
+			
 		char1 = convert_sharps_to_flats(list_note_names[0][:-1], list_note_names[0][-1])
 		char2 = convert_sharps_to_flats(list_note_names[1][:-1], list_note_names[1][-1])
-		charnum1 = note_list.index(char1)
-		charnum2 = note_list.index(char2)
+		charnum1 = note_list.index(char1[0])
+		charnum2 = note_list.index(char2[0])
 		num1 = list_note_names[0][-1]
 		num1_int = int(num1)
 		num2 = list_note_names[1][-1]
@@ -151,14 +151,14 @@ def get_final_list_notes(notes_string:str) -> list[str]:
 	return note_name_list
 
 def test():
-	print(convert_sharps_to_flats('a###', '3'))
-	print(convert_sharps_to_flats('Cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', '3'))
-	print(convert_sharps_to_flats('b#', '3'))
+	#print(convert_sharps_to_flats('a###', '3'))
+	#print(convert_sharps_to_flats('Cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', '3'))
+	#print(convert_sharps_to_flats('b#', '3'))
 	s1 = "A1;C2"
 	s2 = "C2;      B2"
 	s3 = "A4-G5"
 	s4 = "D3-C4"
-	s5 = "C4-B5"
+	s5 = "C4-B4"
 	s6 = "a1-b2"
 	s7 = "Ab3-Cb4"
 	s8 = "A4-G5; A1-C2"
@@ -169,7 +169,7 @@ def test():
 	#print(get_final_list_notes(s2))
 	#print(get_final_list_notes(s3))
 	#print(get_final_list_notes(s4))
-	#print(get_final_list_notes(s5))
+	print(get_final_list_notes(s5))
 	#print(get_final_list_notes(s6))
 	#print(get_final_list_notes(s7))
 	#print(get_final_list_notes(s8))
