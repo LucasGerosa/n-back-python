@@ -45,7 +45,7 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 
 class TestCase: #(nback)
 
-	def __init__(self, layout:QtWidgets.QLayout, sequences:int, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = True, isLastNoteUp = None) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = True, isLastNoteUp = None) -> None:
 		self.layout = layout
 		self.id: int = id
 		self.nBack: int = nBack
@@ -157,33 +157,40 @@ class TestCase: #(nback)
 		return self.numberOfNotes >= self.nBack
 	
 	@staticmethod
-	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
-		def write_content_to_csv(writer, testCaseList):
-			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers'])
-			quantity_right_answers = 0
-			quantity_wrong_answers = 0
-			for t in testCaseList:
-				if t.answer == 1:
-					answer = 'same'
-				elif t.answer == 2:
-					answer = 'different'
-				else:
-					raise ValueError()
+	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
+		def write_content_to_csv(writer, testCaseList_list):
+			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers'])
+
+			total_quantity_right_answers = 0
+			total_quantity_wrong_answers = 0
+			for testCaseList in testCaseList_list:
+				quantity_right_answers = 0
+				quantity_wrong_answers = 0
+				for t in testCaseList:
+					if t.answer == 1:
+						answer = 'same'
+					elif t.answer == 2:
+						answer = 'different'
+					else:
+						raise ValueError()
+					
+					if t.result == ResultEnum.ACERTO:
+						t.result = 'Correct'
+						quantity_right_answers += 1
+						total_quantity_right_answers += 1
+
+					
+					elif t.result == ResultEnum.ERRO:
+						t.result = 'Incorrect'
+						quantity_wrong_answers += 1
+						total_quantity_wrong_answers += 1
+					
+					else:
+						raise ValueError()
 				
-				if t.result == ResultEnum.ACERTO:
-					t.result = 'Correct'
-					quantity_right_answers += 1
-				
-				elif t.result == ResultEnum.ERRO:
-					t.result = 'Incorrect'
-					quantity_wrong_answers += 1
-				
-				else:
-					raise ValueError()
-				
-				writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, answer, t.result])
-			writer.writerow(['', 'Quantity of correct answers', quantity_right_answers])
-			writer.writerow(['', 'Quantity of incorrect answers', quantity_wrong_answers])
+					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, answer, t.result])
+				writer.writerow(['', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers])
+
 
 		try:
 			f = FileUtils.createfile(playerName, "nback")
@@ -192,7 +199,7 @@ class TestCase: #(nback)
 			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
 			buffer = io.StringIO()
 			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			write_content_to_csv(writer, testCaseList)
+			write_content_to_csv(writer, testCaseList_list)
 			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
 			buffer.close()
 
@@ -200,7 +207,7 @@ class TestCase: #(nback)
 			with f:
 				# create the csv writer
 				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				write_content_to_csv(writer, testCaseList)
+				write_content_to_csv(writer, testCaseList_list)
 
 			f.close()
 

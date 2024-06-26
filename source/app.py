@@ -16,6 +16,7 @@ import asyncio
 from collections.abc import Iterable
 import re
 import gettext
+import time
 
 # Specify the translation domain and path to the translations directory
 print(os.path.dirname(__file__),"\n")
@@ -368,13 +369,11 @@ sequence is the same as another specific note in the sequence.
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
 
-			self.notes_thread = Thread(layout_v, player_name, test_case, 0, notes_quantity, bpm, instrument) #0  is a placeholder for nback, which is not used in this test
+			self.notes_thread = Thread(layout_v, 0, player_name, test_case, 0, notes_quantity, bpm, instrument) #0  is a placeholder for nback, which is not used in this test
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
-
-
 			self.notes_thread.done_testCase.connect(lambda testCase:self.create_questions_tonal_discrimination_task(layout_v, testCase))
 			#layout_v.addStretch(1)
 			self.notes_thread.start()
@@ -399,14 +398,14 @@ sequence is the same as another specific note in the sequence.
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		player_name_q = _("Player name")
-		test_case_q = _("How many trials?")
-		sequences_q = _("How many sequences?")
+		test_case_q = _("How many sequences?")
+		trials_q = _("How many trials?")
 		n_back_q = _("n-back (int)")
 		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
-		labels = (player_name_q, test_case_q, sequences_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '2', '1', '1', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		labels = (player_name_q, test_case_q, trials_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
+		set_text = tuple(["Gerosa", '2', '2', '1', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
@@ -463,7 +462,7 @@ sequence is the same as another specific note in the sequence.
 		connect(bpm_q, msgbox_if_float)
 		connect(instrument_q, msgbox_if_instrument)
 		connect(player_name_q, msgbox_if_empty)
-		connect(sequences_q, msgbox_if_digit)
+		connect(trials_q, msgbox_if_digit)
 
 		layout_v_h = QtWidgets.QHBoxLayout()
 		random_radio_button = QtWidgets.QRadioButton(_("Random"))
@@ -511,7 +510,7 @@ sequence is the same as another specific note in the sequence.
 			player_name = get_text(player_name_q)
 			if player_name == "":
 				incorrect_fields.append(player_name_q)
-			for q in (test_case_q, n_back_q, sequences_q, notes_quantity_q):
+			for q in (test_case_q, n_back_q, trials_q, notes_quantity_q):
 				if not check_isdigit(q)[0]:
 					incorrect_fields.append(q)
 			if not check_isfloat(bpm_q)[0]:
@@ -564,7 +563,7 @@ sequence is the same as another specific note in the sequence.
 			def ask_continue_test():
 				nonlocal loadingLabel
 				loadingLabel.deleteLater()
-				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next trial?"), _("Yes"))
+				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next sequence?"), _("Yes"))
 				yes_button = answers[0]
 				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				def continue_test():
@@ -584,7 +583,7 @@ sequence is the same as another specific note in the sequence.
 			notes_quantity = int(get_text(notes_quantity_q))
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
-			sequences = int(get_text(sequences_q))
+			trials = int(get_text(trials_q))
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
 			if random_c_major_radio_button.isChecked():
@@ -594,10 +593,12 @@ sequence is the same as another specific note in the sequence.
 			else:
 				mode = RANDOM_MODE
 
-			self.notes_thread = Thread(layout_v, sequences, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=mode)
+			self.notes_thread = Thread(layout_v, trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=mode)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
+			self.notes_thread.started_trial_signal.connect(lambda nback: self.warn_user_different_trial(layout_v, nback))
+
 			if Thread is Test2Thread:
 				note_label = None
 				layout_grid = self.test2_frame.layout()
@@ -808,6 +809,33 @@ sequence is the same as another specific note in the sequence.
 
 		yes_button.clicked.connect(yes)
 		no_button.clicked.connect(no)	
+
+	@QtCore.pyqtSlot(QVBoxLayout, int)
+	def warn_user_different_trial(self, layout, nback:int):
+		if nback == 1:
+			question_text = _("The following trial will have\nyou compare the last note with the previous note.")
+		elif nback == 2:
+			question_text = _("The following trial\nwill have you compare the last note\nwith the note before the previous note.")
+		elif nback == 3:
+			question_text = _("The following trial\nwill have you compare the last note with the note\nthree places before it.")
+		else:
+			question_text = _("The following trial will have you\ncompare the last note with the {}th note before the last.").format(nback)
+		
+		question = QLabel(question_text)
+		question.setStyleSheet("font-size: 50px;")
+		layout.addWidget(question)
+		yes_button = QPushButton(_("Ok"))
+		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+		question.update()
+		QtCore.QTimer.singleShot(1000, lambda: layout.addWidget(yes_button))
+
+		def yes():
+			question.deleteLater()
+			yes_button.deleteLater()
+			self.notes_thread.wait_condition.wakeOne()
+		
+		yes_button.clicked.connect(yes)
+
 
 def set_language(language_code):
 

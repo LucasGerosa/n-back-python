@@ -11,8 +11,9 @@ class TestThread(QtCore.QThread):
 	done_testCase = QtCore.pyqtSignal(TestCase)
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
+	started_trial_signal = QtCore.pyqtSignal(int)
 	
-	def __init__(self, layout:QtWidgets.QLayout, sequences:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, mode:str = RANDOM_MODE):
+	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, mode:str = RANDOM_MODE):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
@@ -26,7 +27,7 @@ class TestThread(QtCore.QThread):
 		self.bpm = bpm
 		self.instrument = instrument
 		self.mode = mode
-		self.sequences = sequences
+		self.trials = trials
 	
 	def wait_for_signal(self):
 		self.mutex.lock()
@@ -46,7 +47,6 @@ class TestThread(QtCore.QThread):
 		pass
 
 class Test1Thread(TestThread):
-
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
@@ -55,48 +55,60 @@ class Test1Thread(TestThread):
 			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
 		
 		try:
-			testCaseList = []
+			testCaseList_list = []
 			id = 0
-			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
+			trial_id = 0
+			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
 			quantity_of_true = 0
 			for true_or_false in  boolean_list:
 				if true_or_false == True: 
 					quantity_of_true += 1
-			boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which trials that are different are going to be up a semitone
+			boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which sequences are different are going to be up a semitone
 			boolean_list2_id = 0
+			nback = self.nBack
+			testCaseId = 0
+			while trial_id < self.trials and not self.stop:
+				self.started_trial_signal.emit(nback)
+				self.wait_for_signal()
+				testCaseList = []
+				while testCaseId < self.test_case_n and not self.stop:
+					self.pre_start_execution.emit()
+					isLastNoteDifferent = boolean_list[trial_id]
+					if isLastNoteDifferent == True:
+						#print(boolean_list2_id)
+						isLastNoteUp = boolean_list2[boolean_list2_id]
+						boolean_list2_id += 1
+					else:
+						isLastNoteUp = None
+					testCase = TestCase(self.layout, id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
+					testCaseList.append(testCase)
+					self.start_execution.emit()
+					self.wait_for_signal()
+					
+					testCase.note_group.play()
+					if self.stop:
+						print(_("Thread was interrupted. Stopping now."))
+						return
+		
+					self.done_testCase.emit(testCase)
+					self.wait_for_signal()
+					testCaseId += 1
+					id += 1
+				testCaseId = 0
+				nback += 1
+				trial_id += 1
+				testCaseList_list.append(testCaseList)
 
-			while id < self.test_case_n and not self.stop:
-				self.pre_start_execution.emit()
-				isLastNoteDifferent = boolean_list[id]
-				if isLastNoteDifferent == True:
-					#print(boolean_list2_id)
-					isLastNoteUp = boolean_list2[boolean_list2_id]
-					boolean_list2_id += 1
-				else:
-					isLastNoteUp = None
-				testCase = TestCase(self.layout, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
-				testCaseList.append(testCase)
-				self.start_execution.emit()
-				self.wait_for_signal()
-				
-				testCase.note_group.play()
-				if self.stop:
-					print(_("Thread was interrupted. Stopping now."))
-					return
-				
-				self.done_testCase.emit(testCase)
-				self.wait_for_signal()
-				id += 1
 			if self.stop:
 				print(_("Thread was interrupted. Stopping now."))
 				return
-			TestCase.saveResults(testCaseList, self.playerName)
+			TestCase.saveResults(testCaseList_list, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
 			print(_("Ctrl+c was pressed. Stopping now."))
 
-class Test2Thread(TestThread):
+class Test2Thread(TestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
 	print_hint_signal = QtCore.pyqtSignal(str)
 	delete_note_signal = QtCore.pyqtSignal()

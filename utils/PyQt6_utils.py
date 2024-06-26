@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, QSize, QRegularExpression
+from PyQt6.QtCore import Qt, QSize, QRegularExpression, QTimer
 from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication, QIntValidator, QDoubleValidator, QRegularExpressionValidator, QPalette, QColor
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 from fractions import Fraction
@@ -91,6 +91,8 @@ def find_child_layout(parent_layout:QtWidgets.QLayout):
 
 
 def create_question(layout, question_str:str, *answer_str):
+	if not answer_str:
+		raise ValueError("No answers were given")
 	question = QLabel(question_str)
 	question.setStyleSheet("font-size: 50px;")
 	layout.addWidget(question)
@@ -102,11 +104,16 @@ def create_question(layout, question_str:str, *answer_str):
 		answer.setStyleSheet("font-size: 50px;")
 		layout_v_h.addWidget(answer)
 		answers.append(answer)
+		
 	layout_v_h.setSpacing(300)
+	if answers == []:
+		raise ValueError("No answers were added")
 	
 	def destroy_all():
 		question.deleteLater()
 		for answer in answers:
 			answer.deleteLater()
 		layout_v_h.deleteLater()
+
+
 	return answers, question, layout_v_h, destroy_all

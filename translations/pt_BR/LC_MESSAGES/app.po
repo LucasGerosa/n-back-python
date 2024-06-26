@@ -279,3 +279,15 @@ msgstr "Ajuda"
 
 msgid "How many sequences?"
 msgstr "Quantas sequências?"
+
+msgid "The following trial will have\nyou compare the last note with the previous note."
+msgstr "No próximo teste, você deve comparar\na última nota com a penúltima nota."
+
+msgid "The following trial\nwill have you compare the last note\nwith the note before the previous note."
+msgstr "No próximo teste, você deve comparar\na última nota com a penúltima nota"
+
+msgid "The following trial\nwill have you compare the last note with the note\nthree places before it."
+msgstr "No próximo teste, você deve comparar\na última nota com a antepenúltima nota."
+
+msgid "The following trial will have you\ncompare the last note with the {}th note before the last."
+msgstr "No próximo teste, você deve comparar\na última nota com a {}ª nota antes da última."
