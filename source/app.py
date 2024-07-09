@@ -405,7 +405,7 @@ sequence is the same as another specific note in the sequence.
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
 		labels = (player_name_q, test_case_q, trials_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '2', '2', '1', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		set_text = tuple(["Gerosa", '10', '6', '1', '10', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
@@ -526,7 +526,7 @@ sequence is the same as another specific note in the sequence.
 				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
 				n_back = column_text_box[labels.index(n_back_q)].text()
 				test_case = column_text_box[labels.index(test_case_q)].text()
-				return int(notes_quantity) > int(n_back) + int(test_case) - 1
+				return int(notes_quantity) > int(n_back) - 1
 
 			if not is_notes_quantity_valid():
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + trials - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()

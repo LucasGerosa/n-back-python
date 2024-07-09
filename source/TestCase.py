@@ -52,15 +52,15 @@ class TestCase: #(nback)
 		self.isLastNoteDifferent = isLastNoteDifferent
 		self.isLastNoteUp = isLastNoteUp
 		if numberOfNotes < 2:
-			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
+			raise ValueError(f"numberOfNotes should be > 1. Got {numberOfNotes} instead.")
 		self.numberOfNotes: int = numberOfNotes - 1
 
 		if mode == RANDOM_MODE:
-			self.note_group = self.get_random_notes(bpm, instrument, numberOfNotes)
+			self.note_group = self.get_random_notes(bpm, instrument)
 		elif mode == RANDOM_C_MAJOR_MODE:
-			self.note_group = self.get_random_C_major_notes(bpm, instrument, numberOfNotes)
+			self.note_group = self.get_random_C_major_notes(bpm, instrument)
 		elif mode == TONAL_C_MAJOR_MODE:
-			self.note_group = self.get_tonal_C_major_notes(bpm, instrument, numberOfNotes)
+			self.note_group = self.get_tonal_C_major_notes(bpm, instrument)
 		else:
 			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{RANDOM_C_MAJOR_MODE}' or '{TONAL_C_MAJOR_MODE}'. Got '{mode}' instead.")
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
@@ -75,16 +75,16 @@ class TestCase: #(nback)
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
 	
-	def get_random_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
+	def get_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
 		notes_array = np.array(note_group.notes)
-		random_notes_array = np.random.choice(notes_array, numberOfNotes)
+		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
 
-	def get_random_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
+	def get_random_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
@@ -102,13 +102,13 @@ class TestCase: #(nback)
 
 		filtered_note_group = notes.Note_group(filtered_notes)
 		notes_array = np.array(filtered_note_group.notes)
-		random_notes_array = np.random.choice(notes_array, numberOfNotes)
+		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		
 		return random_notes_group
 	
-	def get_tonal_C_major_notes(self, bpm:float, instrument:str, numberOfNotes:int) -> notes.Note_group:
-		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCES * ((numberOfNotes // len(TONAL_C_MAJOR_DEFAULT_SEQUENCES)) + 1))[:numberOfNotes]
+	def get_tonal_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
+		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCES * ((self.numberOfNotes - 1 // len(TONAL_C_MAJOR_DEFAULT_SEQUENCES)) + 1))[:self.numberOfNotes - 1]
 		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
 		tonal_notes_group = notes.Note_group(notes_list)
 		return tonal_notes_group

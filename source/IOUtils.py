@@ -46,4 +46,5 @@ def create_random_boolean_list(size): #will create a list of booleans with half 
 
 
 if __name__ == '__main__':
-    test()
+    #test()
+    print(create_random_boolean_list(8))

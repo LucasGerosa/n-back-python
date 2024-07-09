@@ -59,18 +59,21 @@ class Test1Thread(TestThread):
 			id = 0
 			trial_id = 0
 			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
-			quantity_of_true = 0
-			for true_or_false in  boolean_list:
-				if true_or_false == True: 
-					quantity_of_true += 1
-			boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which sequences are different are going to be up a semitone
-			boolean_list2_id = 0
+
 			nback = self.nBack
 			testCaseId = 0
 			while trial_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
-				self.wait_for_signal()
 				testCaseList = []
+				quantity_of_true = 0
+				for true_or_false in boolean_list:
+					if true_or_false == True: 
+						quantity_of_true += 1
+				boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which sequences are different are going to be up a semitone
+				print("Boolean_list: " + str(boolean_list),'Boolean_list2: ' + str(boolean_list2))
+				boolean_list2_id = 0
+				self.wait_for_signal()
+
 				while testCaseId < self.test_case_n and not self.stop:
 					self.pre_start_execution.emit()
 					isLastNoteDifferent = boolean_list[trial_id]
