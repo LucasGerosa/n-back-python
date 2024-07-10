@@ -465,21 +465,23 @@ sequence is the same as another specific note in the sequence.
 		connect(trials_q, msgbox_if_digit)
 
 		layout_v_h = QtWidgets.QHBoxLayout()
+		'''
 		random_radio_button = QtWidgets.QRadioButton(_("Random"))
 		random_radio_button.setFont(PyQt6_utils.FONT)
 		random_radio_button.setStyleSheet("font-size: 20px;")
 		random_radio_button.setChecked(True)
-		layout_v_h.addWidget(random_radio_button)
+		layout_v_h.addWidget(random_radio_button)'''
 
 		random_c_major_radio_button = QtWidgets.QRadioButton(_("Random C major scale"))
 		random_c_major_radio_button.setFont(PyQt6_utils.FONT)
 		random_c_major_radio_button.setStyleSheet("font-size: 20px;")
+		random_c_major_radio_button.setChecked(True)
 		layout_v_h.addWidget(random_c_major_radio_button)
-
+		'''
 		tonal_c_major_radio_button = QtWidgets.QRadioButton(_("Tonal C major scale"))
 		tonal_c_major_radio_button.setFont(PyQt6_utils.FONT)
 		tonal_c_major_radio_button.setStyleSheet("font-size: 20px;")
-		layout_v_h.addWidget(tonal_c_major_radio_button)
+		layout_v_h.addWidget(tonal_c_major_radio_button) '''
 
 		
 		layout_v.addLayout(layout_v_h)
@@ -588,10 +590,11 @@ sequence is the same as another specific note in the sequence.
 			loadingLabel = None
 			if random_c_major_radio_button.isChecked():
 				mode = RANDOM_C_MAJOR_MODE
+			'''
 			elif tonal_c_major_radio_button.isChecked():
 				mode = TONAL_C_MAJOR_MODE
 			else:
-				mode = RANDOM_MODE
+				mode = RANDOM_MODE '''
 
 			self.notes_thread = Thread(layout_v, trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=mode)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)

@@ -5,6 +5,7 @@ from TestCase import TestCase, TonalDiscriminationTaskTestCase
 import IOUtils
 from utils.defaults import *
 import math
+import simpleaudio
 
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
@@ -40,7 +41,11 @@ class TestThread(QtCore.QThread):
 		self.mutex.unlock()
 	
 	def run(self):
-		self.executeLoop()
+		try:
+			self.executeLoop()
+		except Exception as e:
+			print("\nNumber of notes played before this error: " + str(id * self.notesQuantity + "\n"))
+			raise e
 		self.finished.emit()
 	
 	def executeLoop(self):
@@ -57,26 +62,25 @@ class Test1Thread(TestThread):
 		try:
 			testCaseList_list = []
 			id = 0
-			trial_id = 0
-			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
-
 			nback = self.nBack
-			testCaseId = 0
-			while trial_id < self.trials and not self.stop:
+
+			while id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
+				boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
 				testCaseList = []
+				testCaseId = 0
 				quantity_of_true = 0
 				for true_or_false in boolean_list:
 					if true_or_false == True: 
 						quantity_of_true += 1
 				boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which sequences are different are going to be up a semitone
-				print("Boolean_list: " + str(boolean_list),'Boolean_list2: ' + str(boolean_list2))
+				print("Is last note different: " + str(boolean_list),'Is note up: ' + str(boolean_list2))
 				boolean_list2_id = 0
 				self.wait_for_signal()
 
 				while testCaseId < self.test_case_n and not self.stop:
 					self.pre_start_execution.emit()
-					isLastNoteDifferent = boolean_list[trial_id]
+					isLastNoteDifferent = boolean_list[testCaseId]
 					if isLastNoteDifferent == True:
 						#print(boolean_list2_id)
 						isLastNoteUp = boolean_list2[boolean_list2_id]
@@ -86,6 +90,8 @@ class Test1Thread(TestThread):
 					testCase = TestCase(self.layout, id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
+
+
 					self.wait_for_signal()
 					
 					testCase.note_group.play()
@@ -99,7 +105,6 @@ class Test1Thread(TestThread):
 					id += 1
 				testCaseId = 0
 				nback += 1
-				trial_id += 1
 				testCaseList_list.append(testCaseList)
 
 			if self.stop:

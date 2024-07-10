@@ -4,6 +4,7 @@ import random
 import sys
 from pydub import AudioSegment, playback
 from pydub.silence import detect_leading_silence
+import gc
 
 
 import time
@@ -145,6 +146,8 @@ class Note:
         time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
         
         current_playback.stop()
+        del current_playback
+        gc.collect()  # Explicitly suggest garbage collection
     
     def change_extension(self, new_extension:str) -> None:
         new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)

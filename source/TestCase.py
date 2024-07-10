@@ -45,7 +45,7 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 
 class TestCase: #(nback)
 
-	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = True, isLastNoteUp = None) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = None, isLastNoteUp = None) -> None:
 		self.layout = layout
 		self.id: int = id
 		self.nBack: int = nBack
@@ -74,6 +74,7 @@ class TestCase: #(nback)
 
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
+	'''
 	
 	def get_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
@@ -83,7 +84,7 @@ class TestCase: #(nback)
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		return random_notes_group
-
+	'''
 	def get_random_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
@@ -106,24 +107,27 @@ class TestCase: #(nback)
 		random_notes_group = notes.Note_group(random_notes_array.tolist())
 		
 		return random_notes_group
-	
+	'''
 	def get_tonal_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCES * ((self.numberOfNotes - 1 // len(TONAL_C_MAJOR_DEFAULT_SEQUENCES)) + 1))[:self.numberOfNotes - 1]
 		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
 		tonal_notes_group = notes.Note_group(notes_list)
 		return tonal_notes_group
+	'''
 
 	def get_last_note(self, nBack:int) -> notes.Note: 
 		note = self.note_group.notes[-nBack]
-		if not self.isLastNoteDifferent:
+		if self.isLastNoteDifferent == False:
 			return note
-		else:
+		elif self.isLastNoteDifferent == True:
 			if self.isLastNoteUp == True: #if up, will go up a half step (semitone)
 				return note.add_semitone(1)
 			elif self.isLastNoteUp == False:
 				return note.add_semitone(-1)
 			else:
 				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
+		else:
+			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
 		
 
 	def validateAnswer(self, answer) -> None:
@@ -151,7 +155,7 @@ class TestCase: #(nback)
 			answer = 'same'
 		elif answer == 2:
 			answer = 'different'
-		print(f"Answer: {answer}; Result: {self.result}")
+		print(f"Answer: {answer}; Result: {self.result}\n\n")
 
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes >= self.nBack
