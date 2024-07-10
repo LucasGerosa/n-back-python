@@ -73,6 +73,8 @@ def main():
     if ffmpeg_in_path or ffmpeg_in_root_dir or shutil.which('ffmpeg'):
         print("ffmpeg installed and in the correct directory.")
         return
+    else:
+        print('ffmpeg not found.')
 
 
 if __name__ == '__main__':

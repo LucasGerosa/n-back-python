@@ -5,7 +5,7 @@ from TestCase import TestCase, TonalDiscriminationTaskTestCase
 import IOUtils
 from utils.defaults import *
 import math
-import simpleaudio
+#import simpleaudio
 
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
