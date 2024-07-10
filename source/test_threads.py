@@ -29,6 +29,7 @@ class TestThread(QtCore.QThread):
 		self.instrument = instrument
 		self.mode = mode
 		self.trials = trials
+		self.id = 0
 	
 	def wait_for_signal(self):
 		self.mutex.lock()
@@ -41,11 +42,7 @@ class TestThread(QtCore.QThread):
 		self.mutex.unlock()
 	
 	def run(self):
-		try:
-			self.executeLoop()
-		except Exception as e:
-			print("\nNumber of notes played before this error: " + str(id * self.notesQuantity + "\n"))
-			raise e
+		self.executeLoop()
 		self.finished.emit()
 	
 	def executeLoop(self):
@@ -61,10 +58,9 @@ class Test1Thread(TestThread):
 		
 		try:
 			testCaseList_list = []
-			id = 0
 			nback = self.nBack
 
-			while id < self.trials and not self.stop:
+			while self.id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
 				boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
 				testCaseList = []
@@ -90,19 +86,16 @@ class Test1Thread(TestThread):
 					testCase = TestCase(self.layout, id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
-
-
 					self.wait_for_signal()
 					
 					testCase.note_group.play()
 					if self.stop:
 						print(_("Thread was interrupted. Stopping now."))
 						return
-		
 					self.done_testCase.emit(testCase)
 					self.wait_for_signal()
 					testCaseId += 1
-					id += 1
+					self.id += 1
 				testCaseId = 0
 				nback += 1
 				testCaseList_list.append(testCaseList)
@@ -130,8 +123,8 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 		
 		try:
 			testCaseList = []
-			id = 0
-			while id < self.test_case_n and not self.stop:
+			self.id = 0
+			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
 				testCase = TestCase(self.layout, self.trials, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument, self.mode)
 				testCaseList.append(testCase)
@@ -163,7 +156,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 				self.done_testCase.emit(testCase)
 
 				self.wait_for_signal()
-				id += 1
+				self.id += 1
 			if self.stop:
 				print(_("Thread was interrupted. Stopping now."))
 				return
@@ -179,9 +172,9 @@ class Test3Thread(TestThread):
 	def executeLoop(self) -> list|None:
 		try:
 			testCaseList = []
-			id = 0
+			self.id = 0
 			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
-			while id < self.test_case_n and not self.stop:
+			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
 				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument, is_sequence_mismatch=boolean_list[id])
 				testCaseList.append(testCase)
@@ -200,7 +193,7 @@ class Test3Thread(TestThread):
 				self.done_testCase.emit(testCase)
 				self.wait_for_signal()
 
-				id += 1
+				self.id += 1
 			if self.stop:
 				print(_("Thread was interrupted. Stopping now."))
 				return

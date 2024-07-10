@@ -5,7 +5,8 @@ import sys
 from pydub import AudioSegment, playback
 from pydub.silence import detect_leading_silence
 import gc
-
+#import pyaudio
+#from pydub import utils
 
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -133,7 +134,24 @@ class Note:
     def get_intensity(self) -> str: #gets the intensity of the note (e.g. pp, mf, f, etc)
         intensity = self.fileName.split('.')[1]
         return intensity
+    '''
+    def _play_with_pyaudio(self, seg, t):
+        p = pyaudio.PyAudio()
+        stream = p.open(format=p.get_format_from_width(seg.sample_width),
+                        channels=seg.channels,
+                        rate=seg.frame_rate,
+                        output=True)
 
+        # Just in case there were any exceptions/interrupts, we release the resource
+        # So as not to raise OSError: Device Unavailable should play() be used again
+
+        chunk = utils.make_chunks(seg, t)[0]
+        stream.write(chunk._data)
+        stream.stop_stream()
+        stream.close()
+
+        p.terminate()
+    '''
     def play(self) -> None:
         if self.extension !='mp3': #TEMPORARY
             raise Exception(f"To be implemented; notes with extensions besides mp3 can't be played. Path of note: {self.path}")
@@ -141,14 +159,16 @@ class Note:
         if not self.create_sound:
             self.sound = AudioSegment.from_file(self.path, self.extension)
         self.remove_silence()
+        t = bpmToSeconds(self.bpm)*4*self.note_value
+        #current_playback = self._play_with_pyaudio(self.sound, t)
         current_playback = playback._play_with_simpleaudio(self.sound)
         
         time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
         
         current_playback.stop()
-        del current_playback
+        del current_playback  # Suggest deletion of the playback object
         gc.collect()  # Explicitly suggest garbage collection
-    
+        
     def change_extension(self, new_extension:str) -> None:
         new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)
         if os.path.exists(new_path):
@@ -221,12 +241,19 @@ class Note_group:
         self.notes.append(note)
 
     def play(self):
+        notes_played = 0
         for note in self.notes:
             
             if self.stop_flag:
                 self.stop_flag = False
                 break
-            note.play()
+
+            try:
+                note.play()
+            except Exception as e:
+                print("\nNumber of notes played before this error: " + str(notes_played) + "\n")
+                raise e
+            notes_played += 1
     
     def change_extension(self, new_extension) -> None:
         for note in self.notes:
@@ -267,3 +294,5 @@ def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM,
 
     return Note(file_name, bpm, create_sound, note_value=note_value)
 
+if __name__ == '__main__':
+    pass
