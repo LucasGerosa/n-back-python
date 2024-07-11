@@ -167,17 +167,21 @@ class MyGUI(QMainWindow):
 	
 	def setup_info_frame1(self):
 		title = _("Tonal nback test")
-		text_body = _("""In this test, you will hear a sequence of notes. 
-After the notes are played, you will be asked if the last note in the 
+		text_body = _("""In this test, you will hear a sequence of notes.
+After the notes are played, you will be asked if the last note in the
 sequence is the same as another specific note in the sequence.
 		""")
-		v_widgets = (QLabel(text_body),)
+		image = QLabel()
+		image.setPixmap(QPixmap("static/nback_example.png").scaled(1000, 1000, Qt.AspectRatioMode.KeepAspectRatio))
+		v_widgets = (QLabel(text_body), image)
 		layout_h, layout_v, self.info_frame1 = self.setup_menu(title, widgets_v=v_widgets)
 	
 	def setup_info_frame3(self):
 		title = _("Tonal discrimination task")
 		text_body = _("In this test, you will hear a sequence of notes. \nThen, there will be a 1-second pause, and you will hear another sequence of notes. \nYou will be asked if the second sequence is the same as the first one.")
-		v_widgets = (QLabel(text_body),)
+		tdt_image = QLabel()
+		tdt_image.setPixmap(QPixmap("static/TDT_example.png").scaled(500, 500, Qt.AspectRatioMode.KeepAspectRatio))
+		v_widgets = (QLabel(text_body), tdt_image)
 		layout_h, layout_v, self.info_frame3 = self.setup_menu(title, widgets_v=v_widgets)
 
 
@@ -205,7 +209,7 @@ sequence is the same as another specific note in the sequence.
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
 		labels = (player_name_q, test_case_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = tuple(["Gerosa", '2', '3', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
+		set_text = tuple(["Gerosa", '10', '4', str(DEFAULT_BPM), DEFAULT_INSTRUMENT])
 		if len(set_text) != len(labels):
 			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
 		draft_forms_dict = dict(zip(labels, set_text))
