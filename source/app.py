@@ -167,13 +167,13 @@ class MyGUI(QMainWindow):
 	
 	def setup_info_frame1(self):
 		title = _("Tonal nback test")
-		text_body = _("""In this test, you will hear a sequence of notes.
-After the notes are played, you will be asked if the last note in the
-sequence is the same as another specific note in the sequence.
-		""")
+		#font = QFont("Arial", 12)
+		text_body = _("In this test, you will hear a sequence of notes.\nAfter the notes are played, you will be asked if the last note in the\nsequence is the same as another specific note in the sequence.")
 		image = QLabel()
 		image.setPixmap(QPixmap("static/nback_example.png").scaled(1000, 1000, Qt.AspectRatioMode.KeepAspectRatio))
-		v_widgets = (QLabel(text_body), image)
+		text_label = QLabel(text_body)
+		#text_label.setFont(font)
+		v_widgets = (text_label, image)
 		layout_h, layout_v, self.info_frame1 = self.setup_menu(title, widgets_v=v_widgets)
 	
 	def setup_info_frame3(self):

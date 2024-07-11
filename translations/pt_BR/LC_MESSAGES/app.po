@@ -241,6 +241,9 @@ msgstr "Teste nback visuotonal"
 msgid "Tonal discrimination task"
 msgstr "Teste de discriminação tonal"
 
+msgid "Tonal Discrimination Task"
+msgstr "Teste de Discriminação Tonal"
+
 msgid "Is the last played note the same as the note three places before it?"
 msgstr "A última nota tocada é igual à antepenúltima nota?"	
 
@@ -292,6 +295,10 @@ msgstr "No próximo teste, você deve comparar\na última nota com a antepenúlt
 msgid "The following trial will have you\ncompare the last note with the {}th note before the last."
 msgstr "No próximo teste, você deve comparar\na última nota com a {}ª nota antes da última."
 
+msgid "In this test, you will hear a sequence of notes. \nThen, there will be a 1-second pause, and you will hear another sequence of notes. \nYou will be asked if the second sequence is the same as the first one."
+
+msgstr "Este é o teste de discriminação tonal, que tem como objetivo avaliar a capacidade de memorizar e identificar duas sequências de notas (melodia) que\nserão apresentadas a você.\nOu seja, durante o teste, você ouvirá duas melodias com 1 segundo de silêncio entre elas.\nEssas duas melodias podem ser iguais ou diferentes.\nSe você achar que as sequências são iguais, você deve marcar a opção \"SIM\", se forem diferentes, você deve marcar a opção \"NÃO\" ao final de cada série.\nSerão apresentadas 10 pares de melodias para cada condição (número de notas), que variam entre 4, 6, 8 ou 10 notas."
+
 msgid "In this test, you will hear a sequence of notes.\nAfter the notes are played, you will be asked if the last note in the\nsequence is the same as another specific note in the sequence."
 
-msgstr "Este é o teste de discriminação tonal, que tem como objetivo avaliar a\ncapacidade de memorizar e identificar duas sequências de notas (melodia) que\nserão apresentadas a você. Ou seja, durante o teste, você ouvirá duas\nmelodias com 1 segundo de silêncio entre elas.\nEssas duas melodias podem ser iguais ou diferentes.\nSe você achar que as sequências são iguais, você deve marcar a opção \"SIM\", se forem diferentes, você deve marcar a opção \"NÃO\" ao final de cada série.\nSerão apresentadas 10 pares de melodias para cada condição (número de notas), que variam entre 4, 6, 8 ou 10 notas."
+msgstr "O teste N-back tonal, avalia a capacidade de memorizar notas que foram apresentadas \"n\" posições atrás da última dentro de uma sequência de notas aleatórias.\nVocê ouvirá sequências de notas aleatórias na escala de C maior e precisará identificar se a última nota é igual ou diferente da nota de referência (nota n).\nA nota de referência pode ser a penúltima (n = 1), antepenúltima (n = 2), 3ª antes da última (n = 3), e assim por diante até a 6ª nota antes da última.\nSe as notas forem iguais, você deve marcar a opção \"SIM\", se forem diferentes, você deve marcar a opção \"NÃO\".\nO teste é feito 10 vezes para cada \"n\" de referência."
