@@ -171,12 +171,13 @@ class Test3Thread(TestThread):
 	between_note_groups = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:
 		try:
+			testCaseList_list = []
 			testCaseList = []
 			self.id = 0
 			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument, is_sequence_mismatch=boolean_list[id])
+				testCase = TonalDiscriminationTaskTestCase(self.layout, self.id, self.notesQuantity, self.bpm, self.instrument, is_sequence_mismatch=boolean_list[self.id])
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

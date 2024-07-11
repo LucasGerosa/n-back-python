@@ -210,6 +210,7 @@ class TestCase: #(nback)
 		else:
 			with f:
 				# create the csv writer
+				f.write('sep=,\n')
 				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 				write_content_to_csv(writer, testCaseList_list)
 
@@ -306,6 +307,7 @@ class TonalDiscriminationTaskTestCase:
 		else:
 			with f:
 				# create the csv writer
+				f.write('sep=,\n')
 				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 				write_content_to_csv(writer, testCaseList)
 

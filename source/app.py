@@ -347,13 +347,16 @@ sequence is the same as another specific note in the sequence.
 				yes_button.clicked.connect(continue_test)
 			
 			def ask_continue_test_between_note_groups():
+				'''
 				answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, _("Ready for the next sequence?"), _("Yes"))
 				yes_button = answers[0]
 				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				def continue_test():
 					destroy_question()
 					countdown()
-				yes_button.clicked.connect(continue_test)
+				yes_button.clicked.connect(continue_test)'''
+				time.sleep(1)
+				self.notes_thread.wait_condition.wakeOne()
 			
 			def create_loading_label():
 				nonlocal loadingLabel
