@@ -279,11 +279,6 @@ class MyGUI(QMainWindow):
 
 		test_layout = None
 		def play_test():
-			nonlocal test_layout
-			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
-			test_layout = layout_v
-			self.states.append(self.takeCentralWidget())
-			self.setCentralWidget(test1_test)
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
 			
@@ -308,8 +303,14 @@ class MyGUI(QMainWindow):
 				return int(notes_quantity) <= len(TONAL_DISCRIMINATION_TASK_SEQUENCES[0])
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + trial - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes needs to be less than or equal to the TDT sequences."), QMessageBox.Icon.Warning).exec()
 				return
+			
+			nonlocal test_layout
+			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
+			test_layout = layout_v
+			self.states.append(self.takeCentralWidget())
+			self.setCentralWidget(test1_test)
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():
@@ -507,11 +508,6 @@ class MyGUI(QMainWindow):
 
 		test_layout = None
 		def play_test():
-			nonlocal test_layout
-			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
-			test_layout = layout_v
-			self.states.append(self.takeCentralWidget())
-			self.setCentralWidget(test1_test)
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
 			
@@ -535,11 +531,16 @@ class MyGUI(QMainWindow):
 				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
 				n_back = column_text_box[labels.index(n_back_q)].text()
 				test_case = column_text_box[labels.index(test_case_q)].text()
-				return int(notes_quantity) > int(n_back) - 1
+				return int(notes_quantity) + 1 > int(n_back)
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + trials - 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
+			nonlocal test_layout
+			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
+			test_layout = layout_v
+			self.states.append(self.takeCentralWidget())
+			self.setCentralWidget(test1_test)
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():

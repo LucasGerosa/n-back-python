@@ -202,8 +202,8 @@ msgstr "Falha ao salvar configurações"
 msgid "Language doesn't exist; Please enter a valid language."
 msgstr "Linguagem não existe; Por favor, digite uma linguagem válida."
 
-msgid "The quantity of notes + trials - 1 needs to be greater than nback"
-msgstr "A quantidade de notas + séries - 1 precisa ser maior que a de nback"
+msgid "The quantity of notes + 1 needs to be greater than nback"
+msgstr "A quantidade de notas + 1 precisa ser maior que a de nback"
 
 msgid "Are both the sequences the same?"
 msgstr "As duas sequências são iguais?"
@@ -302,3 +302,7 @@ msgstr "Este é o teste de discriminação tonal, que tem como objetivo avaliar 
 msgid "In this test, you will hear a sequence of notes.\nAfter the notes are played, you will be asked if the last note in the\nsequence is the same as another specific note in the sequence."
 
 msgstr "O teste N-back tonal, avalia a capacidade de memorizar notas que foram apresentadas \"n\" posições atrás da última dentro de uma sequência de notas aleatórias.\nVocê ouvirá sequências de notas aleatórias na escala de C maior e precisará identificar se a última nota é igual ou diferente da nota de referência (nota n).\nA nota de referência pode ser a penúltima (n = 1), antepenúltima (n = 2), 3ª antes da última (n = 3), e assim por diante até a 6ª nota antes da última.\nSe as notas forem iguais, você deve marcar a opção \"SIM\", se forem diferentes, você deve marcar a opção \"NÃO\".\nO teste é feito 10 vezes para cada \"n\" de referência."
+
+msgid "The quantity of notes needs to be less than or equal to the TDT sequences."
+
+msgstr "A quantidade de notas deve ser menor ou igual à das sequências TDT."
