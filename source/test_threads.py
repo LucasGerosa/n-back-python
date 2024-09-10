@@ -170,13 +170,28 @@ class Test3Thread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:
+		if self.notesQuantity == 4:
+			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES4
+		
+		elif self.notesQuantity == 6:
+			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES6
+		
+		elif self.notesQuantity == 8:
+			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES8
+
+		elif self.notesQuantity == 10:
+			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
+
+		else:
+			raise ValueError("Invalid notes quantity: %d. The only quantities currently available are 4, 6, 8 and 10." % self.notesQuantity)
+		
 		try:
 			testCaseList = []
 			self.id = 0
-			boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
+			#boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument, is_sequence_mismatch=boolean_list[id])
+				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

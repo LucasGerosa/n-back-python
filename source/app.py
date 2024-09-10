@@ -300,10 +300,10 @@ class MyGUI(QMainWindow):
 			
 			def is_notes_quantity_valid():
 				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
-				return int(notes_quantity) <= len(TONAL_DISCRIMINATION_TASK_SEQUENCES[0])
+				return int(notes_quantity) in (4, 6, 8, 10) #the number of available notes is harcoded
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes needs to be less than or equal to the TDT sequences."), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Currently, the only quantity of notes available is 4, 6, 8, 10."), QMessageBox.Icon.Warning).exec()
 				return
 			
 			nonlocal test_layout
