@@ -239,9 +239,10 @@ class TestCase: #(nback)
 				print(traceback.format_exc())
 
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
 		self.layout = layout
 		self.id: int = id
+		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
 
@@ -252,12 +253,30 @@ class TonalDiscriminationTaskTestCase:
 		return note_group
 
 	def get_random_sequence(self, notesQuantity:int):
-		sequence_index = random.randint(0, len(TONAL_DISCRIMINATION_TASK_SEQUENCES) - 1)
-		sequence = TONAL_DISCRIMINATION_TASK_SEQUENCES[sequence_index]
-		sequence_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES_MISMATCH[sequence_index]
-		sliced_sequence = self.slice_sequence(sequence, notesQuantity)
-		sliced_sequence_mismatch = self.slice_sequence(sequence_mismatch, notesQuantity)
-		return sliced_sequence, sliced_sequence_mismatch
+		if notesQuantity == 4:
+			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES4
+			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES4_MISMATCH
+		elif notesQuantity == 6:
+			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES6
+			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES6_MISMATCH
+		elif notesQuantity == 8:
+			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES8
+			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES8_MISMATCH
+		elif notesQuantity == 10:
+			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
+			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH
+		else:
+			raise ValueError(f"Invalid notes quantity: {notesQuantity}. The only quantities currently available are 4, 6, 8 and 10.")
+		
+		#sequence_index = random.randint(0, len(sample_sequences) - 1)
+
+		sequence = sample_sequences[self.sequence_id] #this means the sequences are just going to be sampled in the same order always.
+		sequence_mismatch = sample_sequences_mismatch[self.sequence_id]
+		#sliced_sequence = self.slice_sequence(sequence, notesQuantity)
+		#sliced_sequence_mismatch = self.slice_sequence(sequence_mismatch, notesQuantity)
+		#return sliced_sequence, sliced_sequence_mismatch
+		self.is_sequence_mismatch = not sequence == sequence_mismatch
+		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):
 		return sequence[:notesQuantity]

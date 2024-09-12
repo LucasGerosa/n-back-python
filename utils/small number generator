@@ -1,0 +1,77 @@
+def replace_spaces_with_tabs(text, spaces_per_tab=4):
+    # Split the input text into lines
+    lines = text.splitlines()
+    
+    # Create a new list to store the processed lines
+    updated_lines = []
+    
+    for line in lines:
+        # Calculate the number of leading spaces
+        leading_spaces = len(line) - len(line.lstrip(' '))
+
+        # Calculate the number of tabs equivalent to leading spaces
+        num_tabs = leading_spaces // spaces_per_tab
+
+        # Replace leading spaces with tabs and keep the rest of the line intact
+        updated_line = '\t' * num_tabs + line.lstrip(' ')
+
+        # Add the processed line to the list
+        updated_lines.append(updated_line)
+
+    # Join the lines back together to form the final text
+    return '\n'.join(updated_lines)
+
+
+# Example input text (with 4 spaces per indentation)
+input_text = r"""
+    def format_list(input_list):
+		# Iterate over each sublist
+		formatted_string = "[\n"
+		for sublist in input_list:
+			# Convert each sublist to a string and add new lines
+			formatted_string += "\t" + str(sublist) + ",\n"
+		formatted_string += "]"
+		return formatted_string
+
+    import random
+    # Ensure both lists are the same length
+    if len(list1) != len(list2):
+        print("Both lists must have the same length.")
+        return None
+
+    # Create a list of indices
+    indices = list(range(len(list1)))
+
+    # Shuffle the indices randomly
+    random.shuffle(indices)
+
+    # Shuffle both lists according to the shuffled indices
+    shuffled_list1 = [list1[i] for i in indices]
+    shuffled_list2 = [list2[i] for i in indices]
+
+    return shuffled_list1, shuffled_list2
+
+"""
+
+output_text = replace_spaces_with_tabs(input_text)
+#print(output_text)
+
+def areSequencesValid(sequences1, sequences2):
+	for i in range(len(sequences1)):
+		sequence1 = sequences1[i]
+		sequence2 = sequences2[i]
+		if sequence1 != sequence2:
+			for j in range(len(sequence1)):
+				note1 = sequence1[j]
+				note2 = sequence2[j]
+				if note1 != note2:
+					if not ((note1 == 'E4' and note2 == 'F4') or (note1 == 'F4' and note2 == 'E4') or (note1 == 'B4' and note2 == 'C5') or (note1 == 'C5' and note2 == 'B4')):
+						print("The notes of these sequences are out of wack:", note1, " ", note2, "\n", sequence1, '\n', sequence2, '\n')
+
+
+
+		
+#areSequencesValid(TONAL_DISCRIMINATION_TASK_SEQUENCES10_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH_SAMPLE)
+#areSequencesValid(TONAL_DISCRIMINATION_TASK_SEQUENCES8_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES8_MISMATCH_SAMPLE)
+#areSequencesValid(TONAL_DISCRIMINATION_TASK_SEQUENCES6_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES6_MISMATCH_SAMPLE)
+#areSequencesValid(TONAL_DISCRIMINATION_TASK_SEQUENCES4_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES4_MISMATCH_SAMPLE)
