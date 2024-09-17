@@ -15,3 +15,5 @@ app
 Nback-cache
 Nback-SetupFiles
 settings.ini
+build/app
+myvenv

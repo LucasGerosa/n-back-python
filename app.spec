@@ -9,7 +9,7 @@ a = Analysis(
     binaries=[('ffmpeg/bin/ffmpeg.exe', 'ffmpeg/bin/'), ('ffmpeg/bin/ffprobe.exe', 'ffmpeg/bin/')],
     datas=[
         ('input/piano/*.mp3', 'input/piano/'), 
-        ('input/guitar/*.mp3', 'input/guitar/'), 
+        #('input/guitar/*.mp3', 'input/guitar/'), 
         ('settings.ini', '.'),  # Add the settings.ini file to the root of the output directory
     ],
     hiddenimports=['simpleaudio'],
@@ -40,6 +40,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon= r"C:\Users\Lucas\GitHub\n-back-python\build\n-back_logo.ico"
 )
 
 import os
