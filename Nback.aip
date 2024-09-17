@@ -30,7 +30,6 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="AppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="APPDAT~1|AppDataFolder" IsPseudoRoot="1"/>
-    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="InternetExplorer_Dir" Directory_Parent="Microsoft_Dir" DefaultDir="INTERN~1|Internet Explorer"/>
     <ROW Directory="LC_MESSAGES_1_Dir" Directory_Parent="pt_BR_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
     <ROW Directory="LC_MESSAGES_Dir" Directory_Parent="en_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
@@ -38,8 +37,6 @@
     <ROW Directory="PyQt6_Dir" Directory_Parent="app_Dir" DefaultDir="PyQt6"/>
     <ROW Directory="Qt6_Dir" Directory_Parent="PyQt6_Dir" DefaultDir="Qt6"/>
     <ROW Directory="QuickLaunch_Dir" Directory_Parent="InternetExplorer_Dir" DefaultDir="QUICKL~1|Quick Launch"/>
-    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
-    <ROW Directory="StartMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="STARTM~1|StartMenuFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="app_Dir" Directory_Parent="APPDIR" DefaultDir="app"/>
     <ROW Directory="bin_1_Dir" Directory_Parent="Qt6_Dir" DefaultDir="bin"/>
@@ -53,15 +50,14 @@
     <ROW Directory="iconengines_Dir" Directory_Parent="plugins_Dir" DefaultDir="ICONEN~1|iconengines"/>
     <ROW Directory="imageformats_Dir" Directory_Parent="plugins_Dir" DefaultDir="IMAGEF~1|imageformats"/>
     <ROW Directory="input_Dir" Directory_Parent="app_Dir" DefaultDir="input"/>
+    <ROW Directory="libs_Dir" Directory_Parent="numpy_Dir" DefaultDir="LIBS~1|.libs"/>
     <ROW Directory="linalg_Dir" Directory_Parent="numpy_Dir" DefaultDir="linalg"/>
     <ROW Directory="numpy_Dir" Directory_Parent="app_Dir" DefaultDir="numpy"/>
     <ROW Directory="output_Dir" Directory_Parent="APPDIR" DefaultDir="output"/>
     <ROW Directory="piano_Dir" Directory_Parent="input_Dir" DefaultDir="piano"/>
     <ROW Directory="platforms_Dir" Directory_Parent="plugins_Dir" DefaultDir="PLATFO~1|platforms"/>
     <ROW Directory="plugins_Dir" Directory_Parent="Qt6_Dir" DefaultDir="plugins"/>
-    <ROW Directory="psutil_Dir" Directory_Parent="app_Dir" DefaultDir="psutil"/>
     <ROW Directory="pt_BR_Dir" Directory_Parent="translations_1_Dir" DefaultDir="pt_BR"/>
-    <ROW Directory="pyaudio_Dir" Directory_Parent="app_Dir" DefaultDir="pyaudio"/>
     <ROW Directory="random_Dir" Directory_Parent="numpy_Dir" DefaultDir="random"/>
     <ROW Directory="simpleaudio_Dir" Directory_Parent="app_Dir" DefaultDir="SIMPLE~1|simpleaudio"/>
     <ROW Directory="static_Dir" Directory_Parent="app_Dir" DefaultDir="static"/>
@@ -71,63 +67,62 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="APPDIR" ComponentId="{C4CCA2F9-EDF4-42ED-94DB-8DCA54537261}" Directory_="APPDIR" Attributes="0"/>
-    <ROW Component="MSVCP140.dll" ComponentId="{8628246C-5D88-43D1-817A-03DCD6104438}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140.dll"/>
-    <ROW Component="MSVCP140_1.dll" ComponentId="{2C5B9FFE-7C34-44C3-98D7-7EBE693E47ED}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_1.dll"/>
-    <ROW Component="MSVCP140_2.dll" ComponentId="{49B96C0A-1A8F-4291-A772-5583DCE51BD7}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_2.dll"/>
-    <ROW Component="Piano.mf.A1.mp3" ComponentId="{B31B2CC7-4291-4203-8E3A-B7DC7678E20A}" Directory_="piano_Dir" Attributes="0" KeyPath="Piano.mf.A1.mp3" Type="0"/>
+    <ROW Component="MSVCP140.dll" ComponentId="{F05F30EF-0D22-416E-A102-755CBA225338}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140.dll"/>
+    <ROW Component="MSVCP140_1.dll" ComponentId="{EF4CA885-1A48-4A12-BAD8-7A048630504A}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_1.dll"/>
+    <ROW Component="MSVCP140_2.dll" ComponentId="{E2D4220E-1CB0-453D-B6B4-274E4D6895BC}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_2.dll"/>
+    <ROW Component="Piano.mf.A1.mp3" ComponentId="{58343C86-2D31-4D2D-9A09-9E4E487E4E61}" Directory_="piano_Dir" Attributes="0" KeyPath="Piano.mf.A1.mp3" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{568C0761-C16D-4089-A46A-1389E7131A6B}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="Qt6Core.dll" ComponentId="{6AB0078C-D8F1-4000-A497-D91513FF7CD8}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Core.dll"/>
-    <ROW Component="Qt6Gui.dll" ComponentId="{98024343-59DA-460C-A429-9120F0BA2BC5}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Gui.dll"/>
-    <ROW Component="Qt6Network.dll" ComponentId="{49A783BC-A0FC-45BA-A140-CC67D1966533}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Network.dll"/>
-    <ROW Component="Qt6Pdf.dll" ComponentId="{B1D59CD6-2FF4-4CA1-9A1D-AC9FC103E95E}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Pdf.dll"/>
-    <ROW Component="Qt6Svg.dll" ComponentId="{CE520FCE-BC16-4A21-9D44-45EFC7CC37ED}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Svg.dll"/>
-    <ROW Component="Qt6Widgets.dll" ComponentId="{E70A5B88-94F4-4D25-AD92-46DFE02A80E1}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Widgets.dll"/>
-    <ROW Component="QtCore.pyd" ComponentId="{888EA803-858B-4F04-9165-DFEBFCC3969A}" Directory_="PyQt6_Dir" Attributes="256" KeyPath="QtCore.pyd" Type="0"/>
+    <ROW Component="Qt6Core.dll" ComponentId="{B808B10B-5D11-4BBB-846E-63D3958CAE18}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Core.dll"/>
+    <ROW Component="Qt6Gui.dll" ComponentId="{7BA48806-EC74-4211-909F-12723D66978E}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Gui.dll"/>
+    <ROW Component="Qt6Network.dll" ComponentId="{C4FC2A77-BBCB-4843-A08D-AF1EC1FF9F2B}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Network.dll"/>
+    <ROW Component="Qt6Pdf.dll" ComponentId="{FFF5467D-F82C-402B-BEC9-3C7EAF712CF6}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Pdf.dll"/>
+    <ROW Component="Qt6Svg.dll" ComponentId="{E3803087-55B5-4370-A7F0-062E07FA1ABC}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Svg.dll"/>
+    <ROW Component="Qt6Widgets.dll" ComponentId="{291124D3-D457-4FB9-BBE4-810E7A1A7259}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Widgets.dll"/>
+    <ROW Component="QtCore.pyd" ComponentId="{B021E129-F530-429A-B6E6-7A8CCFC29BE6}" Directory_="PyQt6_Dir" Attributes="256" KeyPath="QtCore.pyd" Type="0"/>
     <ROW Component="QuickLaunch" ComponentId="{021DF26B-82BA-43C9-86BC-4773AF69E830}" Directory_="QuickLaunch_Dir" Attributes="0"/>
-    <ROW Component="SHORTCUTDIR" ComponentId="{4964A7E8-C11E-4DFA-B048-38D2424F4904}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="VCRUNTIME140.dll" ComponentId="{E436B4F4-FB34-4042-BE1A-BB0393A10C69}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll"/>
-    <ROW Component="VCRUNTIME140_1.dll" ComponentId="{AC78182A-6D4A-465B-9772-2012FE13FB64}" Directory_="bin_1_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll"/>
-    <ROW Component="VCRUNTIME140_1.dll_1" ComponentId="{88852478-C6C1-4E8A-BE06-E88CD4330BF2}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll_1"/>
-    <ROW Component="_multiarray_tests.cp310win_amd64.pyd" ComponentId="{C77F7020-E919-4BFD-9B41-9AEC181F9728}" Directory_="core_Dir" Attributes="256" KeyPath="_multiarray_tests.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="_pocketfft_internal.cp310win_amd64.pyd" ComponentId="{DBFAF49B-D416-4CAD-A18C-F404DB92DD66}" Directory_="fft_Dir" Attributes="256" KeyPath="_pocketfft_internal.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="_portaudio.cp310win_amd64.pyd" ComponentId="{65C6A267-C20C-4AAD-AE95-918E28FB3C80}" Directory_="pyaudio_Dir" Attributes="256" KeyPath="_portaudio.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="_psutil_windows.pyd" ComponentId="{20EDF63A-5CF5-4628-9928-C1D0890110B9}" Directory_="psutil_Dir" Attributes="256" KeyPath="_psutil_windows.pyd" Type="0"/>
-    <ROW Component="_simpleaudio.cp310win_amd64.pyd" ComponentId="{C91817F7-EA67-4734-A8C8-39A9B978C52A}" Directory_="simpleaudio_Dir" Attributes="256" KeyPath="_simpleaudio.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="app.exe" ComponentId="{9924859C-C30F-430F-8E77-7B3236F4A416}" Directory_="app_Dir" Attributes="256" KeyPath="app.exe"/>
-    <ROW Component="app.mo" ComponentId="{BA154111-343B-49DC-98E9-B2953C764F84}" Directory_="LC_MESSAGES_Dir" Attributes="0" KeyPath="app.mo" Type="0"/>
-    <ROW Component="app.mo_1" ComponentId="{219F050B-AA95-47DD-A946-6F382BD10A05}" Directory_="LC_MESSAGES_1_Dir" Attributes="0" KeyPath="app.mo_1" Type="0"/>
-    <ROW Component="back_button.png" ComponentId="{3648CA9A-E5E5-4DDF-8410-314AB14C95CF}" Directory_="static_Dir" Attributes="0" KeyPath="back_button.png" Type="0"/>
-    <ROW Component="base_library.zip" ComponentId="{0A5A624A-0429-4933-8450-4BEFDE5473CB}" Directory_="app_Dir" Attributes="0" KeyPath="base_library.zip" Type="0"/>
-    <ROW Component="bit_generator.cp310win_amd64.pyd" ComponentId="{E1833140-4B79-4FF9-A4D7-A125F5769970}" Directory_="random_Dir" Attributes="256" KeyPath="bit_generator.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="cacert.pem" ComponentId="{768A9FB7-A093-4729-B4D8-9A2D253F680B}" Directory_="certifi_Dir" Attributes="0" KeyPath="cacert.pem" Type="0"/>
-    <ROW Component="ffmpeg.exe" ComponentId="{DD39E6FE-CE5B-423A-9C5D-6EEE19D55A67}" Directory_="bin_Dir" Attributes="256" KeyPath="ffmpeg.exe"/>
-    <ROW Component="ffprobe.exe" ComponentId="{10C4A83E-8390-4B47-A424-13D2B5DCEC90}" Directory_="bin_Dir" Attributes="256" KeyPath="ffprobe.exe"/>
-    <ROW Component="lapack_lite.cp310win_amd64.pyd" ComponentId="{B313BEC9-9112-40EC-B18D-9BA560C1FF47}" Directory_="linalg_Dir" Attributes="256" KeyPath="lapack_lite.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="libcrypto1_1.dll" ComponentId="{A9CCB199-2159-4F1E-BF12-30FEDCD2F119}" Directory_="app_Dir" Attributes="256" KeyPath="libcrypto1_1.dll"/>
-    <ROW Component="libffi7.dll" ComponentId="{B4853072-E93C-4EAD-9ED5-C7D433120E17}" Directory_="app_Dir" Attributes="256" KeyPath="libffi7.dll"/>
-    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll" ComponentId="{BB194DBE-8A64-42D5-85B5-E19F4DF0431D}" Directory_="app_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll"/>
-    <ROW Component="libssl1_1.dll" ComponentId="{ECC1A250-D719-4263-BB24-45A01B41A717}" Directory_="app_Dir" Attributes="256" KeyPath="libssl1_1.dll"/>
-    <ROW Component="opengl32sw.dll" ComponentId="{97AA5A3F-87DB-4E6B-ACA5-6BF702B157D7}" Directory_="bin_1_Dir" Attributes="256" KeyPath="opengl32sw.dll"/>
+    <ROW Component="VCRUNTIME140.dll" ComponentId="{332B0639-49E0-41D9-8F1F-BC8D8114344F}" Directory_="bin_1_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll"/>
+    <ROW Component="VCRUNTIME140.dll_1" ComponentId="{C3F64B5C-9094-4625-AB49-71983B2AE5B1}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll_1"/>
+    <ROW Component="VCRUNTIME140_1.dll" ComponentId="{3333FCD0-954A-4968-B2F8-86F27505BDA7}" Directory_="bin_1_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll"/>
+    <ROW Component="VCRUNTIME140_1.dll_1" ComponentId="{9237257C-3103-4532-A4D4-0646EE47ACB1}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll_1"/>
+    <ROW Component="_multiarray_tests.cp310win_amd64.pyd" ComponentId="{252C123A-F91A-4F0B-A3A9-37D18EB2B7CF}" Directory_="core_Dir" Attributes="256" KeyPath="_multiarray_tests.cp310win_amd64.pyd" Type="0"/>
+    <ROW Component="_pocketfft_internal.cp310win_amd64.pyd" ComponentId="{DC17451B-8ED2-478E-8C46-EA65EE48B7CC}" Directory_="fft_Dir" Attributes="256" KeyPath="_pocketfft_internal.cp310win_amd64.pyd" Type="0"/>
+    <ROW Component="_simpleaudio.cp310win_amd64.pyd" ComponentId="{61F25E95-4177-4F68-B76D-EC5A1DC5F4DE}" Directory_="simpleaudio_Dir" Attributes="256" KeyPath="_simpleaudio.cp310win_amd64.pyd" Type="0"/>
+    <ROW Component="app.exe" ComponentId="{E9B283FE-C2F4-4595-ADD8-332C835DCFDC}" Directory_="app_Dir" Attributes="256" KeyPath="app.exe"/>
+    <ROW Component="app.mo" ComponentId="{B8346FDA-A199-4DB4-AD16-44EC81895D7D}" Directory_="LC_MESSAGES_Dir" Attributes="0" KeyPath="app.mo" Type="0"/>
+    <ROW Component="app.mo_1" ComponentId="{CCB46007-0E76-46BD-B94A-D5DCE9AB42BC}" Directory_="LC_MESSAGES_1_Dir" Attributes="0" KeyPath="app.mo_1" Type="0"/>
+    <ROW Component="back_button.png" ComponentId="{CC336A53-EC3D-4726-A1DE-1ED4AF3AA528}" Directory_="static_Dir" Attributes="0" KeyPath="back_button.png" Type="0"/>
+    <ROW Component="base_library.zip" ComponentId="{EC1A8A42-2C02-445D-9CA2-F420C9D2AB30}" Directory_="app_Dir" Attributes="0" KeyPath="base_library.zip" Type="0"/>
+    <ROW Component="bit_generator.cp310win_amd64.pyd" ComponentId="{43DE5B41-40C9-4691-A735-EC3D5E17860F}" Directory_="random_Dir" Attributes="256" KeyPath="bit_generator.cp310win_amd64.pyd" Type="0"/>
+    <ROW Component="cacert.pem" ComponentId="{F13C207D-7C2E-4DC9-A068-B912F35C688B}" Directory_="certifi_Dir" Attributes="0" KeyPath="cacert.pem" Type="0"/>
+    <ROW Component="ffmpeg.exe" ComponentId="{21F6CC3B-B14A-40F0-A4F5-D24E82C48EFA}" Directory_="bin_Dir" Attributes="256" KeyPath="ffmpeg.exe"/>
+    <ROW Component="ffprobe.exe" ComponentId="{E1525291-668E-44D6-A212-19CA84A0690D}" Directory_="bin_Dir" Attributes="256" KeyPath="ffprobe.exe"/>
+    <ROW Component="lapack_lite.cp310win_amd64.pyd" ComponentId="{07B98810-1FFF-4939-840E-0EA5CB1AAAAD}" Directory_="linalg_Dir" Attributes="256" KeyPath="lapack_lite.cp310win_amd64.pyd" Type="0"/>
+    <ROW Component="libcrypto1_1.dll" ComponentId="{C2FEC486-2BC8-445A-8161-56BF4C2FF6B7}" Directory_="app_Dir" Attributes="256" KeyPath="libcrypto1_1.dll"/>
+    <ROW Component="libffi7.dll" ComponentId="{D2772B00-0856-4F52-AA8F-90D922DCC44B}" Directory_="app_Dir" Attributes="256" KeyPath="libffi7.dll"/>
+    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll" ComponentId="{A525EDA6-1B30-42EB-A9D7-B1BD763BDD07}" Directory_="app_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll"/>
+    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll_1" ComponentId="{E151579F-E887-42FB-BAC6-674ED4C0FE8F}" Directory_="libs_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll_1"/>
+    <ROW Component="libssl1_1.dll" ComponentId="{9C5AC8D4-C78E-487C-9BCA-0D0CA9048D62}" Directory_="app_Dir" Attributes="256" KeyPath="libssl1_1.dll"/>
+    <ROW Component="opengl32sw.dll" ComponentId="{2B22F49A-9B80-460E-B187-CB3D62AEDBF1}" Directory_="bin_1_Dir" Attributes="256" KeyPath="opengl32sw.dll"/>
     <ROW Component="output" ComponentId="{7DA451A7-E478-4A43-A538-4838C0C2AB29}" Directory_="output_Dir" Attributes="0"/>
-    <ROW Component="python3.dll" ComponentId="{4E30ED5F-C837-42D7-ADC9-AAB9490B3173}" Directory_="app_Dir" Attributes="256" KeyPath="python3.dll"/>
-    <ROW Component="python310.dll" ComponentId="{5509C6DE-E521-4C3C-8CD5-BBB7A82F043F}" Directory_="app_Dir" Attributes="256" KeyPath="python310.dll"/>
-    <ROW Component="qgif.dll" ComponentId="{9D8008D8-18D0-42A3-9FCB-F3CD4D3D3497}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qgif.dll"/>
-    <ROW Component="qicns.dll" ComponentId="{ADE9D917-F14F-475F-9211-4B1C92421D5E}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qicns.dll"/>
-    <ROW Component="qico.dll" ComponentId="{EA69B56F-262C-4A40-9CBE-2F1926048D47}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qico.dll"/>
-    <ROW Component="qjpeg.dll" ComponentId="{3230C6A0-DAE4-4CE6-A4D1-8D70E87092B6}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qjpeg.dll"/>
-    <ROW Component="qminimal.dll" ComponentId="{93406771-6F00-47F8-BCA3-A89431922CA2}" Directory_="platforms_Dir" Attributes="256" KeyPath="qminimal.dll"/>
-    <ROW Component="qmodernwindowsstyle.dll" ComponentId="{F921A7A0-A2D4-4959-994D-A59A07C26F97}" Directory_="styles_Dir" Attributes="256" KeyPath="qmodernwindowsstyle.dll"/>
-    <ROW Component="qoffscreen.dll" ComponentId="{91817E73-2B2C-4187-8392-4F6AB2187345}" Directory_="platforms_Dir" Attributes="256" KeyPath="qoffscreen.dll"/>
-    <ROW Component="qpdf.dll" ComponentId="{EF1D7CD2-D9E2-4D87-B29B-DB458D81AC7A}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qpdf.dll"/>
-    <ROW Component="qsvg.dll" ComponentId="{91334B2C-42E2-4059-B852-09484B3CF77C}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qsvg.dll"/>
-    <ROW Component="qsvgicon.dll" ComponentId="{88B8182C-1DAC-49CB-9C19-BC7F46363718}" Directory_="iconengines_Dir" Attributes="256" KeyPath="qsvgicon.dll"/>
-    <ROW Component="qtbase_ar.qm" ComponentId="{E7BFDC52-ABFF-4184-BFB2-866F8774E789}" Directory_="translations_Dir" Attributes="0" KeyPath="qtbase_ar.qm" Type="0"/>
-    <ROW Component="qtga.dll" ComponentId="{38E908F5-0300-4798-BEA9-13FD0B2ABE93}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtga.dll"/>
-    <ROW Component="qtiff.dll" ComponentId="{A04E031B-71DF-4953-BE84-DB095B424640}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtiff.dll"/>
-    <ROW Component="qtuiotouchplugin.dll" ComponentId="{E2BBC59A-AF15-4E8A-9914-FC7FBCBA8045}" Directory_="generic_Dir" Attributes="256" KeyPath="qtuiotouchplugin.dll"/>
-    <ROW Component="qwbmp.dll" ComponentId="{B775C744-4B99-4028-89C3-BECC21DBED38}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwbmp.dll"/>
-    <ROW Component="qwebp.dll" ComponentId="{BC686C8E-855C-40D8-BC50-EBC1B42154BA}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwebp.dll"/>
-    <ROW Component="qwindows.dll" ComponentId="{4A6F5F65-E40A-4079-B7EC-67F91D391ECA}" Directory_="platforms_Dir" Attributes="256" KeyPath="qwindows.dll"/>
+    <ROW Component="python3.dll" ComponentId="{49A0E598-C561-49B1-86E5-14A1BD95BFD6}" Directory_="app_Dir" Attributes="256" KeyPath="python3.dll"/>
+    <ROW Component="python310.dll" ComponentId="{D8092C0D-0386-4E1F-A6E0-536770F4C71E}" Directory_="app_Dir" Attributes="256" KeyPath="python310.dll"/>
+    <ROW Component="qgif.dll" ComponentId="{7AAA05A3-4CE3-4B15-B710-80DC082A7541}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qgif.dll"/>
+    <ROW Component="qicns.dll" ComponentId="{26667794-5C4B-406C-B107-897653E52206}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qicns.dll"/>
+    <ROW Component="qico.dll" ComponentId="{EDF6FEB7-9E5B-4330-BE63-8885AB8E349F}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qico.dll"/>
+    <ROW Component="qjpeg.dll" ComponentId="{409EBAAC-7807-4CC5-B008-A92703215095}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qjpeg.dll"/>
+    <ROW Component="qminimal.dll" ComponentId="{32795EDA-7964-4F92-B524-5AF5D8CD227B}" Directory_="platforms_Dir" Attributes="256" KeyPath="qminimal.dll"/>
+    <ROW Component="qmodernwindowsstyle.dll" ComponentId="{8AAB6283-1B66-437B-BBB0-21A7A0B19234}" Directory_="styles_Dir" Attributes="256" KeyPath="qmodernwindowsstyle.dll"/>
+    <ROW Component="qoffscreen.dll" ComponentId="{E997D0CB-0D7D-457A-BE59-D9DF84C471AF}" Directory_="platforms_Dir" Attributes="256" KeyPath="qoffscreen.dll"/>
+    <ROW Component="qpdf.dll" ComponentId="{509F5CE1-58C8-4E9E-AEB8-08E684EB8462}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qpdf.dll"/>
+    <ROW Component="qsvg.dll" ComponentId="{571EA08E-C827-48BD-B1C1-F274B5ADBE35}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qsvg.dll"/>
+    <ROW Component="qsvgicon.dll" ComponentId="{88B8D1D3-3635-4DC7-A792-DFC5C1B008BA}" Directory_="iconengines_Dir" Attributes="256" KeyPath="qsvgicon.dll"/>
+    <ROW Component="qtbase_ar.qm" ComponentId="{252E9D09-66AC-4B95-A3B7-485219664C4E}" Directory_="translations_Dir" Attributes="0" KeyPath="qtbase_ar.qm" Type="0"/>
+    <ROW Component="qtga.dll" ComponentId="{D04B83CC-A333-4C57-B1D8-FAF20EB99AE1}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtga.dll"/>
+    <ROW Component="qtiff.dll" ComponentId="{1AD975B8-3E81-4728-8C7A-60B13EDD9D5F}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtiff.dll"/>
+    <ROW Component="qtuiotouchplugin.dll" ComponentId="{71223B32-C0FF-4271-BF33-A168625AA670}" Directory_="generic_Dir" Attributes="256" KeyPath="qtuiotouchplugin.dll"/>
+    <ROW Component="qwbmp.dll" ComponentId="{54BF307C-E4DF-4A6C-8AAE-71A753590EA2}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwbmp.dll"/>
+    <ROW Component="qwebp.dll" ComponentId="{2A5EE26B-682A-435C-8027-ECC79E0BFBE4}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwebp.dll"/>
+    <ROW Component="qwindows.dll" ComponentId="{05024BB3-848A-48C7-A5C0-2862A9FD637D}" Directory_="platforms_Dir" Attributes="256" KeyPath="qwindows.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
@@ -229,6 +224,7 @@
     <ROW File="libffi7.dll" Component_="libffi7.dll" FileName="libffi-7.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libffi-7.dll" SelfReg="false"/>
     <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
     <ROW File="libssl1_1.dll" Component_="libssl1_1.dll" FileName="LIBSSL~1.DLL|libssl-1_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libssl-1_1.dll" SelfReg="false"/>
+    <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll_1" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_1" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\.libs\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
     <ROW File="_multiarray_tests.cp310win_amd64.pyd" Component_="_multiarray_tests.cp310win_amd64.pyd" FileName="_MULTI~1.PYD|_multiarray_tests.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_tests.cp310-win_amd64.pyd" SelfReg="false"/>
     <ROW File="_multiarray_umath.cp310win_amd64.pyd" Component_="_multiarray_tests.cp310win_amd64.pyd" FileName="_MULTI~2.PYD|_multiarray_umath.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_umath.cp310-win_amd64.pyd" SelfReg="false"/>
     <ROW File="_pocketfft_internal.cp310win_amd64.pyd" Component_="_pocketfft_internal.cp310win_amd64.pyd" FileName="_POCKE~1.PYD|_pocketfft_internal.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\fft\_pocketfft_internal.cp310-win_amd64.pyd" SelfReg="false"/>
@@ -243,8 +239,6 @@
     <ROW File="_pcg64.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_PCG64~1.PYD|_pcg64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_pcg64.cp310-win_amd64.pyd" SelfReg="false"/>
     <ROW File="_philox.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_PHILO~1.PYD|_philox.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_philox.cp310-win_amd64.pyd" SelfReg="false"/>
     <ROW File="_sfc64.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_SFC64~1.PYD|_sfc64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_sfc64.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_psutil_windows.pyd" Component_="_psutil_windows.pyd" FileName="_PSUTI~1.PYD|_psutil_windows.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\psutil\_psutil_windows.pyd" SelfReg="false"/>
-    <ROW File="_portaudio.cp310win_amd64.pyd" Component_="_portaudio.cp310win_amd64.pyd" FileName="_PORTA~1.PYD|_portaudio.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\pyaudio\_portaudio.cp310-win_amd64.pyd" SelfReg="false"/>
     <ROW File="pyexpat.pyd" Component_="base_library.zip" FileName="pyexpat.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\pyexpat.pyd" SelfReg="false"/>
     <ROW File="MSVCP140.dll" Component_="MSVCP140.dll" FileName="MSVCP140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140.dll" SelfReg="false"/>
     <ROW File="MSVCP140_1.dll" Component_="MSVCP140_1.dll" FileName="MSVCP1~1.DLL|MSVCP140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140_1.dll" SelfReg="false"/>
@@ -256,7 +250,8 @@
     <ROW File="Qt6Pdf.dll" Component_="Qt6Pdf.dll" FileName="Qt6Pdf.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Pdf.dll" SelfReg="false"/>
     <ROW File="Qt6Svg.dll" Component_="Qt6Svg.dll" FileName="Qt6Svg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Svg.dll" SelfReg="false"/>
     <ROW File="Qt6Widgets.dll" Component_="Qt6Widgets.dll" FileName="QT6WID~1.DLL|Qt6Widgets.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Widgets.dll" SelfReg="false"/>
-    <ROW File="VCRUNTIME140_1.dll" Component_="VCRUNTIME140_1.dll" FileName="VCRUNT~1.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140_1.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140.dll" Component_="VCRUNTIME140.dll" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140_1.dll" Component_="VCRUNTIME140_1.dll" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140_1.dll" SelfReg="false"/>
     <ROW File="qtuiotouchplugin.dll" Component_="qtuiotouchplugin.dll" FileName="QTUIOT~1.DLL|qtuiotouchplugin.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\generic\qtuiotouchplugin.dll" SelfReg="false"/>
     <ROW File="qsvgicon.dll" Component_="qsvgicon.dll" FileName="qsvgicon.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\iconengines\qsvgicon.dll" SelfReg="false"/>
     <ROW File="qgif.dll" Component_="qgif.dll" FileName="qgif.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qgif.dll" SelfReg="false"/>
@@ -303,6 +298,68 @@
     <ROW File="qtbase_uk.qm" Component_="qtbase_ar.qm" FileName="QTBAS~28.QM|qtbase_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_uk.qm" SelfReg="false"/>
     <ROW File="qtbase_zh_CN.qm" Component_="qtbase_ar.qm" FileName="QTBAS~29.QM|qtbase_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_CN.qm" SelfReg="false"/>
     <ROW File="qtbase_zh_TW.qm" Component_="qtbase_ar.qm" FileName="QTBAS~30.QM|qtbase_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_TW.qm" SelfReg="false"/>
+    <ROW File="qt_ar.qm" Component_="qtbase_ar.qm" FileName="qt_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ar.qm" SelfReg="false"/>
+    <ROW File="qt_bg.qm" Component_="qtbase_ar.qm" FileName="qt_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_bg.qm" SelfReg="false"/>
+    <ROW File="qt_ca.qm" Component_="qtbase_ar.qm" FileName="qt_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ca.qm" SelfReg="false"/>
+    <ROW File="qt_cs.qm" Component_="qtbase_ar.qm" FileName="qt_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_cs.qm" SelfReg="false"/>
+    <ROW File="qt_da.qm" Component_="qtbase_ar.qm" FileName="qt_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_da.qm" SelfReg="false"/>
+    <ROW File="qt_de.qm" Component_="qtbase_ar.qm" FileName="qt_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_de.qm" SelfReg="false"/>
+    <ROW File="qt_en.qm" Component_="qtbase_ar.qm" FileName="qt_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_en.qm" SelfReg="false"/>
+    <ROW File="qt_es.qm" Component_="qtbase_ar.qm" FileName="qt_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_es.qm" SelfReg="false"/>
+    <ROW File="qt_fa.qm" Component_="qtbase_ar.qm" FileName="qt_fa.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fa.qm" SelfReg="false"/>
+    <ROW File="qt_fi.qm" Component_="qtbase_ar.qm" FileName="qt_fi.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fi.qm" SelfReg="false"/>
+    <ROW File="qt_fr.qm" Component_="qtbase_ar.qm" FileName="qt_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fr.qm" SelfReg="false"/>
+    <ROW File="qt_gd.qm" Component_="qtbase_ar.qm" FileName="qt_gd.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gd.qm" SelfReg="false"/>
+    <ROW File="qt_gl.qm" Component_="qtbase_ar.qm" FileName="qt_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gl.qm" SelfReg="false"/>
+    <ROW File="qt_he.qm" Component_="qtbase_ar.qm" FileName="qt_he.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_he.qm" SelfReg="false"/>
+    <ROW File="qt_help_ar.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~1.QM|qt_help_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ar.qm" SelfReg="false"/>
+    <ROW File="qt_help_bg.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~2.QM|qt_help_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_bg.qm" SelfReg="false"/>
+    <ROW File="qt_help_ca.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~3.QM|qt_help_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ca.qm" SelfReg="false"/>
+    <ROW File="qt_help_cs.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~4.QM|qt_help_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_cs.qm" SelfReg="false"/>
+    <ROW File="qt_help_da.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~5.QM|qt_help_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_da.qm" SelfReg="false"/>
+    <ROW File="qt_help_de.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~6.QM|qt_help_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_de.qm" SelfReg="false"/>
+    <ROW File="qt_help_en.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~7.QM|qt_help_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_en.qm" SelfReg="false"/>
+    <ROW File="qt_help_es.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~8.QM|qt_help_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_es.qm" SelfReg="false"/>
+    <ROW File="qt_help_fr.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~9.QM|qt_help_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_fr.qm" SelfReg="false"/>
+    <ROW File="qt_help_gl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~10.QM|qt_help_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_gl.qm" SelfReg="false"/>
+    <ROW File="qt_help_hr.qm" Component_="qtbase_ar.qm" FileName="QT_HE~11.QM|qt_help_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hr.qm" SelfReg="false"/>
+    <ROW File="qt_help_hu.qm" Component_="qtbase_ar.qm" FileName="QT_HE~12.QM|qt_help_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hu.qm" SelfReg="false"/>
+    <ROW File="qt_help_it.qm" Component_="qtbase_ar.qm" FileName="QT_HE~13.QM|qt_help_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_it.qm" SelfReg="false"/>
+    <ROW File="qt_help_ja.qm" Component_="qtbase_ar.qm" FileName="QT_HE~14.QM|qt_help_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ja.qm" SelfReg="false"/>
+    <ROW File="qt_help_ka.qm" Component_="qtbase_ar.qm" FileName="QT_HE~15.QM|qt_help_ka.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ka.qm" SelfReg="false"/>
+    <ROW File="qt_help_ko.qm" Component_="qtbase_ar.qm" FileName="QT_HE~16.QM|qt_help_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ko.qm" SelfReg="false"/>
+    <ROW File="qt_help_nl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~17.QM|qt_help_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nl.qm" SelfReg="false"/>
+    <ROW File="qt_help_nn.qm" Component_="qtbase_ar.qm" FileName="QT_HE~18.QM|qt_help_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nn.qm" SelfReg="false"/>
+    <ROW File="qt_help_pl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~19.QM|qt_help_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pl.qm" SelfReg="false"/>
+    <ROW File="qt_help_pt_BR.qm" Component_="qtbase_ar.qm" FileName="QT_HE~20.QM|qt_help_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pt_BR.qm" SelfReg="false"/>
+    <ROW File="qt_help_ru.qm" Component_="qtbase_ar.qm" FileName="QT_HE~21.QM|qt_help_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ru.qm" SelfReg="false"/>
+    <ROW File="qt_help_sk.qm" Component_="qtbase_ar.qm" FileName="QT_HE~22.QM|qt_help_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sk.qm" SelfReg="false"/>
+    <ROW File="qt_help_sl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~23.QM|qt_help_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sl.qm" SelfReg="false"/>
+    <ROW File="qt_help_tr.qm" Component_="qtbase_ar.qm" FileName="QT_HE~24.QM|qt_help_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_tr.qm" SelfReg="false"/>
+    <ROW File="qt_help_uk.qm" Component_="qtbase_ar.qm" FileName="QT_HE~25.QM|qt_help_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_uk.qm" SelfReg="false"/>
+    <ROW File="qt_help_zh_CN.qm" Component_="qtbase_ar.qm" FileName="QT_HE~26.QM|qt_help_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_CN.qm" SelfReg="false"/>
+    <ROW File="qt_help_zh_TW.qm" Component_="qtbase_ar.qm" FileName="QT_HE~27.QM|qt_help_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_TW.qm" SelfReg="false"/>
+    <ROW File="qt_hr.qm" Component_="qtbase_ar.qm" FileName="qt_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hr.qm" SelfReg="false"/>
+    <ROW File="qt_hu.qm" Component_="qtbase_ar.qm" FileName="qt_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hu.qm" SelfReg="false"/>
+    <ROW File="qt_it.qm" Component_="qtbase_ar.qm" FileName="qt_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_it.qm" SelfReg="false"/>
+    <ROW File="qt_ja.qm" Component_="qtbase_ar.qm" FileName="qt_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ja.qm" SelfReg="false"/>
+    <ROW File="qt_ka.qm" Component_="qtbase_ar.qm" FileName="qt_ka.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ka.qm" SelfReg="false"/>
+    <ROW File="qt_ko.qm" Component_="qtbase_ar.qm" FileName="qt_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ko.qm" SelfReg="false"/>
+    <ROW File="qt_lt.qm" Component_="qtbase_ar.qm" FileName="qt_lt.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lt.qm" SelfReg="false"/>
+    <ROW File="qt_lv.qm" Component_="qtbase_ar.qm" FileName="qt_lv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lv.qm" SelfReg="false"/>
+    <ROW File="qt_nl.qm" Component_="qtbase_ar.qm" FileName="qt_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nl.qm" SelfReg="false"/>
+    <ROW File="qt_nn.qm" Component_="qtbase_ar.qm" FileName="qt_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nn.qm" SelfReg="false"/>
+    <ROW File="qt_pl.qm" Component_="qtbase_ar.qm" FileName="qt_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pl.qm" SelfReg="false"/>
+    <ROW File="qt_pt_BR.qm" Component_="qtbase_ar.qm" FileName="qt_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_BR.qm" SelfReg="false"/>
+    <ROW File="qt_pt_PT.qm" Component_="qtbase_ar.qm" FileName="qt_pt_PT.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_PT.qm" SelfReg="false"/>
+    <ROW File="qt_ru.qm" Component_="qtbase_ar.qm" FileName="qt_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ru.qm" SelfReg="false"/>
+    <ROW File="qt_sk.qm" Component_="qtbase_ar.qm" FileName="qt_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sk.qm" SelfReg="false"/>
+    <ROW File="qt_sl.qm" Component_="qtbase_ar.qm" FileName="qt_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sl.qm" SelfReg="false"/>
+    <ROW File="qt_sv.qm" Component_="qtbase_ar.qm" FileName="qt_sv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sv.qm" SelfReg="false"/>
+    <ROW File="qt_tr.qm" Component_="qtbase_ar.qm" FileName="qt_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_tr.qm" SelfReg="false"/>
+    <ROW File="qt_uk.qm" Component_="qtbase_ar.qm" FileName="qt_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_uk.qm" SelfReg="false"/>
+    <ROW File="qt_zh_CN.qm" Component_="qtbase_ar.qm" FileName="qt_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_CN.qm" SelfReg="false"/>
+    <ROW File="qt_zh_TW.qm" Component_="qtbase_ar.qm" FileName="qt_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_TW.qm" SelfReg="false"/>
     <ROW File="QtCore.pyd" Component_="QtCore.pyd" FileName="QtCore.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtCore.pyd" SelfReg="false"/>
     <ROW File="QtGui.pyd" Component_="QtCore.pyd" FileName="QtGui.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtGui.pyd" SelfReg="false"/>
     <ROW File="QtWidgets.pyd" Component_="QtCore.pyd" FileName="QTWIDG~1.PYD|QtWidgets.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtWidgets.pyd" SelfReg="false"/>
@@ -325,14 +382,12 @@
     <ROW File="app.mo_1" Component_="app.mo_1" FileName="app.mo" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.mo" SelfReg="false"/>
     <ROW File="app.po_1" Component_="app.mo_1" FileName="app.po" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.po" SelfReg="false"/>
     <ROW File="unicodedata.pyd" Component_="base_library.zip" FileName="UNICOD~1.PYD|unicodedata.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\unicodedata.pyd" SelfReg="false"/>
-    <ROW File="VCRUNTIME140.dll" Component_="VCRUNTIME140.dll" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140.dll_1" Component_="VCRUNTIME140.dll_1" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140.dll" SelfReg="false"/>
     <ROW File="VCRUNTIME140_1.dll_1" Component_="VCRUNTIME140_1.dll_1" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140_1.dll" SelfReg="false"/>
-    <ROW File="win32pdh.pyd" Component_="base_library.zip" FileName="win32pdh.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\win32pdh.pyd" SelfReg="false"/>
     <ROW File="_asyncio.pyd" Component_="base_library.zip" FileName="_asyncio.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_asyncio.pyd" SelfReg="false"/>
     <ROW File="_bz2.pyd" Component_="base_library.zip" FileName="_bz2.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_bz2.pyd" SelfReg="false"/>
     <ROW File="_ctypes.pyd" Component_="base_library.zip" FileName="_ctypes.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_ctypes.pyd" SelfReg="false"/>
     <ROW File="_decimal.pyd" Component_="base_library.zip" FileName="_decimal.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_decimal.pyd" SelfReg="false"/>
-    <ROW File="_elementtree.pyd" Component_="base_library.zip" FileName="_ELEME~1.PYD|_elementtree.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_elementtree.pyd" SelfReg="false"/>
     <ROW File="_hashlib.pyd" Component_="base_library.zip" FileName="_hashlib.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_hashlib.pyd" SelfReg="false"/>
     <ROW File="_lzma.pyd" Component_="base_library.zip" FileName="_lzma.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_lzma.pyd" SelfReg="false"/>
     <ROW File="_multiprocessing.pyd" Component_="base_library.zip" FileName="_MULTI~1.PYD|_multiprocessing.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_multiprocessing.pyd" SelfReg="false"/>
@@ -406,7 +461,6 @@
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
     <ROW Directory_="QuickLaunch_Dir" Component_="QuickLaunch" ManualDelete="false"/>
     <ROW Directory_="output_Dir" Component_="output" ManualDelete="false"/>
-    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
@@ -439,12 +493,11 @@
     <ROW Feature_="MainFeature" Component_="libffi7.dll"/>
     <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll"/>
     <ROW Feature_="MainFeature" Component_="libssl1_1.dll"/>
+    <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_1"/>
     <ROW Feature_="MainFeature" Component_="_multiarray_tests.cp310win_amd64.pyd"/>
     <ROW Feature_="MainFeature" Component_="_pocketfft_internal.cp310win_amd64.pyd"/>
     <ROW Feature_="MainFeature" Component_="lapack_lite.cp310win_amd64.pyd"/>
     <ROW Feature_="MainFeature" Component_="bit_generator.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="_psutil_windows.pyd"/>
-    <ROW Feature_="MainFeature" Component_="_portaudio.cp310win_amd64.pyd"/>
     <ROW Feature_="MainFeature" Component_="MSVCP140.dll"/>
     <ROW Feature_="MainFeature" Component_="MSVCP140_1.dll"/>
     <ROW Feature_="MainFeature" Component_="MSVCP140_2.dll"/>
@@ -455,6 +508,7 @@
     <ROW Feature_="MainFeature" Component_="Qt6Pdf.dll"/>
     <ROW Feature_="MainFeature" Component_="Qt6Svg.dll"/>
     <ROW Feature_="MainFeature" Component_="Qt6Widgets.dll"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll"/>
     <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll"/>
     <ROW Feature_="MainFeature" Component_="qtuiotouchplugin.dll"/>
     <ROW Feature_="MainFeature" Component_="qsvgicon.dll"/>
@@ -479,11 +533,10 @@
     <ROW Feature_="MainFeature" Component_="_simpleaudio.cp310win_amd64.pyd"/>
     <ROW Feature_="MainFeature" Component_="back_button.png"/>
     <ROW Feature_="MainFeature" Component_="app.mo"/>
-    <ROW Feature_="MainFeature" Component_="app.mo_1"/>
-    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll"/>
     <ROW Feature_="MainFeature" Component_="output"/>
+    <ROW Feature_="MainFeature" Component_="app.mo_1"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll_1"/>
     <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll_1"/>
-    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="nback_logo.exe" SourcePath="build\n-back_logo.ico" Index="0"/>
@@ -517,11 +570,6 @@
     <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
     <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="Nback" Directory_="SHORTCUTDIR" Name="N-back" Component_="app.exe" Target="[#app.exe]" Hotkey="0" Icon_="nback_logo.exe" IconIndex="0" ShowCmd="1" WkDir="app_Dir"/>
-    <ROW Shortcut="Nback_1" Directory_="DesktopFolder" Name="N-back" Component_="app.exe" Target="[#app.exe]" Hotkey="0" Icon_="nback_logo.exe" IconIndex="0" ShowCmd="1" WkDir="app_Dir"/>
-    <ROW Shortcut="Nback_2" Directory_="StartMenuFolder" Name="N-back" Component_="app.exe" Target="[#app.exe]" Hotkey="0" Icon_="nback_logo.exe" IconIndex="0" ShowCmd="1" WkDir="app_Dir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>

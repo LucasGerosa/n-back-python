@@ -40,7 +40,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon= r"C:\Users\Lucas\GitHub\n-back-python\build\n-back_logo.ico"
+    icon= r"C:\Users\Lucas\GitHub\n-back-python\build\n-back_logo.ico",
+    contents_directory=''
 )
 
 import os
