@@ -17,12 +17,26 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils
 import io
 
+setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
+
 class ResultEnum(Enum):
 	ACERTO = 1
 	ERRO = 2
 
+def get_settings():
+	intensity = notes_config.get_intensity_setting()
+	if intensity == None:
+		raise Exception(setting_not_exist_msg)
+	note_str = notes_config.get_notes_setting()
+	if note_str == notes_config.get_notes_setting(notes_config.DEFAULT):
+		note_group = IOUtils.getNotes(intensity=intensity, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm, note_value=note_value)
+		return note_group
+	elif note_str == None:
+		raise Exception(setting_not_exist_msg)
+	note_str_list = note_str_utils.get_final_list_notes(note_str)
+	return intensity, note_str_list
+
 def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
-	setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 	note_value_str = notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)
 	try:
 		note_value = float(Fraction(note_value_str))
@@ -43,6 +57,9 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 	note_list = [notes.get_note_from_note_name(intensity, note_str, note_value=note_value) for note_str in note_str_list]
 	return notes.Note_group(note_list)
 
+def get_note_tuple_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> tuple[notes.Note]:
+	note_value_str = notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)
+
 class TestCase: #(nback)
 
 	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = None, isLastNoteUp = None) -> None:
@@ -53,7 +70,7 @@ class TestCase: #(nback)
 		self.isLastNoteUp = isLastNoteUp
 		if numberOfNotes < 2:
 			raise ValueError(f"numberOfNotes should be > 1. Got {numberOfNotes} instead.")
-		self.numberOfNotes: int = numberOfNotes - 1
+		self.numberOfNotes: int = numberOfNotes - 1 #this is because the last note is appended later in this function
 
 		if mode == RANDOM_MODE:
 			self.note_group = self.get_random_notes(bpm, instrument)
@@ -129,7 +146,6 @@ class TestCase: #(nback)
 		else:
 			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
 		
-
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
 		lastNote: int = self.note_group[-1]
@@ -224,7 +240,6 @@ class TestCase: #(nback)
 			testCase.execute()
 		return testCaseList
 
-	
 	@staticmethod
 	def debug() -> None:
 		NUMBER_OF_TESTCASES = 1
@@ -326,6 +341,27 @@ class TonalDiscriminationTaskTestCase:
 				write_content_to_csv(writer, testCaseList)
 
 			f.close()
+
+class VolumeTestCase:
+	def __init__(self, layout:QtWidgets.QLayout, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:
+		self.layout = layout
+		if numberOfNotes < 1:
+			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
+		self.numberOfNotes: int = numberOfNotes
+		self.note_group = self.get_random_notes(bpm, instrument)
+		print("Note group:")
+		for note in self.note_group:
+			print(note.name)
+		print()
+
+	def get_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
+		note_group = get_note_group_from_config(bpm=bpm,instrument=instrument)
+		if note_group.notes == []:
+			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+		notes_array = np.array(note_group.notes)
+		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
+		random_notes_group = notes.Note_group(random_notes_array.tolist())
+		return random_notes_group
 
 if __name__ == "__main__":
 	note_group = get_note_group_from_config()

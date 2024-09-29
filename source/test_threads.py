@@ -1,12 +1,54 @@
 from PyQt6 import QtCore, QtWidgets
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import TestCase, TonalDiscriminationTaskTestCase
+from TestCase import TestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
 import IOUtils
 from utils.defaults import *
 import math
-#import simpleaudio
 
+
+class VolumeTestThread(QtCore.QThread):
+	start_execution = QtCore.pyqtSignal()
+	pre_start_execution = QtCore.pyqtSignal()
+
+	def __init__(self, layout:QtWidgets.QLayout):
+		self.lock = QtCore.QReadWriteLock()
+		self.mutex = QtCore.QMutex()
+		self.wait_condition = QtCore.QWaitCondition()
+		self.stop = False
+		super().__init__()
+		self.layout = layout
+	
+	def run(self):
+		self.executeLoop()
+		self.finished.emit()
+
+	def executeLoop(self) -> list|None:
+
+		if self.layout == None:
+			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
+		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
+			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers." % {'type': type(self.layout)})
+		
+		try:
+
+			while not self.stop:
+				self.pre_start_execution.emit()
+				testCase = VolumeTestCase(self.layout)
+				self.start_execution.emit()
+				testCase.note_group.play()
+				del testCase
+				if self.stop:
+					print("Thread was interrupted. Stopping now.")
+					return
+
+			if self.stop:
+				print("Thread was interrupted. Stopping now.")
+				return
+
+		except KeyboardInterrupt:
+			print("Ctrl+c was pressed. Stopping now.")
+	
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	done_testCase = QtCore.pyqtSignal(TestCase)
@@ -41,7 +83,7 @@ class TestThread(QtCore.QThread):
 		self.wait_condition.wakeAll()
 		self.mutex.unlock()
 	
-	def run(self):
+	def run(self): #this is the main function that is going to be called when the thread is start()
 		self.executeLoop()
 		self.finished.emit()
 	
@@ -52,9 +94,9 @@ class Test1Thread(TestThread):
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
-			raise ValueError(_("Could not find layout_v. This is a bug. Please contact the developers."))
+			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
 		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
+			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)}
 		
 		try:
 			testCaseList_list = []
@@ -90,7 +132,7 @@ class Test1Thread(TestThread):
 					
 					testCase.note_group.play()
 					if self.stop:
-						print(_("Thread was interrupted. Stopping now."))
+						print("Thread was interrupted. Stopping now.")
 						return
 					self.done_testCase.emit(testCase)
 					self.wait_for_signal()
@@ -101,13 +143,13 @@ class Test1Thread(TestThread):
 				testCaseList_list.append(testCaseList)
 
 			if self.stop:
-				print(_("Thread was interrupted. Stopping now."))
+				print("Thread was interrupted. Stopping now.")
 				return
 			TestCase.saveResults(testCaseList_list, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
-			print(_("Ctrl+c was pressed. Stopping now."))
+			print("Ctrl+c was pressed. Stopping now.")
 
 class Test2Thread(TestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
@@ -117,9 +159,9 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 	test_started_signal = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:
 		if self.layout == None:
-			raise ValueError(_("Could not find layout_v. This is a bug. Please contact the developers."))
+			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
 		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError(_("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)})
+			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)}
 		
 		try:
 			testCaseList = []
@@ -140,7 +182,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 						self.print_hint_signal.emit(testCase.note_group.notes[i].name)
 					for _ in range(math.floor(note.note_value * 4)):
 						if self.stop:
-							print(_("Thread was interrupted. Stopping now."))
+							print("Thread was interrupted. Stopping now.")
 							return
 						note.play()
 					self.delete_note_signal.emit()
@@ -150,7 +192,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 				del note_group_length
 					
 				if self.stop:
-					print(_("Thread was interrupted. Stopping now."))
+					print("Thread was interrupted. Stopping now.")
 					return
 				
 				self.done_testCase.emit(testCase)
@@ -158,13 +200,13 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 				self.wait_for_signal()
 				self.id += 1
 			if self.stop:
-				print(_("Thread was interrupted. Stopping now."))
+				print("Thread was interrupted. Stopping now.")
 				return
 			TestCase.saveResults(testCaseList, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
-			print(_("Ctrl+c was pressed. Stopping now."))
+			print("Ctrl+c was pressed. Stopping now.")
 
 class Test3Thread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
@@ -198,7 +240,7 @@ class Test3Thread(TestThread):
 				
 				testCase.note_group1.play()
 				if self.stop:
-					print(_("Thread was interrupted. Stopping now."))
+					print("Thread was interrupted. Stopping now.")
 					return
 				
 				self.between_note_groups.emit()
@@ -210,7 +252,7 @@ class Test3Thread(TestThread):
 
 				self.id += 1
 			if self.stop:
-				print(_("Thread was interrupted. Stopping now."))
+				print("Thread was interrupted. Stopping now.")
 				return
 			TonalDiscriminationTaskTestCase.saveResults(testCaseList, self.playerName)
 
@@ -218,4 +260,4 @@ class Test3Thread(TestThread):
 
 
 		except KeyboardInterrupt:
-			print(_("Ctrl+c was pressed. Stopping now."))
+			print("Ctrl+c was pressed. Stopping now.")

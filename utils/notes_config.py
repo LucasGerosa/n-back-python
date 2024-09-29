@@ -3,13 +3,14 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-
 CUSTOM_SETTING = 'custom'
 NOTES_SETTING = 'Notes'
 NOTE_INTENSITY_SETTING = 'Note intensity'
 DEFAULT = 'DEFAULT'
 NOTE_VALUE_SETTING = 'Note duration'
 LANGUAGE_SETTING = 'Language'
+LEGAL_LANGUAGES = ('pt_BR', 'en')
+LEGAL_NOTE_INTENSITIES = ('pp', 'mf', 'ff')
 
 def get_notes_setting(section = CUSTOM_SETTING) -> str:
     notes_str = get_setting(NOTES_SETTING, section = section)
@@ -46,15 +47,15 @@ def reset_settings():
     config = ConfigParser()
 
     config[DEFAULT] = {
-        NOTES_SETTING : "All",
+        NOTES_SETTING : "C4-C5",
         NOTE_INTENSITY_SETTING : "mf",
         NOTE_VALUE_SETTING : "1/4",
-        LANGUAGE_SETTING : "en"
+        LANGUAGE_SETTING : "pt_BR"
     }
     config[CUSTOM_SETTING] = config["DEFAULT"]
     write_config(config)
     return config[DEFAULT]
-    
+
 def write_config(config):
     with open("settings.ini", "w") as f:
         config.write(f)
@@ -65,12 +66,11 @@ def get_all_settings(section = CUSTOM_SETTING):
         raise FileNotFoundError("The settings.ini file hasn't yet been created. If you're running the program from the source code, run notes_config.py and try again. If you're not, this is a bug, so ask the developers to fix it.")
     return config[section]
 
-def test():
-    print(get_setting(NOTES_SETTING))
-    print(change_setting(NOTES_SETTING, 'A4-G5'))
-    print(get_setting(NOTES_SETTING))
-
 if __name__ == '__main__':
+    def test():
+        print(get_setting(NOTES_SETTING))
+        print(change_setting(NOTES_SETTING, 'A4-G5'))
+        print(get_setting(NOTES_SETTING))
     reset_settings()
     #test()
     

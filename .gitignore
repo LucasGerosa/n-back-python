@@ -17,3 +17,5 @@ Nback-SetupFiles
 settings.ini
 build/app
 myvenv
+source/test.py
+learning_pyqt6.py

@@ -306,3 +306,15 @@ msgstr "O teste N-back tonal, avalia a capacidade de memorizar notas que foram a
 msgid "The quantity of notes needs to be less than or equal to the TDT sequences."
 
 msgstr "A quantidade de notas deve ser menor ou igual à das sequências TDT."
+
+msgid "First, let's check if you can hear all the notes. Adjust the volume as needed until you can hear all the notes well."
+
+msgstr "Primeiro, vamos verificar se você consegue ouvir todas as notas. Ajuste o volume conforme necessário até que você consiga ouvir todas as notas bem."
+
+msgid "Volume test"
+
+msgstr "Teste de volume"
+
+msgid "Participant ID"
+
+msgstr "ID do participante"

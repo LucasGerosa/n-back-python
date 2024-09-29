@@ -6,8 +6,9 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import notes
 from utils.defaults import *
+import utils.note_str_utils as note_str_utils
 from utils import PyQt6_utils
-from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread
+from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread, VolumeTestThread
 import run
 from typing import Dict, Optional, List
 from utils import notes_config
@@ -17,6 +18,7 @@ from collections.abc import Iterable
 import re
 import gettext
 import time
+from fractions import Fraction
 
 # Specify the translation domain and path to the translations directory
 print(os.path.dirname(__file__),"\n")
@@ -43,9 +45,12 @@ class MyGUI(QMainWindow):
 		self.setup_settings()
 		self.setup_play_menu()
 		self.setup_debug_menu()
+
 		self.setup_test1_menu()
 		self.setup_test2_menu()
 		self.setup_test3_menu()
+		self.setup_volume_test_menu() #When creating new tests, put them under this line, or the test_menus will be in the wrong order and you will enter the wrong test menu when trying to enter the test menus
+
 		self.setup_test2_frame()
 		self.setup_info_frame1()
 		self.setup_info_frame3()
@@ -123,14 +128,41 @@ class MyGUI(QMainWindow):
 			text_box.returnPressed.connect(create_save_function(text_box, setting_name))
 			layout_v_h.addWidget(text_box)
 			setting_dict[setting_name] = text_box
-
 			layout_v.addLayout(layout_v_h)
+
 		if setting_dict == {}:
-			return
+			raise ValueError("There are no settings. This is a bug. Please contact the developers.")
 
 		save_button = QPushButton(_("Save"))
 
 		def save_all():
+			wrong_inputs = []
+			setting_value_tuple = tuple(setting_dict.values())
+
+			note_range = setting_value_tuple[0].text()
+			try:
+				note_str_utils.get_final_list_notes(note_range)
+			except (ValueError, TypeError):
+				wrong_inputs.append(notes_config.NOTES_SETTING)
+
+			note_intensity = setting_value_tuple[1].text()
+			if note_intensity not in notes_config.LEGAL_NOTE_INTENSITIES:
+				wrong_inputs.append(notes_config.NOTE_INTENSITY_SETTING)
+
+			try:
+				Fraction(setting_value_tuple[2].text())
+			except (TypeError, ValueError, ZeroDivisionError):
+				wrong_inputs.append(notes_config.NOTE_VALUE_SETTING)
+
+			language = setting_value_tuple[3].text()
+			if language not in notes_config.LEGAL_LANGUAGES:
+				wrong_inputs.append(notes_config.LANGUAGE_SETTING)
+			
+			if wrong_inputs != []:
+				wrong_inputs = [_(setting_name) for setting_name in wrong_inputs]
+				PyQt6_utils.get_msg_box(_("Settings failed to save"), _("The following settings are incorrect or incomplete:\n\n")+ '\n'.join(wrong_inputs)+_(".\n\n Correct them and try again"), QMessageBox.Icon.Warning).exec()
+				return
+			
 			for setting_name in setting_dict:
 				text_box = setting_dict[setting_name]
 				user_input = text_box.text()
@@ -139,6 +171,7 @@ class MyGUI(QMainWindow):
 					if not os.path.isdir(language_path):
 						PyQt6_utils.get_msg_box(_("Settings failed to save"), _("Language doesn't exist; Please enter a valid language."), QMessageBox.Icon.Warning).exec()
 						return
+				
 						
 				notes_config.change_setting(setting_name, user_input)
 
@@ -160,9 +193,53 @@ class MyGUI(QMainWindow):
 		reset_button.clicked.connect(reset_settings)
 		layout_v.addWidget(reset_button)
 	
+	def setup_volume_test_menu(self):
+		h_buttons = (self.get_settings_button(),)
+		text_body = _("First, let's check if you can hear all the notes. Adjust the volume as needed until you can hear all the notes well.")
+		v_buttons = (QLabel(text_body),)
+		layout_h, layout_v, test_menu = self.setup_menu(_("Volume test"), widgets_h=h_buttons, widgets_v=v_buttons)
+		self.test_menus.append(test_menu)
+		play_test_button = QPushButton(_("Play"))
+		play_test_button.setFont(PyQt6_utils.FONT)
+		def play_test():
+			layout_h, layout_v, test = self.setup_menu(back_button=False)
+			self.states.append(self.takeCentralWidget())
+			self.setCentralWidget(test)
+			
+			@QtCore.pyqtSlot()
+			def on_execute_loop_thread_finished():
+				if not isinstance(self.notes_thread, VolumeTestThread):
+					raise ValueError(_("Notes thread is not an instance of VolumeTestThread"))
+				self.notes_thread.deleteLater()
+				self.setCentralWidget(self.states.pop())
+			
+			def create_loading_label():
+				nonlocal loadingLabel
+				loadingLabel = QLabel(_("Loading")+ '...')
+				loadingLabel.setStyleSheet("font-size: 50px;")
+				loadingLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+				layout_v.addWidget(loadingLabel)
+
+			loadingLabel = None
+
+			def deleteLoadingLabel():
+				nonlocal loadingLabel
+				loadingLabel.deleteLater()
+				
+			self.notes_thread = VolumeTestThread(layout_v)
+			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
+			self.notes_thread.pre_start_execution.connect(create_loading_label)
+			self.notes_thread.start_execution.connect(deleteLoadingLabel)
+			self.notes_thread.start()
+			stop_button = self.get_stop_button(self.notes_thread)
+			layout_h.addWidget(stop_button)
+
+		play_test_button.clicked.connect(play_test)
+		layout_v.addWidget(play_test_button)
+
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
-		v_buttons = self.get_main_menu_button(), self.get_test1_button(), self.get_test2_button(), self.get_test3_button()
+		v_buttons = self.get_main_menu_button(), self.get_volume_test_button(), self.get_test1_button(), self.get_test3_button()
 		layout_h, layout_v, self.play_menu = self.setup_menu(_("Choose a test"), h_buttons, v_buttons)
 	
 	def setup_info_frame1(self):
@@ -184,7 +261,6 @@ class MyGUI(QMainWindow):
 		v_widgets = (QLabel(text_body), tdt_image)
 		layout_h, layout_v, self.info_frame3 = self.setup_menu(title, widgets_v=v_widgets)
 
-
 	def setup_debug_menu(self):
 		v_buttons = ()
 		h_buttons = ()
@@ -203,7 +279,7 @@ class MyGUI(QMainWindow):
 		test_name = _("Tonal Discrimination Task")
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
-		player_name_q = _("Player name")
+		player_name_q = _("ID do participante")
 		test_case_q = _("How many trials?")
 		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
@@ -275,9 +351,8 @@ class MyGUI(QMainWindow):
 		reset_button.clicked.connect(reset)
 		play_test_button = QPushButton(_("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
-		button_size = play_test_button.sizeHint()
+		#button_size = play_test_button.sizeHint()
 
-		test_layout = None
 		def play_test():
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
@@ -306,9 +381,7 @@ class MyGUI(QMainWindow):
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("Currently, the only quantity of notes available is 4, 6, 8, 10."), QMessageBox.Icon.Warning).exec()
 				return
 			
-			nonlocal test_layout
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
-			test_layout = layout_v
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
 			
@@ -391,9 +464,8 @@ class MyGUI(QMainWindow):
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
-		return test_layout
 
-	def setup_test_menu(self, test_number:int, Thread:TestThread, h_buttons:tuple[QPushButton, ...]=()):
+	def setup_test_menu(self, test_number:int, Thread:TestThread, h_buttons:tuple[QPushButton, ...]=()): #For the nback tests 
 		h_buttons = (self.get_settings_button(),) + h_buttons
 		v_buttons = ()
 		if test_number == 1:
@@ -405,7 +477,7 @@ class MyGUI(QMainWindow):
 		
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
-		player_name_q = _("Player name")
+		player_name_q = _("Participant ID")
 		test_case_q = _("How many sequences?")
 		trials_q = _("How many trials?")
 		n_back_q = _("n-back (int)")
@@ -504,9 +576,8 @@ class MyGUI(QMainWindow):
 		reset_button.clicked.connect(reset)
 		play_test_button = QPushButton(_("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
-		button_size = play_test_button.sizeHint()
+		#button_size = play_test_button.sizeHint()
 
-		test_layout = None
 		def play_test():
 			def get_text(q):
 				return column_text_box[labels.index(q)].text()
@@ -536,9 +607,7 @@ class MyGUI(QMainWindow):
 			if not is_notes_quantity_valid():
 				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
-			nonlocal test_layout
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
-			test_layout = layout_v
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
 			
@@ -594,7 +663,6 @@ class MyGUI(QMainWindow):
 			bpm = float(get_text(bpm_q))
 			instrument = get_text(instrument_q)
 			trials = int(get_text(trials_q))
-			#play_test_button.setEnabled(False)
 			loadingLabel = None
 			if random_c_major_radio_button.isChecked():
 				mode = RANDOM_C_MAJOR_MODE
@@ -656,7 +724,6 @@ class MyGUI(QMainWindow):
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 		play_test_button.clicked.connect(play_test)
 		layout_v.addWidget(play_test_button)
-		return test_layout
 
 	def setup_menu(self, title:str="", widgets_h:tuple[QWidget, ...]=(), widgets_v:tuple[QWidget, ...]=(), back_button:bool=True):
 		frame = QFrame(self)
@@ -718,6 +785,9 @@ class MyGUI(QMainWindow):
 	
 	def get_test3_button(self):
 		return PyQt6_utils.get_txt_button(_('Tonal discrimination task'), lambda: self.goto_frame(self.test_menus[2]))
+	
+	def get_volume_test_button(self):
+		return PyQt6_utils.get_txt_button(_('Volume test'), lambda: self.goto_frame(self.test_menus[3]))
 	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(_('Main menu'), lambda: self.goto_frame(self.main_menu))

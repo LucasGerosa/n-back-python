@@ -76,7 +76,7 @@ def convert_sharps_to_flats(note_char:str, note_number:str) -> str: #Ex. input: 
 
 	return new_note_char0 + note_number
 	
-def get_final_list_notes(notes_string:str) -> list[str]:
+def get_final_list_notes(notes_string:str) -> list[str]: #Ex. input: "A1;C2" output: ["A1", "C2"]
 	
 	def get_set_notes_from_range(range_notes:str) -> set[str]:
 		
@@ -90,7 +90,7 @@ def get_final_list_notes(notes_string:str) -> list[str]:
 		if not list_note_names:
 			list_note_names = get_range_pattern("-", range_notes)
 			if not list_note_names:
-				raise Exception(f"{range_notes} is not a valid string.")
+				raise ValueError(f"{range_notes} is not a valid string.")
 			
 		char1 = convert_sharps_to_flats(list_note_names[0][:-1], list_note_names[0][-1])
 		char2 = convert_sharps_to_flats(list_note_names[1][:-1], list_note_names[1][-1])
@@ -101,7 +101,7 @@ def get_final_list_notes(notes_string:str) -> list[str]:
 		num2 = list_note_names[1][-1]
 		num2_int = int(num2)
 		if num1_int > num2_int or (num1 ==  num2 and charnum2 < charnum1):
-			raise Exception(f"Invalid range. {list_note_names[0]} > {list_note_names[1]}")
+			raise ValueError(f"Invalid range. {list_note_names[0]} > {list_note_names[1]}")
 		
 		def add_notes_to_set(charnum1, charnum2):
 			for charnum in range(charnum1, charnum2 + 1):
@@ -135,9 +135,12 @@ def get_final_list_notes(notes_string:str) -> list[str]:
 				note_name_list.pop()
 				set_notes = set(note_name_list)
 			else:
-				raise Exception(f"{notes_string} is not a valid string.")
+				raise ValueError(f"{notes_string} is not a valid string.")
 		return set_notes
 
+	if type(notes_string) != str:
+		raise TypeError(f"Expected a string, but got {type(notes_string)} instead.") 
+	
 	notes_and_ranges_set = get_set_notes(notes_string)
 	note_name_set = set()
 	for note_or_range in notes_and_ranges_set:

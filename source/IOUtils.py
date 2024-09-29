@@ -30,7 +30,7 @@ def test() -> None: #for debugging purposes
 def isEven(number:int) -> bool:
 	return number % 2 == 0
 
-"""
+
 def create_random_boolean_list(size): #will create a list of booleans with half of the values being True and the other half False, in a random order, unless the size is odd, in which case it will be approximately half True and half False (rounded up)
 	# Ensure size is even
 	#if size % 2 != 0:
@@ -44,7 +44,7 @@ def create_random_boolean_list(size): #will create a list of booleans with half 
 	random.shuffle(boolean_list)
 	
 	return boolean_list
-"""
+
 
 if __name__ == '__main__':
     #test()
