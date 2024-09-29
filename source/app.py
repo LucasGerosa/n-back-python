@@ -855,12 +855,12 @@ class MyGUI(QMainWindow):
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
 		def yes():
-			testCase.validateAnswer(answer=1)
+			testCase.validateAnswer(answer=SAME)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
 		def no():
-			testCase.validateAnswer(answer=2)
+			testCase.validateAnswer(answer=DIFFERENT)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
@@ -879,12 +879,12 @@ class MyGUI(QMainWindow):
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
 		def yes():
-			testCase.validateAnswer(answer="same")
+			testCase.validateAnswer(answer=SAME)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
 		def no():
-			testCase.validateAnswer(answer="different")
+			testCase.validateAnswer(answer=DIFFERENT)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 

@@ -120,12 +120,11 @@ class Test1Thread(TestThread):
 					self.pre_start_execution.emit()
 					isLastNoteDifferent = boolean_list[testCaseId]
 					if isLastNoteDifferent == True:
-						#print(boolean_list2_id)
 						isLastNoteUp = boolean_list2[boolean_list2_id]
 						boolean_list2_id += 1
 					else:
 						isLastNoteUp = None
-					testCase = TestCase(self.layout, id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
+					testCase = TestCase(self.layout, self.id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
@@ -168,7 +167,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 			self.id = 0
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TestCase(self.layout, self.trials, id, self.nBack + id, self.notesQuantity, self.bpm, self.instrument, self.mode)
+				testCase = TestCase(self.layout, self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.mode)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
@@ -212,20 +211,6 @@ class Test3Thread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:
-		if self.notesQuantity == 4:
-			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES4
-		
-		elif self.notesQuantity == 6:
-			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES6
-		
-		elif self.notesQuantity == 8:
-			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES8
-
-		elif self.notesQuantity == 10:
-			sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
-
-		else:
-			raise ValueError("Invalid notes quantity: %d. The only quantities currently available are 4, 6, 8 and 10." % self.notesQuantity)
 		
 		try:
 			testCaseList = []
@@ -233,7 +218,7 @@ class Test3Thread(TestThread):
 			#boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, id, self.notesQuantity, self.bpm, self.instrument, self.id)
+				testCase = TonalDiscriminationTaskTestCase(self.layout, self.id, self.notesQuantity, self.bpm, self.instrument, self.id)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

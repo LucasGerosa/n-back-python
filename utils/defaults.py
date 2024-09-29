@@ -8,6 +8,10 @@ RANDOM_MODE = 'random'
 RANDOM_C_MAJOR_MODE = 'random_c_major'
 TONAL_C_MAJOR_MODE = 'tonal_c_major'
 TONAL_C_MAJOR_DEFAULT_SEQUENCES = ["G4", "F4", "E4", "E4", "D4", "E4", "F4", "G4", "C5", "C5"]
+SAME = 'same'
+DIFFERENT = 'different'
+CORRECT = 'correct'
+INCORRECT = 'incorrect'
 
 #The TONAL_DISCRIMINATION_TASK_SEQUENCES samples are not actually used by the main program. They are used for created randomly ordered sequences that are actually used by the program. Running this file will shuffle the sequences and their corresponding mismatch sequences and print them to the console.
 TONAL_DISCRIMINATION_TASK_SEQUENCES4_SAMPLE = [

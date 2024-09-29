@@ -9,7 +9,7 @@
     <ROW Property="ARPCOMMENTS" Value="A base dados do instalador contêm a lógica e os dados necessários para instalar o [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPPRODUCTICON" Value="nback_logo.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/rbpimenta/n-back-python/issues"/>
-    <ROW Property="AiLicenseAgreementLink" Value="https://github.com/LucasGerosa/n-back-python" Type="4"/>
+    <ROW Property="AiLicenseAgreementLink" Value="https://github.com/LucasGerosa/n-back-python/blob/main/LICENSE" Type="4"/>
     <ROW Property="IAgree" Value="No" Type="4"/>
     <ROW Property="Manufacturer" Value="Universidade Federal do Espírito Santo"/>
     <ROW Property="ProductCode" Value="1046:{C9F3CD1D-A71E-4045-AB26-D468316E3088} " Type="16"/>

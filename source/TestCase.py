@@ -19,10 +19,6 @@ import io
 
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 
-class ResultEnum(Enum):
-	ACERTO = 1
-	ERRO = 2
-
 def get_settings():
 	note_str = notes_config.get_notes_setting()
 	intensity_str = notes_config.get_intensity_setting()
@@ -46,9 +42,9 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 
 class TestCase: #(nback)
 
-	def __init__(self, layout:QtWidgets.QLayout, id:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = None, isLastNoteUp = None) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = None, isLastNoteUp = None) -> None:
 		self.layout = layout
-		self.id: int = id
+		self.id: int = id_num
 		self.nBack: int = nBack
 		self.isLastNoteDifferent = isLastNoteDifferent
 		self.isLastNoteUp = isLastNoteUp
@@ -65,13 +61,20 @@ class TestCase: #(nback)
 		else:
 			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{RANDOM_C_MAJOR_MODE}' or '{TONAL_C_MAJOR_MODE}'. Got '{mode}' instead.")
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
-
+		
 		self.note_group.notes.append(self.get_last_note(self.nBack))
+		if isLastNoteDifferent == True and self.get_correct_answer() != DIFFERENT:
+			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {DIFFERENT}.")
+		if isLastNoteDifferent == False and self.get_correct_answer() != SAME:
+			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {SAME}.")
+		
+		self.correct_answer = self.get_correct_answer()
 		print("Note group:")
 		for note in self.note_group:
 			print(note.name)
 		print()
-		self.result: ResultEnum = ResultEnum.ERRO
+		print(f"Correct answer: {self.correct_answer}")
+		self.result = INCORRECT
 
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
@@ -129,43 +132,45 @@ class TestCase: #(nback)
 				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
 		else:
 			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
+	
+	def get_correct_answer(self) -> str:
+		lastNote: int = self.note_group[-1]
+		nBackNote: int = self.note_group[-1 - self.nBack]
+		if lastNote == nBackNote:
+			return SAME
+		else:
+			return DIFFERENT
 		
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
-		lastNote: int = self.note_group[-1]
-		nBackNote: int = self.note_group[-1 - self.nBack]
-
-		if lastNote == nBackNote:
-			correct_answer = 'same'
-			if answer == 1:
-				self.result = ResultEnum.ACERTO
-			elif answer == 2:
-				self.result = ResultEnum.ERRO
+		if self.correct_answer == SAME:
+			if answer == SAME:
+				self.result = CORRECT
+			elif answer == DIFFERENT:
+				self.result = INCORRECT
+			else:
+				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+		elif self.correct_answer == DIFFERENT:
+			if answer == SAME:
+				self.result = INCORRECT
+			elif answer == DIFFERENT:
+				self.result = CORRECT
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
-			correct_answer = 'different'
-			if answer == 1:
-				self.result = ResultEnum.ERRO
-			elif answer == 2:
-				self.result = ResultEnum.ACERTO
-			else:
-				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+			raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self.answer = answer
-		if answer == 1:
-			answer = 'same'
-		elif answer == 2:
-			answer = 'different'
 		
-		print(f"Participant's answer: {answer}; Correct answer: {correct_answer}\n\n")
+		print(f"Participant's answer: {self.answer}")
+		print(f"Result: {self.result}")
 
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes >= self.nBack
 	
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
-		def write_content_to_csv(writer, testCaseList_list):
+		def write_content_to_csv(writer, testCaseList_list:List[List[TestCase]]):
 			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers'])
 
 			total_quantity_right_answers = 0
@@ -174,30 +179,20 @@ class TestCase: #(nback)
 				quantity_right_answers = 0
 				quantity_wrong_answers = 0
 				for t in testCaseList:
-					if t.answer == 1:
-						answer = 'same'
-					elif t.answer == 2:
-						answer = 'different'
-					else:
-						raise ValueError()
-					
-					if t.result == ResultEnum.ACERTO:
-						t.result = 'Correct'
+					if t.result == CORRECT:
 						quantity_right_answers += 1
 						total_quantity_right_answers += 1
 
 					
-					elif t.result == ResultEnum.ERRO:
-						t.result = 'Incorrect'
+					elif t.result == INCORRECT:
 						quantity_wrong_answers += 1
 						total_quantity_wrong_answers += 1
 					
 					else:
 						raise ValueError()
 				
-					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, answer, t.result])
+					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
 				writer.writerow(['', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers])
-
 
 		try:
 			f = FileUtils.createfile(playerName, "nback")
@@ -232,22 +227,21 @@ class TestCase: #(nback)
 		NUMBER_OF_TESTCASES = 1
 		NBACK = 4
 		NUMBER_OF_NOTES = 6
-		for id in range(NUMBER_OF_TESTCASES):
+		for id_num in range(NUMBER_OF_TESTCASES):
 			try:
-				testCase = TestCase(QtWidgets.QVBoxLayout(), id, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
+				testCase = TestCase(QtWidgets.QVBoxLayout(), id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
 				testCase.execute()
 			except Exception:
 				import traceback
 				print(traceback.format_exc())
 
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, id:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
 		self.layout = layout
-		self.id: int = id
+		self.id: int = id_num
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
-
 		self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
 	
 	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
@@ -277,7 +271,8 @@ class TonalDiscriminationTaskTestCase:
 		#sliced_sequence = self.slice_sequence(sequence, notesQuantity)
 		#sliced_sequence_mismatch = self.slice_sequence(sequence_mismatch, notesQuantity)
 		#return sliced_sequence, sliced_sequence_mismatch
-		self.is_sequence_mismatch = not sequence == sequence_mismatch
+		self.is_sequence_mismatch = sequence != sequence_mismatch
+		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
 		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):
@@ -286,21 +281,22 @@ class TonalDiscriminationTaskTestCase:
 	def validateAnswer(self, answer) -> None:
 
 		if self.is_sequence_mismatch:
-			if answer == 'same':
-				self.result = ResultEnum.ERRO
-			elif answer == 'different':
-				self.result = ResultEnum.ACERTO
+			if answer == SAME:
+				self.result = INCORRECT
+			elif answer == DIFFERENT:
+				self.result = CORRECT
 			else:
-				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
-			if answer == 'different':
-				self.result = ResultEnum.ERRO
-			elif answer == 'same':
-				self.result = ResultEnum.ACERTO
+			if answer == DIFFERENT:
+				self.result = INCORRECT
+			elif answer == SAME:
+				self.result = CORRECT
 			else:
-				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
+				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self.answer = answer
+		
 	
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
