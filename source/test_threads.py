@@ -36,11 +36,11 @@ class VolumeTestThread(QtCore.QThread):
 				self.pre_start_execution.emit()
 				testCase = VolumeTestCase(self.layout)
 				self.start_execution.emit()
-				testCase.note_group.play()
-				del testCase
-				if self.stop:
-					print("Thread was interrupted. Stopping now.")
-					return
+				for note in testCase.note_group:
+					if self.stop:
+						print("Thread was interrupted. Stopping now.")
+						return
+					note.play()
 
 			if self.stop:
 				print("Thread was interrupted. Stopping now.")

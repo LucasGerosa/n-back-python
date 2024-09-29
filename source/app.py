@@ -480,7 +480,7 @@ class MyGUI(QMainWindow):
 		player_name_q = _("Participant ID")
 		test_case_q = _("How many sequences?")
 		trials_q = _("How many trials?")
-		n_back_q = _("n-back (int)")
+		n_back_q = _("Starting n-back (int)")
 		notes_quantity_q = _("How many notes (int)")
 		bpm_q = _("How many bpm (float)")
 		instrument_q = _("Instrument (piano or guitar)")
@@ -820,7 +820,7 @@ class MyGUI(QMainWindow):
 		def stop():
 			thread.stop = True
 			button.deleteLater()
-			PyQt6_utils.get_msg_box(_("Test stopped"), _("The test was stopped, just wait for the notes to finish playing before playing another test."), QMessageBox.Icon.Information).exec()
+			#PyQt6_utils.get_msg_box(_("Test stopped"), _("The test was stopped, just wait for the notes to finish playing before playing another test."), QMessageBox.Icon.Information).exec()
 		button.clicked.connect(stop) 
 		return button
 	

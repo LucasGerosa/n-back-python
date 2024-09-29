@@ -318,3 +318,7 @@ msgstr "Teste de volume"
 msgid "Participant ID"
 
 msgstr "ID do participante"
+
+msgid "Starting n-back (int)"
+
+msgstr "N-back inicial (int)"

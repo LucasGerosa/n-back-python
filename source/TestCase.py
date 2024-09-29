@@ -24,41 +24,25 @@ class ResultEnum(Enum):
 	ERRO = 2
 
 def get_settings():
-	intensity = notes_config.get_intensity_setting()
-	if intensity == None:
-		raise Exception(setting_not_exist_msg)
 	note_str = notes_config.get_notes_setting()
-	if note_str == notes_config.get_notes_setting(notes_config.DEFAULT):
-		note_group = IOUtils.getNotes(intensity=intensity, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm, note_value=note_value)
-		return note_group
-	elif note_str == None:
-		raise Exception(setting_not_exist_msg)
-	note_str_list = note_str_utils.get_final_list_notes(note_str)
-	return intensity, note_str_list
-
-def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
+	intensity_str = notes_config.get_intensity_setting()
 	note_value_str = notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)
 	try:
 		note_value = float(Fraction(note_value_str))
 	
 	except ValueError:
 		raise ValueError(f"The setting '{notes_config.NOTE_VALUE_SETTING}' needs to be a number. Got {note_value_str} instead. Reset your settings or contact the developers.")
-	
-	intensity = notes_config.get_intensity_setting()
-	if intensity == None:
-		raise Exception(setting_not_exist_msg)
-	note_str = notes_config.get_notes_setting()
-	if note_str == notes_config.get_notes_setting(notes_config.DEFAULT):
-		note_group = IOUtils.getNotes(intensity=intensity, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm, note_value=note_value)
-		return note_group
-	elif note_str == None:
-		raise Exception(setting_not_exist_msg)
-	note_str_list = note_str_utils.get_final_list_notes(note_str)
-	note_list = [notes.get_note_from_note_name(intensity, note_str, note_value=note_value) for note_str in note_str_list]
-	return notes.Note_group(note_list)
+	return note_str, intensity_str, note_value
 
-def get_note_tuple_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> tuple[notes.Note]:
-	note_value_str = notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)
+def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
+	note_str, intensity_str, note_value = get_settings()
+	if note_str == notes_config.ALL_NOTES:
+		note_group = IOUtils.getNotes(intensity=intensity_str, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm, note_value=note_value)
+		return note_group
+
+	note_str_list = note_str_utils.get_final_list_notes(note_str)
+	note_list = [notes.get_note_from_note_name(intensity_str, note_str, note_value=note_value) for note_str in note_str_list]
+	return notes.Note_group(note_list)
 
 class TestCase: #(nback)
 
@@ -152,6 +136,7 @@ class TestCase: #(nback)
 		nBackNote: int = self.note_group[-1 - self.nBack]
 
 		if lastNote == nBackNote:
+			correct_answer = 'same'
 			if answer == 1:
 				self.result = ResultEnum.ACERTO
 			elif answer == 2:
@@ -159,6 +144,7 @@ class TestCase: #(nback)
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
+			correct_answer = 'different'
 			if answer == 1:
 				self.result = ResultEnum.ERRO
 			elif answer == 2:
@@ -171,7 +157,8 @@ class TestCase: #(nback)
 			answer = 'same'
 		elif answer == 2:
 			answer = 'different'
-		print(f"Answer: {answer}; Result: {self.result}\n\n")
+		
+		print(f"Participant's answer: {answer}; Correct answer: {correct_answer}\n\n")
 
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes >= self.nBack

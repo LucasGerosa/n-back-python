@@ -11,6 +11,7 @@ NOTE_VALUE_SETTING = 'Note duration'
 LANGUAGE_SETTING = 'Language'
 LEGAL_LANGUAGES = ('pt_BR', 'en')
 LEGAL_NOTE_INTENSITIES = ('pp', 'mf', 'ff')
+ALL_NOTES = 'All'
 
 def get_notes_setting(section = CUSTOM_SETTING) -> str:
     notes_str = get_setting(NOTES_SETTING, section = section)
