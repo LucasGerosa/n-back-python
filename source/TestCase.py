@@ -1,15 +1,14 @@
 import csv
 import string
-import FileUtils
 from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
-import IOUtils
+import utils.IOUtils as IOUtils
 import sys; import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import notes_config, note_str_utils
+from utils import notes_config, note_str_utils, FileUtils
 from notes import notes, scales
 import numpy as np
 from fractions import Fraction
@@ -204,13 +203,13 @@ class NbackTestCase:
 
 			f.close()
 
-	@staticmethod
-	def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
-		p = FileUtils.readFromFile(bpm=bpm, instrument=instrument)
-		testCaseList:List[NbackTestCase] = p.testCaseList
-		for testCase in testCaseList:
-			testCase.execute()
-		return testCaseList
+	# @staticmethod
+	# def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
+	# 	p = FileUtils.readFromFile(bpm=bpm, instrument=instrument)
+	# 	testCaseList:List[NbackTestCase] = p.testCaseList
+	# 	for testCase in testCaseList:
+	# 		testCase.execute()
+	# 	return testCaseList
 
 	@staticmethod
 	def debug() -> None:

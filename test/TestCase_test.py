@@ -4,7 +4,7 @@ from unittest import mock
 from unittest.mock import MagicMock, patch
 
 import source.ManualInputUtils as ManualInputUtils
-from source import FileUtils
+from utils import FileUtils
 from source.TestCase import ResultEnum, TestCase
 
 PLAYER_NAME = 'playerDummy'

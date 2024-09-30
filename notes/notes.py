@@ -91,7 +91,7 @@ check_ffmpeg()
 class Note:
 
 	def __init__(self, path:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
-		self.set_path(path)
+		self.set_path(path) #TODO:don't allow the creation of a note with an invalid path
 		self.full_name:str = self.get_full_name()
 		self.name:str = self.full_name[:-1]
 		self.octave:str = self.full_name[-1]
@@ -152,25 +152,25 @@ class Note:
 	
 	def __le__(self, other_note):
 		return self.__lt__(other_note) or self.__eq__(other_note)
+	
 
-	'''
-	def _play_with_pyaudio(self, seg, t):
-		p = pyaudio.PyAudio()
-		stream = p.open(format=p.get_format_from_width(seg.sample_width),
-						channels=seg.channels,
-						rate=seg.frame_rate,
-						output=True)
+	# def _play_with_pyaudio(self, seg, t):
+		# p = pyaudio.PyAudio()
+		# stream = p.open(format=p.get_format_from_width(seg.sample_width),
+		# 				channels=seg.channels,
+		# 				rate=seg.frame_rate,
+		# 				output=True)
 
-		# Just in case there were any exceptions/interrupts, we release the resource
-		# So as not to raise OSError: Device Unavailable should play() be used again
+		# # Just in case there were any exceptions/interrupts, we release the resource
+		# # So as not to raise OSError: Device Unavailable should play() be used again
 
-		chunk = utils.make_chunks(seg, t)[0]
-		stream.write(chunk._data)
-		stream.stop_stream()
-		stream.close()
+		# chunk = utils.make_chunks(seg, t)[0]
+		# stream.write(chunk._data)
+		# stream.stop_stream()
+		# stream.close()
 
-		p.terminate()
-	'''
+		# p.terminate()
+
 	def play(self) -> None:
 		if self.extension !='mp3': #TEMPORARY
 			raise Exception(f"To be implemented; notes with extensions besides mp3 can't be played. Path of note: {self.path}")
@@ -207,7 +207,7 @@ class Note:
 	def delete_file(self) -> None:
 		os.remove(self.path)
 	
-	def add_semitone(self, semitones:int):
+	def add_semitone(self, semitones:int): #TODO: create subtraction and addition methods (__add__, __sub__)
 		#makes a note with the same attributes but with X semitones of difference
 		if semitones < 0:			
 			name = self.name + "b" * (semitones * -1)

@@ -5,11 +5,9 @@ from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButt
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-import utils.note_str_utils as note_str_utils
-from utils import PyQt6_utils
+from utils import PyQt6_utils, notes_config, note_str_utils
 from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread, VolumeTestThread
 from typing import Dict, Optional, List
-from utils import notes_config
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase
 import asyncio
 from collections.abc import Iterable

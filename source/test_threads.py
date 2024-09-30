@@ -2,7 +2,7 @@ from PyQt6 import QtCore, QtWidgets
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
-import IOUtils
+import utils.IOUtils as IOUtils
 from utils.defaults import *
 import math
 from notes import scales

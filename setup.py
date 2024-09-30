@@ -1,4 +1,4 @@
-from source.IOUtils import getNotes
+from utils.IOUtils import getNotes
 from utils import get_aiffs_from_web
 from notes.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
 import os

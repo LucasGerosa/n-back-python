@@ -1,8 +1,8 @@
 import os
-from Parameter import Parameter
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from utils.defaults import *
+from defaults import *
+
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{ROOT_DIR}/../output'
@@ -27,28 +27,29 @@ def getFolder() -> str:
 def retrieveFilename() -> str:
 	return input("Give filename: ")
 
-def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Parameter:
-	while True:
-		try:
-			filename = retrieveFilename()
-			f = open(getFolder() + filename, 'r')
-			testCases = int(f.readline())
+# def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Parameter:
+# 	while True:
+# 		try:
+# 			filename = retrieveFilename()
+# 			f = open(getFolder() + filename, 'r')
+# 			testCases = int(f.readline())
 
-			p = Parameter()
-			p.testCaseList = []
-			from TestCase import TestCase
-			for i in range(testCases):
-				t = TestCase(i, int(f.readline()), int(f.readline()), bpm=bpm, instrument=instrument)
-				print(t)
-				p.testCaseList.append(t)
+# 			p = Parameter()
+# 			p.testCaseList = []
+# 			from TestCase import TestCase
+# 			for i in range(testCases):
+# 				t = TestCase(i, int(f.readline()), int(f.readline()), bpm=bpm, instrument=instrument)
+# 				print(t)
+# 				p.testCaseList.append(t)
 
-			return p
-		except (TypeError, FileNotFoundError) as err:
-			print(f"Error happened when retriving filename, try again. Error: {err}")
+# 			return p
+# 		except (TypeError, FileNotFoundError) as err:
+# 			print(f"Error happened when retriving filename, try again. Error: {err}")
 
 
 if __name__ == "__main__":
-	readFromFile()
+	# readFromFile()
+	pass
 
 def createfile(playerName, test = None):
 	createOutputDirectoryIfNotExist()
