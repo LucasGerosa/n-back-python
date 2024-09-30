@@ -1,10 +1,11 @@
 from PyQt6 import QtCore, QtWidgets
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import TestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
 import IOUtils
 from utils.defaults import *
 import math
+from notes import scales
 
 
 class VolumeTestThread(QtCore.QThread):
@@ -38,12 +39,12 @@ class VolumeTestThread(QtCore.QThread):
 				self.start_execution.emit()
 				for note in testCase.note_group:
 					if self.stop:
-						print("Thread was interrupted. Stopping now.")
+						print("Thread was interrupted. Stopping now.\n")
 						return
 					note.play()
 
 			if self.stop:
-				print("Thread was interrupted. Stopping now.")
+				print("Thread was interrupted. Stopping now.\n")
 				return
 
 		except KeyboardInterrupt:
@@ -51,12 +52,12 @@ class VolumeTestThread(QtCore.QThread):
 	
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
-	done_testCase = QtCore.pyqtSignal(TestCase)
+	done_testCase = QtCore.pyqtSignal(NbackTestCase)
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
 	started_trial_signal = QtCore.pyqtSignal(int)
 	
-	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, mode:str = RANDOM_MODE):
+	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
@@ -69,7 +70,6 @@ class TestThread(QtCore.QThread):
 		self.notesQuantity = notesQuantity
 		self.bpm = bpm
 		self.instrument = instrument
-		self.mode = mode
 		self.trials = trials
 		self.id = 0
 	
@@ -90,7 +90,16 @@ class TestThread(QtCore.QThread):
 	def executeLoop(self):
 		pass
 
-class Test1Thread(TestThread):
+class NbackTestThread(TestThread):
+	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None):
+
+		super().__init__(layout, trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
+		if scale == None:
+			self.scale = scales.MajorScale()
+			return
+		self.scale = scale
+
+class Test1Thread(NbackTestThread):
 	def executeLoop(self) -> list|None:
 
 		if self.layout == None:
@@ -124,14 +133,14 @@ class Test1Thread(TestThread):
 						boolean_list2_id += 1
 					else:
 						isLastNoteUp = None
-					testCase = TestCase(self.layout, self.id, nback, self.notesQuantity, self.bpm, self.instrument, self.mode, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
+					testCase = NbackTestCase(self.layout, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
 					
 					testCase.note_group.play()
 					if self.stop:
-						print("Thread was interrupted. Stopping now.")
+						print("Thread was interrupted. Stopping now.\n")
 						return
 					self.done_testCase.emit(testCase)
 					self.wait_for_signal()
@@ -142,15 +151,15 @@ class Test1Thread(TestThread):
 				testCaseList_list.append(testCaseList)
 
 			if self.stop:
-				print("Thread was interrupted. Stopping now.")
+				print("Thread was interrupted. Stopping now.\n")
 				return
-			TestCase.saveResults(testCaseList_list, self.playerName)
+			NbackTestCase.saveResults(testCaseList_list, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
 
-class Test2Thread(TestThread): #needs to be updated like the test 1 in order to work
+class Test2Thread(NbackTestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
 	print_hint_signal = QtCore.pyqtSignal(str)
 	delete_note_signal = QtCore.pyqtSignal()
@@ -167,7 +176,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 			self.id = 0
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TestCase(self.layout, self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.mode)
+				testCase = NbackTestCase(self.layout, self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
@@ -181,7 +190,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 						self.print_hint_signal.emit(testCase.note_group.notes[i].name)
 					for _ in range(math.floor(note.note_value * 4)):
 						if self.stop:
-							print("Thread was interrupted. Stopping now.")
+							print("Thread was interrupted. Stopping now.\n")
 							return
 						note.play()
 					self.delete_note_signal.emit()
@@ -191,7 +200,7 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 				del note_group_length
 					
 				if self.stop:
-					print("Thread was interrupted. Stopping now.")
+					print("Thread was interrupted. Stopping now.\n")
 					return
 				
 				self.done_testCase.emit(testCase)
@@ -199,9 +208,9 @@ class Test2Thread(TestThread): #needs to be updated like the test 1 in order to 
 				self.wait_for_signal()
 				self.id += 1
 			if self.stop:
-				print("Thread was interrupted. Stopping now.")
+				print("Thread was interrupted. Stopping now.\n")
 				return
-			TestCase.saveResults(testCaseList, self.playerName)
+			NbackTestCase.saveResults(testCaseList, self.playerName)
 
 			return testCaseList
 		except KeyboardInterrupt:
@@ -225,7 +234,7 @@ class Test3Thread(TestThread):
 				
 				testCase.note_group1.play()
 				if self.stop:
-					print("Thread was interrupted. Stopping now.")
+					print("Thread was interrupted. Stopping now.\n")
 					return
 				
 				self.between_note_groups.emit()
@@ -237,7 +246,7 @@ class Test3Thread(TestThread):
 
 				self.id += 1
 			if self.stop:
-				print("Thread was interrupted. Stopping now.")
+				print("Thread was interrupted. Stopping now.\n")
 				return
 			TonalDiscriminationTaskTestCase.saveResults(testCaseList, self.playerName)
 

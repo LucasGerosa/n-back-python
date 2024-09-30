@@ -4,14 +4,13 @@ DEFAULT_BPM = 60.0
 DEFAULT_NOTE_VALUE = 1/4
 PROJECT_NAME = "nback"
 TRANSLATIONS_FOLDER = 'translations'
-RANDOM_MODE = 'random'
-RANDOM_C_MAJOR_MODE = 'random_c_major'
-TONAL_C_MAJOR_MODE = 'tonal_c_major'
-TONAL_C_MAJOR_DEFAULT_SEQUENCES = ["G4", "F4", "E4", "E4", "D4", "E4", "F4", "G4", "C5", "C5"]
 SAME = 'same'
 DIFFERENT = 'different'
 CORRECT = 'correct'
 INCORRECT = 'incorrect'
+DEFAULT_SCALE_ROOT = 'C'
+LOWEST_NOTE = 'Bb0'
+HIGHEST_NOTE = 'C8'
 
 #The TONAL_DISCRIMINATION_TASK_SEQUENCES samples are not actually used by the main program. They are used for created randomly ordered sequences that are actually used by the program. Running this file will shuffle the sequences and their corresponding mismatch sequences and print them to the console.
 TONAL_DISCRIMINATION_TASK_SEQUENCES4_SAMPLE = [
@@ -240,19 +239,6 @@ class user_input_messages:
     def print_invalid_input():
         print('That is not a valid input. Try again.')
 
-def set_language(language_code):
-
-	try:
-		translation = gettext.translation('app', TRANSLATIONS_FOLDER, languages=[language_code])
-	except FileNotFoundError:
-		# Fallback to default English language if the translation catalog is not found
-		raise FileNotFoundError(f'Could not find translation catalog for language code {language_code}')
-
-	#translation.install()
-	global _
-	_ = translation.gettext
-
-        
 def shuffle_lists(list1, list2):
 
 	import random

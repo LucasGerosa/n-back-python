@@ -4,21 +4,20 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import notes
 from utils.defaults import *
 import utils.note_str_utils as note_str_utils
 from utils import PyQt6_utils
 from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread, VolumeTestThread
-import run
 from typing import Dict, Optional, List
 from utils import notes_config
-from TestCase import TestCase, TonalDiscriminationTaskTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase
 import asyncio
 from collections.abc import Iterable
 import re
 import gettext
 import time
 from fractions import Fraction
+from notes import scales
 
 # Specify the translation domain and path to the translations directory
 print(os.path.dirname(__file__),"\n")
@@ -602,10 +601,10 @@ class MyGUI(QMainWindow):
 				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
 				n_back = column_text_box[labels.index(n_back_q)].text()
 				test_case = column_text_box[labels.index(test_case_q)].text()
-				return int(notes_quantity) + 1 > int(n_back)
+				return int(notes_quantity) > int(n_back)
 
 			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes + 1 needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(_("Incorrect input"), _("The quantity of notes needs to be greater than nback"), QMessageBox.Icon.Warning).exec()
 				return
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
 			self.states.append(self.takeCentralWidget())
@@ -665,14 +664,14 @@ class MyGUI(QMainWindow):
 			trials = int(get_text(trials_q))
 			loadingLabel = None
 			if random_c_major_radio_button.isChecked():
-				mode = RANDOM_C_MAJOR_MODE
+				scale = scales.MajorScale("C")
 			'''
 			elif tonal_c_major_radio_button.isChecked():
-				mode = TONAL_C_MAJOR_MODE
+				scale = TONAL_C_MAJOR_MODE
 			else:
-				mode = RANDOM_MODE '''
+				scale = RANDOM_MODE '''
 
-			self.notes_thread = Thread(layout_v, trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, mode=mode)
+			self.notes_thread = Thread(layout_v, trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, scale=scale)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
@@ -805,7 +804,7 @@ class MyGUI(QMainWindow):
 		def debug():
 			self.goto_frame(self.debug_menu)
 			
-			TestCase.debug()
+			NbackTestCase.debug()
 		
 		return PyQt6_utils.get_button_with_image(self.debug_image, debug)
 
@@ -834,8 +833,8 @@ class MyGUI(QMainWindow):
 		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame3))
 		return info_button
 
-	@QtCore.pyqtSlot(QVBoxLayout, TestCase)
-	def create_questions(self, layout, testCase:TestCase):
+	@QtCore.pyqtSlot(QVBoxLayout, NbackTestCase)
+	def create_questions(self, layout, testCase:NbackTestCase):
 		if not isinstance(self.notes_thread, TestThread):
 			raise ValueError(_("Notes thread is not an instance of TestThread"))
 		nback = testCase.nBack

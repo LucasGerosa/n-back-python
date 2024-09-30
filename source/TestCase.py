@@ -10,7 +10,7 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import notes_config, note_str_utils
-import notes
+from notes import notes, scales
 import numpy as np
 from fractions import Fraction
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -40,98 +40,88 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 	note_list = [notes.get_note_from_note_name(intensity_str, note_str, note_value=note_value) for note_str in note_str_list]
 	return notes.Note_group(note_list)
 
-class TestCase: #(nback)
+class NbackTestCase:
 
-	def __init__(self, layout:QtWidgets.QLayout, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, mode = RANDOM_MODE, isLastNoteDifferent = None, isLastNoteUp = None) -> None:
+	def __init__(self, layout:QtWidgets.QLayout, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = None, isLastNoteUp = None, semitones=1) -> None:
 		self.layout = layout
 		self.id: int = id_num
 		self.nBack: int = nBack
 		self.isLastNoteDifferent = isLastNoteDifferent
 		self.isLastNoteUp = isLastNoteUp
+		if scale == None:
+			self.scale = scales.MajorScale()
+		else:
+			self.scale = scale
 		if numberOfNotes < 2:
 			raise ValueError(f"numberOfNotes should be > 1. Got {numberOfNotes} instead.")
-		self.numberOfNotes: int = numberOfNotes - 1 #this is because the last note is appended later in this function
-
-		if mode == RANDOM_MODE:
-			self.note_group = self.get_random_notes(bpm, instrument)
-		elif mode == RANDOM_C_MAJOR_MODE:
-			self.note_group = self.get_random_C_major_notes(bpm, instrument)
-		elif mode == TONAL_C_MAJOR_MODE:
-			self.note_group = self.get_tonal_C_major_notes(bpm, instrument)
-		else:
-			raise ValueError(f"mode should be either '{RANDOM_MODE}' or '{RANDOM_C_MAJOR_MODE}' or '{TONAL_C_MAJOR_MODE}'. Got '{mode}' instead.")
+		self.numberOfNotes: int = numberOfNotes
+		self.note_group = self.get_random_notes(bpm, instrument, semitones)
 		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
 		
-		self.note_group.notes.append(self.get_last_note(self.nBack))
-		if isLastNoteDifferent == True and self.get_correct_answer() != DIFFERENT:
-			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {DIFFERENT}.")
-		if isLastNoteDifferent == False and self.get_correct_answer() != SAME:
-			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {SAME}.")
-		
 		self.correct_answer = self.get_correct_answer()
+		if isLastNoteDifferent == True and self.correct_answer != DIFFERENT:
+			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {DIFFERENT}. Got {self.correct_answer} instead.")
+		if isLastNoteDifferent == False and self.correct_answer != SAME:
+			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {SAME}. Got {self.correct_answer} instead.")
+		
 		print("Note group:")
 		for note in self.note_group:
-			print(note.name)
+			print(note.full_name)
 		print()
 		print(f"Correct answer: {self.correct_answer}")
-		self.result = INCORRECT
 
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
-	'''
-	
-	def get_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
+
+	def get_random_notes(self, bpm:float, instrument:str, semitones:int=1) -> notes.Note_group:
+		
+		def get_last_note(nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
+			n_note = note_list[-nBack]
+			if self.isLastNoteDifferent == False:
+				return n_note
+			elif self.isLastNoteDifferent == True:
+				
+				if self.isLastNoteUp == True: #if up, will go up {semitones} semitones
+					up_or_down = 1
+				elif self.isLastNoteUp == False: #if down, will go down {semitones} semitones
+					up_or_down = -1
+				else:
+					raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
+				
+				semitone_note_list = []
+				for note in config_notes_list:
+					if note.name in self.scale.find_able_up_down_semitones(semitones * up_or_down):
+						semitone_note_list.append(note)
+				assert semitone_note_list != [], f"No available notes for increasing {semitones} semitone."
+				random_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
+				note_list[-nBack] = random_note
+				return random_note.add_semitone(semitones * up_or_down)
+
+			else:
+				raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
+			
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
-		notes_array = np.array(note_group.notes)
-		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
-		random_notes_group = notes.Note_group(random_notes_array.tolist())
-		return random_notes_group
-	'''
-	def get_random_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
-		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
-		if note_group.notes == []:
-			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+
 		filtered_notes = []
 		#print('Notes in the note group:')
 		for note in note_group:
 			#print(note.name) #for debugging
-			if not "#" in note.name and not "b" in note.name:
+			if note.name in self.scale.notes_str_tuple:
 				filtered_notes.append(note)
-		
 		'''
 		print('Filtered notes:')
 		for note in filtered_notes: #for debugging
 			print(note.name)'''
 
-		filtered_note_group = notes.Note_group(filtered_notes)
-		notes_array = np.array(filtered_note_group.notes)
-		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
-		random_notes_group = notes.Note_group(random_notes_array.tolist())
+		notes_array = np.array(filtered_notes)
+		random_notes_array = np.random.choice(notes_array, self.numberOfNotes - 1) #this - 1 is because the last note is appended later in one of the get_notes function
+		random_notes_list = random_notes_array.tolist()
+		random_notes_list.append(get_last_note(self.nBack, random_notes_list, note_group.notes))
+		random_notes_group = notes.Note_group(random_notes_list)
 		
 		return random_notes_group
-	'''
-	def get_tonal_C_major_notes(self, bpm:float, instrument:str) -> notes.Note_group:
-		notes_str_list = (TONAL_C_MAJOR_DEFAULT_SEQUENCES * ((self.numberOfNotes - 1 // len(TONAL_C_MAJOR_DEFAULT_SEQUENCES)) + 1))[:self.numberOfNotes - 1]
-		notes_list = [notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in notes_str_list]
-		tonal_notes_group = notes.Note_group(notes_list)
-		return tonal_notes_group
-	'''
-
-	def get_last_note(self, nBack:int) -> notes.Note: 
-		note = self.note_group.notes[-nBack]
-		if self.isLastNoteDifferent == False:
-			return note
-		elif self.isLastNoteDifferent == True:
-			if self.isLastNoteUp == True: #if up, will go up a half step (semitone)
-				return note.add_semitone(1)
-			elif self.isLastNoteUp == False:
-				return note.add_semitone(-1)
-			else:
-				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
-		else:
-			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
 	
 	def get_correct_answer(self) -> str:
 		lastNote: int = self.note_group[-1]
@@ -163,14 +153,14 @@ class TestCase: #(nback)
 		self.answer = answer
 		
 		print(f"Participant's answer: {self.answer}")
-		print(f"Result: {self.result}")
+		print(f"Result: {self.result}\n\n")
 
 	def isValidTestCase(self) -> Boolean:
 		return self.numberOfNotes >= self.nBack
 	
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
-		def write_content_to_csv(writer, testCaseList_list:List[List[TestCase]]):
+		def write_content_to_csv(writer, testCaseList_list:List[List[NbackTestCase]]):
 			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers'])
 
 			total_quantity_right_answers = 0
@@ -217,7 +207,7 @@ class TestCase: #(nback)
 	@staticmethod
 	def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
 		p = FileUtils.readFromFile(bpm=bpm, instrument=instrument)
-		testCaseList:List[TestCase] = p.testCaseList
+		testCaseList:List[NbackTestCase] = p.testCaseList
 		for testCase in testCaseList:
 			testCase.execute()
 		return testCaseList
@@ -229,7 +219,7 @@ class TestCase: #(nback)
 		NUMBER_OF_NOTES = 6
 		for id_num in range(NUMBER_OF_TESTCASES):
 			try:
-				testCase = TestCase(QtWidgets.QVBoxLayout(), id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
+				testCase = NbackTestCase(QtWidgets.QVBoxLayout(), id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
 				testCase.execute()
 			except Exception:
 				import traceback
@@ -296,7 +286,8 @@ class TonalDiscriminationTaskTestCase:
 				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self.answer = answer
-		
+		print(f"Participant's answer: {answer}")
+		print(f"Result: {self.result}\n\n")
 	
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name

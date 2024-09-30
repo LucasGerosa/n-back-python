@@ -322,3 +322,7 @@ msgstr "ID do participante"
 msgid "Starting n-back (int)"
 
 msgstr "N-back inicial (int)"
+
+msgid "Currently, the only quantity of notes available is 4, 6, 8, 10."
+
+msgstr "Atualmente, a única quantidade de notas disponível é 4, 6, 8, 10."
