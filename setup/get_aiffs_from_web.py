@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__)))
-from defaults import *
-import notes_config
+from utils.defaults import *
+from utils import notes_config
 
 '''Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION'''
 

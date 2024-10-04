@@ -1,9 +1,10 @@
-from utils.IOUtils import getNotes
-from utils import get_aiffs_from_web
-from notes.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
+import get_aiffs_from_web
 import os
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
+from utils.IOUtils import getNotes
+from notes.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
 
 def convertAudioFiles(instrument='piano', convert_from = DEFAULT_AUDIO_EXTENSION, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
     note_group = getNotes(instrument, extension=convert_from)
