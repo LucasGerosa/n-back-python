@@ -110,8 +110,8 @@ class Test1Thread(NbackTestThread):
 		try:
 			testCaseList_list = []
 			nback = self.nBack
-
-			while self.id < self.trials and not self.stop:
+			series_id = 0
+			while series_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
 				boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
 				testCaseList = []
@@ -146,6 +146,7 @@ class Test1Thread(NbackTestThread):
 					self.wait_for_signal()
 					testCaseId += 1
 					self.id += 1
+				series_id += 1
 				testCaseId = 0
 				nback += 1
 				testCaseList_list.append(testCaseList)
@@ -165,6 +166,10 @@ class Test2Thread(NbackTestThread): #needs to be updated like the test 1 in orde
 	delete_note_signal = QtCore.pyqtSignal()
 	delete_hint_signal = QtCore.pyqtSignal()
 	test_started_signal = QtCore.pyqtSignal()
+
+	def __init__():
+		raise NotImplementedError("This class is not implemented yet. Please contact the developers.")
+
 	def executeLoop(self) -> list|None:
 		if self.layout == None:
 			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")

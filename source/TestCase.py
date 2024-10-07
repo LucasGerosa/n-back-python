@@ -160,7 +160,7 @@ class NbackTestCase:
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
 		def write_content_to_csv(writer, testCaseList_list:List[List[NbackTestCase]]):
-			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers'])
+			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'Correct answer', 'User answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
 
 			total_quantity_right_answers = 0
 			total_quantity_wrong_answers = 0
@@ -180,8 +180,8 @@ class NbackTestCase:
 					else:
 						raise ValueError()
 				
-					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.answer, t.result])
-				writer.writerow(['', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers])
+					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result])
+				writer.writerow(['', '', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
 
 		try:
 			f = FileUtils.createfile(playerName, "nback")
@@ -291,9 +291,15 @@ class TonalDiscriminationTaskTestCase:
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
 		def write_content_to_csv(writer, testCaseList):
-			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result'])
+			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
+			testCase_quantity_right_answers = 0
+			testCase_quantity_wrong_answers = 0
 			for t in testCaseList:
-				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result]) #FIXME: add 1st and 2nd sequence
+				if t.result == CORRECT:
+					testCase_quantity_right_answers += 1
+				elif t.result == INCORRECT:
+					testCase_quantity_wrong_answers += 1
+				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers]) #FIXME: add 1st and 2nd sequence
 
 		try:
 			f = FileUtils.createfile(playerName, "tonal_discrimination_task")
