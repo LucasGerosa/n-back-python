@@ -220,6 +220,12 @@ class Note:
 		print("add_semitone(): Previous note:" + self.full_name + "; Altered note:" + full_name)
 		
 		return get_note_from_note_name(self.intensity, full_name, self.bpm, self.create_sound, self.instrument, self.note_value)
+	
+	@staticmethod
+	def get_greater_note(note1, note2):
+		if note1 > note2:
+			return note1
+		return note2
 			
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''

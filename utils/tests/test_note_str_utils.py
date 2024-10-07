@@ -1,7 +1,7 @@
 import pytest
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes
+from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes, get_greater_note
 
 
 def test_sort_notes():
@@ -13,6 +13,21 @@ def test_is_note_greater():
 	assert is_note_greater('B5', 'A5') == True
 	assert is_note_greater('C4', 'C4') == False
 
+def test_is_note_greater_invalid():
+	with pytest.raises(ValueError):
+		is_note_greater('X', 'C4')
+	
+	with pytest.raises(ValueError):
+		is_note_greater('Xb5', 'C4')
+
+	with pytest.raises(TypeError):
+		is_note_greater(4, 'C4')
+
+def test_get_greater_note():
+	assert get_greater_note('C4', 'B4') == 'B4'
+	assert get_greater_note('B5', 'A5') == 'B5'
+	assert get_greater_note('C4', 'C4') == 'C4'
+
 def test_convert_sharps_to_flats():
 	assert convert_sharps_to_flats("ab#bb3") == "G3"
 	assert convert_sharps_to_flats("Cbb2") == "Bb1"
@@ -21,6 +36,10 @@ def test_convert_sharps_to_flats():
 	assert convert_sharps_to_flats('B#3') == 'C4'
 	assert convert_sharps_to_flats('b#3') == 'C4'
 	assert convert_sharps_to_flats('Cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb3') == 'Eb-7'
+
+def test_convert_sharps_to_flats_invalid():
+	with pytest.raises(ValueError):
+		convert_sharps_to_flats('Xb5')
 
 def test_get_final_list_notes():
 	assert get_final_list_notes("A1   ;  C2") == ['A1', 'C2']

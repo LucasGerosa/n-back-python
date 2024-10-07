@@ -61,6 +61,11 @@ def is_note_greater(note1_full_name:str, note2_full_name:str) -> bool: #Ex. inpu
 
 	return note1_octave > note2_octave
 
+def get_greater_note(note1_full_name:str, note2_full_name:str) -> str: #Ex. input: "A1", "C2" output: "C2"
+	if is_note_greater(note1_full_name, note2_full_name):
+		return note1_full_name
+	return note2_full_name
+
 def convert_sharps_to_flats(note_full_name:str) -> str: #Ex. input: "ab#bb3" output: "G3"
 	note_name, note_octave = separate_note_name_octave(note_full_name)
 	sharps_and_flats = note_name[1:]
