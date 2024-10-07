@@ -213,7 +213,7 @@ class Note:
 			name = self.name + "b" * (semitones * -1)
 		elif semitones > 0: 
 			name = self.name + "#" * semitones
-		full_name = note_str_utils.convert_sharps_to_flats(name, self.octave)
+		full_name = note_str_utils.convert_sharps_to_flats(name + self.octave)
 		
 		assert not note_str_utils.is_note_greater(full_name, HIGHEST_NOTE), f"Tried to increase the semitone of {self.full_name}, getting {full_name}, but {HIGHEST_NOTE} is the last possible note on the program."
 		assert not note_str_utils.is_note_greater(LOWEST_NOTE, full_name), f"Tried to decrease the semitone of {self.full_name}, but {LOWEST_NOTE} is the first possible note on the program."

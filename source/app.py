@@ -6,7 +6,7 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import PyQt6_utils, notes_config, note_str_utils
-from test_threads import Test1Thread, Test2Thread, TestThread, Test3Thread, VolumeTestThread
+from source.testThreads import Test1Thread, Test2Thread, TestThread, Test3Thread, VolumeTestThread
 from typing import Dict, Optional, List
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase
 import asyncio

@@ -29,25 +29,31 @@ def sort_notes(note_iterable:Iterable[str]) -> list[str]: #sorts an iterable of 
 	if not note_iterable:
 		raise ValueError("The iterable is empty.")
 	
+	note_name_list = []
+	for note_str in note_iterable:
+		note_name_list.append(convert_sharps_to_flats(note_str))
+	
 	def sort_note_num(note_str:str) -> int:
 		return int(note_str[-1])
 
 	def sort_note_char(note_str:str) -> int:
 		return AVAILABLE_NOTES_TUPLE.index(note_str[:-1])
 	
-	note_name_list = list(note_iterable)
 	note_name_list.sort(key=sort_note_char)
 	note_name_list.sort(key=sort_note_num)
 	return note_name_list
 
-def is_note_greater(note1_full_name:str, note2_full_name:str) -> bool: #Ex. input: "A1", "C2" output: False
-	note1_name = note1_full_name[:-1]
-	note2_name = note2_full_name[:-1]
-	note1_octave = note1_full_name[-1]
-	note2_octave = note2_full_name[-1]
-	note1_full_name = convert_sharps_to_flats(note1_name, note1_octave)
-	note2_full_name = convert_sharps_to_flats(note2_name, note2_octave)
+def separate_note_name_octave(note_full_name:str) -> tuple[str, str]: #Ex. input: "A1" output: ("A", "1")
+	note_name = note_full_name[:-1]
+	note_octave = note_full_name[-1]
+	return note_name, note_octave
 
+
+def is_note_greater(note1_full_name:str, note2_full_name:str) -> bool: #Ex. input: "A1", "C2" output: False
+	note1_name, note1_octave = separate_note_name_octave(note1_full_name)
+	note2_name, note2_octave = separate_note_name_octave(note2_full_name)
+	note1_full_name = convert_sharps_to_flats(note1_full_name)
+	note2_full_name = convert_sharps_to_flats(note2_full_name)
 	if note1_octave == note2_octave:
 		note1_name = note1_full_name[:-1]
 		note2_name = note2_full_name[:-1]
@@ -55,9 +61,10 @@ def is_note_greater(note1_full_name:str, note2_full_name:str) -> bool: #Ex. inpu
 
 	return note1_octave > note2_octave
 
-def convert_sharps_to_flats(note_char:str, note_number:str) -> str: #Ex. input: "ab#bb3" output: "E3"
-	sharps_and_flats = note_char[1:]
-	note_char0 = note_char[0].upper()
+def convert_sharps_to_flats(note_full_name:str) -> str: #Ex. input: "ab#bb3" output: "G3"
+	note_name, note_octave = separate_note_name_octave(note_full_name)
+	sharps_and_flats = note_name[1:]
+	note_char0 = note_full_name[0].upper()
 	note_char0_num = AVAILABLE_NOTES_TUPLE.index(note_char0)
 	num_sharps = 0
 	num_flats = 0
@@ -76,22 +83,22 @@ def convert_sharps_to_flats(note_char:str, note_number:str) -> str: #Ex. input: 
 	i = increase_decrease
 	if increase_decrease < 0:
 		if new_note_char0_num < 0:
-			new_note_number = int(note_number)
+			new_note_octave = int(note_octave)
 			while i < 0: #this is in case the decrease is more than 1. For example, if the increase_decrease is -20, the note should be 2 octaves lower
-				new_note_number -= 1
+				new_note_octave -= 1
 				i += note_list_len
-			return new_note_char0 + str(new_note_number)
+			return new_note_char0 + str(new_note_octave)
 	
 	elif increase_decrease > 0:
 		if new_note_char0_num >= note_list_len:
-			new_note_number = int(note_number)
+			new_note_octave = int(note_octave)
 			while i > 0:
-				new_note_number += 1
+				new_note_octave += 1
 				i -= note_list_len
 
-			return new_note_char0 + str(new_note_number)
+			return new_note_char0 + str(new_note_octave)
 
-	return new_note_char0 + note_number
+	return new_note_char0 + note_octave
 	
 def get_final_list_notes(notes_string:str) -> list[str]: #Ex. input: "A1;C2" output: ["A1", "C2"]
 	
@@ -109,8 +116,8 @@ def get_final_list_notes(notes_string:str) -> list[str]: #Ex. input: "A1;C2" out
 			if not list_note_names:
 				raise ValueError(f"{range_notes} is not a valid string.")
 			
-		char1 = convert_sharps_to_flats(list_note_names[0][:-1], list_note_names[0][-1])
-		char2 = convert_sharps_to_flats(list_note_names[1][:-1], list_note_names[1][-1])
+		char1 = convert_sharps_to_flats(list_note_names[0])
+		char2 = convert_sharps_to_flats(list_note_names[1])
 		charnum1 = AVAILABLE_NOTES_TUPLE.index(char1[0])
 		charnum2 = AVAILABLE_NOTES_TUPLE.index(char2[0])
 		num1 = list_note_names[0][-1]
@@ -164,38 +171,8 @@ def get_final_list_notes(notes_string:str) -> list[str]: #Ex. input: "A1;C2" out
 		if re.search(note_range_pattern, note_or_range):
 			note_name_set |= get_set_notes_from_range(note_or_range)
 		else:
-			new_note = convert_sharps_to_flats(note_or_range[:-1], note_or_range[-1])
+			new_note = convert_sharps_to_flats(note_or_range)
 			note_name_set.add(new_note)
 
 	note_name_list = sort_notes(note_name_set)
 	return note_name_list
-
-if __name__ == '__main__':
-	def test():
-		#print(convert_sharps_to_flats('a###', '3'))
-		#print(convert_sharps_to_flats('Cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', '3'))
-		#print(convert_sharps_to_flats('b#', '3'))
-		s1 = "A1;C2"
-		s2 = "C2;      B2"
-		s3 = "A4-G5"
-		s4 = "D3-C4"
-		s5 = "C4-B4"
-		s6 = "a1-b2"
-		s7 = "Ab3-Cb4"
-		s8 = "A4-G5; A1-C2"
-		s9 = "A4-G5;C####2"
-		s10 = "C4-C6"
-		s11 = "Cbb2"
-		#print(get_final_list_notes(s1))
-		#print(get_final_list_notes(s2))
-		#print(get_final_list_notes(s3))
-		#print(get_final_list_notes(s4))
-		print(sort_notes(['A1', 'G0', 'G2', 'C2']))
-		#print(get_final_list_notes(s6))
-		#print(get_final_list_notes(s7))
-		#print(get_final_list_notes(s8))
-		#print(get_final_list_notes(s9))
-		#print("s10: ", get_final_list_notes(s10))
-		#print("s11: ", get_final_list_notes(s11))
-
-	test()
