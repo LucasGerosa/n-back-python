@@ -299,20 +299,9 @@ class TonalDiscriminationTaskTestCase:
 					testCase_quantity_right_answers += 1
 				elif t.result == INCORRECT:
 					testCase_quantity_wrong_answers += 1
-				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers]) #FIXME: add 1st and 2nd sequence
-
-		try:
-			f = FileUtils.createfile(playerName, "tonal_discrimination_task")
+				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
 		
-		except PermissionError:
-			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
-			buffer = io.StringIO()
-			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			write_content_to_csv(writer, testCaseList)
-			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
-			buffer.close()
-
-		else:
+		def create_csv_file(f, testCaseList):
 			with f:
 				# create the csv writer
 				f.write('sep=,\n')
@@ -320,6 +309,34 @@ class TonalDiscriminationTaskTestCase:
 				write_content_to_csv(writer, testCaseList)
 
 			f.close()
+		
+		def print_csv(testCaseList):
+			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
+			buffer = io.StringIO()
+			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			write_content_to_csv(writer, testCaseList)
+			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
+			buffer.close()
+
+		try:
+			f = FileUtils.createfile(playerName, "tonal_discrimination_task")
+		
+		except PermissionError:
+			if os.name == 'nt':
+				home_dir = os.path.expanduser('~')
+				documents_path = os.path.join(home_dir, 'Documents')
+				file_path = os.path.join(documents_path, 'myfile.txt')
+				try:
+					f = FileUtils.createfile(playerName, "tonal_discrimination_task", file_path)
+				except PermissionError:
+					print_csv(testCaseList)
+				else:
+					create_csv_file(f, testCaseList)
+					return
+			print_csv(testCaseList)
+
+		else:
+			create_csv_file(f, testCaseList)
 
 class VolumeTestCase:
 	def __init__(self, layout:QtWidgets.QLayout, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:

@@ -51,15 +51,13 @@ if __name__ == "__main__":
 	# readFromFile()
 	pass
 
-def createfile(playerName, test = None):
+def createfile(playerName, test = RESULT_FILENAME, outputDir = OUTPUT_DIR):
 	createOutputDirectoryIfNotExist()
 	createPlayerDirectoryIfNotExist(playerName)
 
 	# Initialize the base filename and the counter
-	if test:
-		base_filename = f'{OUTPUT_DIR}/{playerName}/{test}{EXTENSION}'
-	else:
-		base_filename = f'{OUTPUT_DIR}/{playerName}/{RESULT_FILENAME}{EXTENSION}'
+	base_filename = f'{outputDir}/{playerName}/{test}{EXTENSION}'
+
 	counter = 1
 	filename = base_filename
 
