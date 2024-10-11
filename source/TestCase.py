@@ -36,21 +36,14 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 		return note_group
 
 	note_str_list = note_str_utils.get_final_list_notes(note_str)
-	note_list = [notes.get_note_from_note_name(intensity_str, note_str, note_value=note_value) for note_str in note_str_list]
+	note_list = [notes.Note.get_note_from_note_name(note_str, intensity_str, note_value=note_value) for note_str in note_str_list]
 	return notes.Note_group(note_list)
-
-def create_TestCase_from_config(T, scale:scales.ChromaticScale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
-	config_note_group = get_note_group_from_config(id_num, numberOfNotes, bpm, instrument, scale)
-	return T(config_note_group, *args, **kwargs)
 
 class TestCase:
 	
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale = None) -> None:
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)) -> None:
 		self.id: int = id_num
-		if scale == None:
-			self.scale = scales.MajorScale('C')
-		else:
-			self.scale = scale
+		self.scale = scale
 		if numberOfNotes < 1:
 			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
 		self.numberOfNotes: int = numberOfNotes
@@ -80,7 +73,7 @@ class TestCase:
 
 class NbackTestCase(TestCase):
 
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = None, isLastNoteUp = None, semitones=1) -> None:
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = True, isLastNoteUp = True, semitones=1) -> None:
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
 		self.nBack: int = nBack
 		self.isLastNoteDifferent = isLastNoteDifferent
@@ -125,7 +118,7 @@ class NbackTestCase(TestCase):
 		else:
 			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
 
-	def get_final_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
+	def get_final_random_notes(self, bpm:float, instrument:str) -> notes.Note_group: #TODO: remove the overlap with get_note_group_from_config
 			
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
@@ -258,7 +251,7 @@ class TonalDiscriminationTaskTestCase:
 		self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
 	
 	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
-		note_group = notes.Note_group([notes.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
+		note_group = notes.Note_group([notes.Note.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
 		return note_group
 
 	def get_random_sequence(self, notesQuantity:int):
@@ -363,8 +356,8 @@ class TonalDiscriminationTaskTestCase:
 			create_csv_file(f, testCaseList)
 
 class VolumeTestCase(TestCase):
-	def __init__(self, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None) -> None:
-		super().__init__(0, numberOfNotes, bpm, instrument, scale)
+	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)) -> None:
+		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
 		print("Note group:")
 		for note in self.note_group:
 			print(note.name)
@@ -378,3 +371,7 @@ if __name__ == "__main__":
 		if not "#" in note.name and not "b" in note.name:
 			filtered_notes.append(note)
 	filtered_note_group = notes.Note_group(filtered_notes)
+
+def create_TestCase_from_config(T:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
+	config_note_group = get_note_group_from_config(id_num, numberOfNotes, bpm, instrument, scale)
+	return T(config_note_group, id_num, numberOfNotes, bpm, instrument, *args, **kwargs)

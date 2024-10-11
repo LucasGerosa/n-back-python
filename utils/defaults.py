@@ -2,6 +2,7 @@ INSTRUMENTS = ('piano', 'guitar')
 DEFAULT_INSTRUMENT = 'piano'
 DEFAULT_BPM = 75.0
 DEFAULT_NOTE_VALUE = 1/4
+DEFAULT_INTENSITY = 'mf'
 PROJECT_NAME = "nback"
 TRANSLATIONS_FOLDER = 'translations'
 SAME = 'same'

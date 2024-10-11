@@ -219,13 +219,20 @@ class Note:
 		assert not note_str_utils.is_note_greater(LOWEST_NOTE, full_name), f"Tried to decrease the semitone of {self.full_name}, but {LOWEST_NOTE} is the first possible note on the program."
 		print("add_semitone(): Previous note:" + self.full_name + "; Altered note:" + full_name)
 		
-		return get_note_from_note_name(self.intensity, full_name, self.bpm, self.create_sound, self.instrument, self.note_value)
+		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.create_sound, self.instrument, self.note_value)
 	
 	@staticmethod
 	def get_greater_note(note1, note2):
 		if note1 > note2:
 			return note1
 		return note2
+
+	@staticmethod
+	def get_note_from_note_name(note_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE):
+		app_path = get_app_path()
+		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}")
+
+		return Note(file_name, bpm, create_sound, note_value=note_value)
 			
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
@@ -302,6 +309,13 @@ class Note_group:
 	def delete_files(self) -> None:
 		for note in self.notes:
 			note.delete_file()
+	
+	@staticmethod
+	def get_note_group_from_note_names(note_names:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> 'Note_group':
+		notes = []
+		for note_name in note_names:
+			notes.append(Note.get_note_from_note_name(note_name, intensity, bpm, create_sound, instrument, note_value))
+		return Note_group(notes)
 
 ''' 
 	For future reference for working with aiff or wav
@@ -313,12 +327,6 @@ class Note_group:
 		Number of frames
 		Values of a frame
 	'''
-
-def get_note_from_note_name(intensity:str, note_name:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> Note:
-	app_path = get_app_path()
-	file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}")
-
-	return Note(file_name, bpm, create_sound, note_value=note_value)
 
 if __name__ == '__main__':
 	pass

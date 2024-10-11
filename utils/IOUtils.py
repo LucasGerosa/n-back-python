@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..')) #hacky way of mak
 from utils.defaults import *
 from notes.notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
 
-def getNotes(intensity, instrument:str = DEFAULT_INSTRUMENT, extension = DEFAULT_NOTE_EXTENSION, audio_folder = AUDIO_FOLDER, create_sound:bool=True, bpm:float=DEFAULT_BPM, note_value:float=DEFAULT_NOTE_VALUE) -> Note_group:
+def getNotes(intensity:str, instrument:str = DEFAULT_INSTRUMENT, extension = DEFAULT_NOTE_EXTENSION, audio_folder = AUDIO_FOLDER, create_sound:bool=True, bpm:float=DEFAULT_BPM, note_value:float=DEFAULT_NOTE_VALUE) -> Note_group:
 
     path = os.path.join(ROOT_DIR, '..', NOTES_FOLDER, instrument, audio_folder, f"*.{extension}")
     file_paths = glob.glob(path)
