@@ -4,10 +4,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scales import Diatonic_Modes, Scale, rotate_iterable
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
 
-def test_rotate_iterable():
-	rotate_iterable(('C', 'D', 'E', 'F', 'G', 'A', 'B'), 1) == ('D', 'E', 'F', 'G', 'A', 'B', 'C')
-	rotate_iterable(('C', 'D', 'E', 'F', 'G', 'A', 'B'), 2) == ('E', 'F', 'G', 'A', 'B', 'C', 'D')
-	rotate_iterable(('C', 'D', 'E', 'F', 'G', 'A', 'B'), 3) == ('F', 'G', 'A', 'B', 'C', 'D', 'E')
 
 def test_Diatonic_Modes():
 	major_scale_intervals = Diatonic_Modes.BASE_INTERVALS

@@ -1,14 +1,17 @@
 import pytest
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase, get_note_group_from_config
 import TestCase
 from notes import notes
 
 sample_note_group = notes.Note_group.get_note_group_from_note_names(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'])
 
+def test_get_note_group_from_config():
+	assert get_note_group_from_config().notes != []
+
 def test_TonalDiscriminationTaskTestCase():
-	pass
+	tdt_testCase = TonalDiscriminationTaskTestCase(0, 10)
 
 def test_VolumeTestCase():
 	volumeTestCase = VolumeTestCase(sample_note_group)

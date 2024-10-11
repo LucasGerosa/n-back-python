@@ -36,14 +36,16 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 		return note_group
 
 	note_str_list = note_str_utils.get_final_list_notes(note_str)
-	note_list = [notes.Note.get_note_from_note_name(note_str, intensity_str, note_value=note_value) for note_str in note_str_list]
-	return notes.Note_group(note_list)
+	return notes.Note_group.get_note_group_from_note_names(note_str_list, intensity_str, bpm, note_value=note_value)
 
 class TestCase:
 	
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)) -> None:
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None) -> None:
 		self.id: int = id_num
-		self.scale = scale
+		if scale == None:
+			self.scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
+		else:
+			self.scale = scale
 		if numberOfNotes < 1:
 			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
 		self.numberOfNotes: int = numberOfNotes
@@ -73,14 +75,15 @@ class TestCase:
 
 class NbackTestCase(TestCase):
 
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = True, isLastNoteUp = True, semitones=1) -> None:
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True,semitones:int=1) -> None:
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
 		self.nBack: int = nBack
-		self.isLastNoteDifferent = isLastNoteDifferent
-		self.isLastNoteUp = isLastNoteUp
 		self.semitones = semitones
 		super().__init__(config_note_group, id_num, numberOfNotes, bpm, instrument, scale)
-		
+		if isLastNoteDifferent == True:
+			self.change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes)
+		elif isLastNoteDifferent != False:
+			raise ValueError(f"isLastNoteDifferent should be a boolean. Got {isLastNoteDifferent} instead.")
 		self.correct_answer = self.get_correct_answer()
 		if isLastNoteDifferent == True and self.correct_answer != DIFFERENT:
 			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {DIFFERENT}. Got {self.correct_answer} instead.")
@@ -93,55 +96,15 @@ class NbackTestCase(TestCase):
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
 
-	def get_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
-		n_note = note_list[-nBack]
-		if self.isLastNoteDifferent == False:
-			return n_note
-		elif self.isLastNoteDifferent == True:
-			
-			if self.isLastNoteUp == True: #if up, will go up {semitones} semitones
-				up_or_down = 1
-			elif self.isLastNoteUp == False: #if down, will go down {semitones} semitones
-				up_or_down = -1
-			else:
-				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
-			
-			semitone_note_list = []
-			for note in config_notes_list:
-				if note.name in self.scale.find_able_up_down_semitones(self.semitones * up_or_down):
-					semitone_note_list.append(note)
-			assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
-			random_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
-			note_list[-nBack] = random_note
-			return random_note.add_semitone(self.semitones * up_or_down)
-
-		else:
-			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
-
-	def get_final_random_notes(self, bpm:float, instrument:str) -> notes.Note_group: #TODO: remove the overlap with get_note_group_from_config
-			
-		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
-		if note_group.notes == []:
-			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
-
-		filtered_notes = []
-		#print('Notes in the note group:')
-		for note in note_group:
-			#print(note.name) #for debugging
-			if note.name in self.scale.notes_str_tuple:
-				filtered_notes.append(note)
-		'''
-		print('Filtered notes:')
-		for note in filtered_notes: #for debugging
-			print(note.name)'''
-
-		notes_array = np.array(filtered_notes)
-		random_notes_array = np.random.choice(notes_array, self.numberOfNotes - 1) #this - 1 is because the last note is appended later in one of the get_notes function
-		random_notes_list = random_notes_array.tolist()
-		random_notes_list.append(self.get_last_note(self.nBack, random_notes_list, note_group.notes))
-		random_notes_group = notes.Note_group(random_notes_list)
-		
-		return random_notes_group
+	def change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
+		semitone_note_list = []
+		for note in config_notes_list:
+			if note.name in self.scale.find_able_up_down_semitones(self.semitones):
+				semitone_note_list.append(note)
+		assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
+		different_from_last_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
+		note_list[-nBack - 1] = different_from_last_note
+		note_list[-1] = different_from_last_note.add_semitone(self.semitones)
 	
 	def get_correct_answer(self) -> str:
 		lastNote: int = self.note_group[-1]
@@ -356,7 +319,7 @@ class TonalDiscriminationTaskTestCase:
 			create_csv_file(f, testCaseList)
 
 class VolumeTestCase(TestCase):
-	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)) -> None:
+	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None) -> None:
 		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
 		print("Note group:")
 		for note in self.note_group:
@@ -375,3 +338,7 @@ if __name__ == "__main__":
 def create_TestCase_from_config(T:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
 	config_note_group = get_note_group_from_config(id_num, numberOfNotes, bpm, instrument, scale)
 	return T(config_note_group, id_num, numberOfNotes, bpm, instrument, *args, **kwargs)
+
+
+if __name__ == '__main__':
+	pass

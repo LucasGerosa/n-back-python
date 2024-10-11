@@ -5,6 +5,7 @@ from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestC
 import utils.IOUtils as IOUtils
 from utils.defaults import *
 import math
+import random
 from notes import scales
 
 
@@ -84,12 +85,13 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
-	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None):
+	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None, semitones:int=1):
 
 		super().__init__(trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
 		if scale == None:
-			self.scale = scales.MajorScale()
+			self.scale = scales.MajorScale() #FIXME
 			return
+		self.semitones = semitones
 		self.scale = scale
 
 class Test1Thread(NbackTestThread):
@@ -100,27 +102,24 @@ class Test1Thread(NbackTestThread):
 			series_id = 0
 			while series_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
-				boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which sequences are going to be same or different
+				boolean_list = random.shuffle(IOUtils.repeat_values_to_size(self.test_case_n, True, False)) #list for which sequences are going to be same or different
+				quantity_of_true = len([x for x in boolean_list if x == True])
+				up_or_down_list = random.shuffle(IOUtils.repeat_values_to_size(quantity_of_true, 1, -1)) #list for which sequences are different are going to be up a semitone
+				print("Is last note different: " + str(boolean_list),'Is note up: ' + str(up_or_down_list))
+				up_or_down_list_id = 0
 				testCaseList = []
 				testCaseId = 0
-				quantity_of_true = 0
-				for true_or_false in boolean_list:
-					if true_or_false == True: 
-						quantity_of_true += 1
-				boolean_list2 = IOUtils.create_random_boolean_list(quantity_of_true) #list for which sequences are different are going to be up a semitone
-				print("Is last note different: " + str(boolean_list),'Is note up: ' + str(boolean_list2))
-				boolean_list2_id = 0
 				self.wait_for_signal()
 
 				while testCaseId < self.test_case_n and not self.stop:
 					self.pre_start_execution.emit()
 					isLastNoteDifferent = boolean_list[testCaseId]
 					if isLastNoteDifferent == True:
-						isLastNoteUp = boolean_list2[boolean_list2_id]
-						boolean_list2_id += 1
+						semitones = up_or_down_list[up_or_down_list_id] * self.semitones
+						up_or_down_list_id += 1
 					else:
-						isLastNoteUp = None
-					testCase = NbackTestCase(self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
+						semitones = None
+					testCase = NbackTestCase(self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
@@ -211,7 +210,7 @@ class Test3Thread(TestThread):
 		try:
 			testCaseList = []
 			self.id = 0
-			#boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
+			#boolean_list = IOUtils.repeat_values_to_size(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
 				testCase = TonalDiscriminationTaskTestCase(self.id, self.notesQuantity, self.bpm, self.instrument, self.id)

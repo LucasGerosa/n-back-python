@@ -2,11 +2,9 @@ import sys; import os
 from typing import Tuple, Iterable
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
+from utils.IOUtils import rotate_iterable
 
 
-def rotate_iterable(old_iterable:Iterable, index:int) -> Iterable:
-	new_iterable = old_iterable[index:] + old_iterable[:index]
-	return new_iterable
 class Modes:
 	pass
 
@@ -28,7 +26,7 @@ class Scale:
 	def find_able_up_down_semitones(self, semitones:int):
 		assert semitones != 0, "semitones start at 1. Calling this function without semitones makes no sense."
 		
-		if semitones > 0: #this ensures the semitones count starts at 1, making it more intuitive.
+		if semitones > 0: #this ensures the semitones count starts at 1, making usage of this function more intuitive.
 			semitones -= 1
 		
 		possible_notes = []
