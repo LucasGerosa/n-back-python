@@ -12,30 +12,24 @@ class VolumeTestThread(QtCore.QThread):
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
 
-	def __init__(self, layout:QtWidgets.QLayout):
+	def __init__(self):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
 		self.stop = False
 		super().__init__()
-		self.layout = layout
 	
 	def run(self):
 		self.executeLoop()
 		self.finished.emit()
 
 	def executeLoop(self) -> list|None:
-
-		if self.layout == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers." % {'type': type(self.layout)})
 		
 		try:
 
 			while not self.stop:
 				self.pre_start_execution.emit()
-				testCase = VolumeTestCase(self.layout)
+				testCase = VolumeTestCase()
 				self.start_execution.emit()
 				for note in testCase.note_group:
 					if self.stop:
@@ -57,13 +51,12 @@ class TestThread(QtCore.QThread):
 	pre_start_execution = QtCore.pyqtSignal()
 	started_trial_signal = QtCore.pyqtSignal(int)
 	
-	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
 		self.stop = False
 		super().__init__()
-		self.layout = layout
 		self.playerName = playerName
 		self.test_case_n = test_case_n
 		self.nBack = nBack
@@ -91,9 +84,9 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
-	def __init__(self, layout:QtWidgets.QLayout, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None):
+	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None):
 
-		super().__init__(layout, trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
+		super().__init__(trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
 		if scale == None:
 			self.scale = scales.MajorScale()
 			return
@@ -101,12 +94,6 @@ class NbackTestThread(TestThread):
 
 class Test1Thread(NbackTestThread):
 	def executeLoop(self) -> list|None:
-
-		if self.layout == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)}
-		
 		try:
 			testCaseList_list = []
 			nback = self.nBack
@@ -133,7 +120,7 @@ class Test1Thread(NbackTestThread):
 						boolean_list2_id += 1
 					else:
 						isLastNoteUp = None
-					testCase = NbackTestCase(self.layout, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
+					testCase = NbackTestCase(self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, isLastNoteUp=isLastNoteUp)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
@@ -171,17 +158,12 @@ class Test2Thread(NbackTestThread): #needs to be updated like the test 1 in orde
 		raise NotImplementedError("This class is not implemented yet. Please contact the developers.")
 
 	def executeLoop(self) -> list|None:
-		if self.layout == None:
-			raise ValueError("Could not find layout_v. This is a bug. Please contact the developers.")
-		if not isinstance(self.layout, QtWidgets.QVBoxLayout):
-			raise ValueError("layout_v %(type)s is not a QVBoxLayout. This is not implemented yet, so it's a bug. Please contact the developers.") % {'type': type(self.layout)}
-		
 		try:
 			testCaseList = []
 			self.id = 0
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = NbackTestCase(self.layout, self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
+				testCase = NbackTestCase(self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
@@ -232,7 +214,7 @@ class Test3Thread(TestThread):
 			#boolean_list = IOUtils.create_random_boolean_list(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.layout, self.id, self.notesQuantity, self.bpm, self.instrument, self.id)
+				testCase = TonalDiscriminationTaskTestCase(self.id, self.notesQuantity, self.bpm, self.instrument, self.id)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()

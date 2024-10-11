@@ -1,16 +1,26 @@
+import sys; import os
+from typing import Tuple, Iterable
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
 
 
-class ChromaticScale:
-	name = 'Chromatic'
-	def __init__(self, root_note:str):
-		assert root_note in AVAILABLE_NOTES_TUPLE, f"Invalid root note: {root_note}"
-		self.root_note = root_note
-		self.notes_str_tuple = AVAILABLE_NOTES_TUPLE
-		self.intervals = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-	
-	def get_note_index(self, note):
-		return self.notes_str_tuple.index(note)
+def rotate_iterable(old_iterable:Iterable, index:int) -> Iterable:
+	new_iterable = old_iterable[index:] + old_iterable[:index]
+	return new_iterable
+class Modes:
+	pass
+
+class Diatonic_Modes(Modes):
+	modes = {0: 'Ionian', 1: 'Dorian', 2: 'Phrygian', 3: 'Lydian', 4: 'Mixolydian', 5: 'Aeolian', 6: 'Locrian'}
+	BASE_INTERVALS = (2, 2, 1, 2, 2, 2, 1)
+
+NATURAL_NOTES = ('C', 'D', 'E', 'F', 'G', 'A', 'B')
+class Scale:
+	def __init__(self, notes_str_tuple:Tuple[str], name:str, intervals:Tuple[int], mode=0):
+		self.mode = mode
+		self.intervals = intervals
+		self.notes_str_tuple = notes_str_tuple
+		self.name = name
 	
 	def __str__(self):
 		return f'{self.root_note} {self.name} scale containing ' + str(self.notes_str_tuple)
@@ -30,25 +40,43 @@ class ChromaticScale:
 		
 		return possible_notes
 
-class MajorScale(ChromaticScale):
-	name = 'Major'
-	def __init__(self, root_note:str):
-		super().__init__(root_note)
-		self.intervals = (2, 2, 1, 2, 2, 2, 1)  # Pattern of the scale: Whole (2), Half (1)
-		self.notes_str_tuple = self.generate_scale()
+	@staticmethod
+	def get_note_index(note_name:str):
+		return AVAILABLE_NOTES_TUPLE.index(note_name)
 	
-	def generate_scale(self):
-		notes_str_tuple = []
-		index = self.get_note_index(self.root_note)
-		for interval in self.intervals:
-			notes_str_tuple.append(self.notes_str_tuple[index % len(self.notes_str_tuple)])  # Wrap around notes
+	@staticmethod
+	def generate_scale(intervals:Tuple[int], root_note:str) -> Tuple[str]:
+		interval_len = len(intervals)
+		assert interval_len <= 12, f"The scale can't have more than 12 notes (12 intervals). {interval_len} intervals were given."
+		assert root_note in AVAILABLE_NOTES_TUPLE, f"Invalid root note: {root_note}"
+		notes_str_list = [root_note]
+		index = Scale.get_note_index(root_note)
+		for i in range(len(intervals) - 1):
+			interval = intervals[i]
+			notes_str_list.append(AVAILABLE_NOTES_TUPLE[(index + interval) % len(AVAILABLE_NOTES_TUPLE)])
 			index += interval
-		return tuple(notes_str_tuple)
-	
+		return tuple(notes_str_list)
 
-if __name__ == '__main__':
-	C_scale = MajorScale('C')
-	print(C_scale)
-	print("Notes that can go up a semitone: ", C_scale.find_able_up_semitone())
-	print("Notes that can go down a semitone: ", C_scale.find_able_down_semitone())
+	@staticmethod
+	def get_chromaticScale():
+		intervals = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+		return Scale(AVAILABLE_NOTES_TUPLE, "Chromatic", intervals)
+
+	@staticmethod
+	def get_relative_mode(modes_class:Modes, main_root_note:str='C', mode=0):
+		main_scale_intervals:Tuple[int] = modes_class.BASE_INTERVALS
+		mode_intervals = rotate_iterable(main_scale_intervals, mode)
+		main_scale_notes_str_tuple = Scale.generate_scale(main_scale_intervals, main_root_note)
+		root_note = main_scale_notes_str_tuple[mode]
+		notes_str_tuple = rotate_iterable(main_scale_notes_str_tuple, mode)
+		name = root_note + ' ' + modes_class.modes[mode] 	
+		return Scale(notes_str_tuple, name, mode_intervals, mode)
+	
+	@staticmethod
+	def get_parallel_mode(modes_class:Modes, root_note:str='C', mode=0):
+		main_scale_intervals:Tuple[int] = modes_class.BASE_INTERVALS
+		name = root_note + ' ' + modes_class.modes[mode]
+		mode_intervals = rotate_iterable(main_scale_intervals, mode)
+		notes_str_tuple = Scale.generate_scale(mode_intervals, root_note)
+		return Scale(notes_str_tuple, name, mode_intervals, mode)
 

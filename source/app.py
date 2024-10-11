@@ -223,7 +223,7 @@ class MyGUI(QMainWindow):
 				nonlocal loadingLabel
 				loadingLabel.deleteLater()
 				
-			self.notes_thread = VolumeTestThread(layout_v)
+			self.notes_thread = VolumeTestThread()
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)
 			self.notes_thread.start_execution.connect(deleteLoadingLabel)
@@ -447,7 +447,7 @@ class MyGUI(QMainWindow):
 			#play_test_button.setEnabled(False)
 			loadingLabel = None
 
-			self.notes_thread = Thread(layout_v, 0, player_name, test_case, 0, notes_quantity, bpm, instrument) #0  is a placeholder for nback, which is not used in this test
+			self.notes_thread = Thread(0, player_name, test_case, 0, notes_quantity, bpm, instrument) #0  is a placeholder for nback, which is not used in this test
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
@@ -669,7 +669,7 @@ class MyGUI(QMainWindow):
 			else:
 				scale = RANDOM_MODE '''
 
-			self.notes_thread = Thread(layout_v, trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, scale=scale)
+			self.notes_thread = Thread(trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, scale=scale)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)

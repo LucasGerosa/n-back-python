@@ -3,10 +3,10 @@ import string
 from enum import Enum
 from typing import List
 from xmlrpc.client import Boolean
-import utils.IOUtils as IOUtils
 import sys; import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import utils.IOUtils as IOUtils
 from utils.defaults import *
 from utils import notes_config, note_str_utils, FileUtils
 from notes import notes, scales
@@ -39,23 +39,54 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 	note_list = [notes.get_note_from_note_name(intensity_str, note_str, note_value=note_value) for note_str in note_str_list]
 	return notes.Note_group(note_list)
 
-class NbackTestCase:
+def create_TestCase_from_config(T, scale:scales.ChromaticScale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
+	config_note_group = get_note_group_from_config(id_num, numberOfNotes, bpm, instrument, scale)
+	return T(config_note_group, *args, **kwargs)
 
-	def __init__(self, layout:QtWidgets.QLayout, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = None, isLastNoteUp = None, semitones=1) -> None:
-		self.layout = layout
+class TestCase:
+	
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale = None) -> None:
 		self.id: int = id_num
+		if scale == None:
+			self.scale = scales.MajorScale('C')
+		else:
+			self.scale = scale
+		if numberOfNotes < 1:
+			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
+		self.numberOfNotes: int = numberOfNotes
+		self.note_group = self.get_random_notes(bpm, instrument, config_note_group)
+
+	def get_random_notes(self, bpm:float, instrument:str, config_note_group:notes.Note_group) -> notes.Note_group:
+		if config_note_group == None:
+			note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
+		else:
+			note_group = config_note_group
+		if note_group.notes == []:
+			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+
+		print("Note group:")
+		filtered_notes = []
+		for note in note_group:
+			if note.name in self.scale.notes_str_tuple:
+				filtered_notes.append(note)
+				print(note.full_name)
+
+		notes_array = np.array(filtered_notes)
+		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
+		random_notes_list = random_notes_array.tolist()
+		random_notes_group = notes.Note_group(random_notes_list)
+		
+		return random_notes_group
+
+class NbackTestCase(TestCase):
+
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale = None, isLastNoteDifferent = None, isLastNoteUp = None, semitones=1) -> None:
+		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
 		self.nBack: int = nBack
 		self.isLastNoteDifferent = isLastNoteDifferent
 		self.isLastNoteUp = isLastNoteUp
-		if scale == None:
-			self.scale = scales.MajorScale()
-		else:
-			self.scale = scale
-		if numberOfNotes < 2:
-			raise ValueError(f"numberOfNotes should be > 1. Got {numberOfNotes} instead.")
-		self.numberOfNotes: int = numberOfNotes
-		self.note_group = self.get_random_notes(bpm, instrument, semitones)
-		assert self.isValidTestCase(), f"numberOfNotes should be > nBack. Got numberOfNotes = {self.numberOfNotes} and nBack = {self.nBack} instead."
+		self.semitones = semitones
+		super().__init__(config_note_group, id_num, numberOfNotes, bpm, instrument, scale)
 		
 		self.correct_answer = self.get_correct_answer()
 		if isLastNoteDifferent == True and self.correct_answer != DIFFERENT:
@@ -63,41 +94,38 @@ class NbackTestCase:
 		if isLastNoteDifferent == False and self.correct_answer != SAME:
 			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {SAME}. Got {self.correct_answer} instead.")
 		
-		print("Note group:")
-		for note in self.note_group:
-			print(note.full_name)
 		print()
 		print(f"Correct answer: {self.correct_answer}")
 
 	def __str__(self):
 		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
 
-	def get_random_notes(self, bpm:float, instrument:str, semitones:int=1) -> notes.Note_group:
-		
-		def get_last_note(nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
-			n_note = note_list[-nBack]
-			if self.isLastNoteDifferent == False:
-				return n_note
-			elif self.isLastNoteDifferent == True:
-				
-				if self.isLastNoteUp == True: #if up, will go up {semitones} semitones
-					up_or_down = 1
-				elif self.isLastNoteUp == False: #if down, will go down {semitones} semitones
-					up_or_down = -1
-				else:
-					raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
-				
-				semitone_note_list = []
-				for note in config_notes_list:
-					if note.name in self.scale.find_able_up_down_semitones(semitones * up_or_down):
-						semitone_note_list.append(note)
-				assert semitone_note_list != [], f"No available notes for increasing {semitones} semitone."
-				random_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
-				note_list[-nBack] = random_note
-				return random_note.add_semitone(semitones * up_or_down)
-
+	def get_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
+		n_note = note_list[-nBack]
+		if self.isLastNoteDifferent == False:
+			return n_note
+		elif self.isLastNoteDifferent == True:
+			
+			if self.isLastNoteUp == True: #if up, will go up {semitones} semitones
+				up_or_down = 1
+			elif self.isLastNoteUp == False: #if down, will go down {semitones} semitones
+				up_or_down = -1
 			else:
-				raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
+				raise ValueError(f"isLastNoteUp should be either True or False. Got {self.isLastNoteUp} instead. If it's None, the last note is the same as the n-back note.")
+			
+			semitone_note_list = []
+			for note in config_notes_list:
+				if note.name in self.scale.find_able_up_down_semitones(self.semitones * up_or_down):
+					semitone_note_list.append(note)
+			assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
+			random_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
+			note_list[-nBack] = random_note
+			return random_note.add_semitone(self.semitones * up_or_down)
+
+		else:
+			raise ValueError(f"isLastNoteDifferent should be either True or False. Got {self.isLastNoteDifferent} instead.")
+
+	def get_final_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
 			
 		note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		if note_group.notes == []:
@@ -117,7 +145,7 @@ class NbackTestCase:
 		notes_array = np.array(filtered_notes)
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes - 1) #this - 1 is because the last note is appended later in one of the get_notes function
 		random_notes_list = random_notes_array.tolist()
-		random_notes_list.append(get_last_note(self.nBack, random_notes_list, note_group.notes))
+		random_notes_list.append(self.get_last_note(self.nBack, random_notes_list, note_group.notes))
 		random_notes_group = notes.Note_group(random_notes_list)
 		
 		return random_notes_group
@@ -153,9 +181,6 @@ class NbackTestCase:
 		
 		print(f"Participant's answer: {self.answer}")
 		print(f"Result: {self.result}\n\n")
-
-	def isValidTestCase(self) -> Boolean:
-		return self.numberOfNotes >= self.nBack
 	
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
@@ -218,15 +243,14 @@ class NbackTestCase:
 		NUMBER_OF_NOTES = 6
 		for id_num in range(NUMBER_OF_TESTCASES):
 			try:
-				testCase = NbackTestCase(QtWidgets.QVBoxLayout(), id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
+				testCase = NbackTestCase(id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
 				testCase.execute()
 			except Exception:
 				import traceback
 				print(traceback.format_exc())
 
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
-		self.layout = layout
+	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
 		self.id: int = id_num
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
@@ -338,26 +362,13 @@ class TonalDiscriminationTaskTestCase:
 		else:
 			create_csv_file(f, testCaseList)
 
-class VolumeTestCase:
-	def __init__(self, layout:QtWidgets.QLayout, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> None:
-		self.layout = layout
-		if numberOfNotes < 1:
-			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
-		self.numberOfNotes: int = numberOfNotes
-		self.note_group = self.get_random_notes(bpm, instrument)
+class VolumeTestCase(TestCase):
+	def __init__(self, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None) -> None:
+		super().__init__(0, numberOfNotes, bpm, instrument, scale)
 		print("Note group:")
 		for note in self.note_group:
 			print(note.name)
 		print()
-
-	def get_random_notes(self, bpm:float, instrument:str) -> notes.Note_group:
-		note_group = get_note_group_from_config(bpm=bpm,instrument=instrument)
-		if note_group.notes == []:
-			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
-		notes_array = np.array(note_group.notes)
-		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
-		random_notes_group = notes.Note_group(random_notes_array.tolist())
-		return random_notes_group
 
 if __name__ == "__main__":
 	note_group = get_note_group_from_config()

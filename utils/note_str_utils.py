@@ -105,6 +105,22 @@ def convert_sharps_to_flats(note_full_name:str) -> str: #Ex. input: "ab#bb3" out
 
 	return new_note_char0 + note_octave
 	
+def convert_flats_to_sharps(note_full_name:str) -> str: 
+	new_note_full_name = convert_sharps_to_flats(note_full_name)
+	note_name, note_octave = separate_note_name_octave(new_note_full_name)
+	if note_name == 'Db':
+		return 'C#' + note_octave
+	elif note_name == 'Eb':
+		return 'D#' + note_octave
+	elif note_name == 'Gb':
+		return 'F#' + note_octave
+	elif note_name == 'Ab':
+		return 'G#' + note_octave
+	elif note_name == 'Bb':
+		return 'A#' + note_octave
+	else:
+		return new_note_full_name
+
 def get_final_list_notes(notes_string:str) -> list[str]: #Ex. input: "A1;C2" output: ["A1", "C2"]
 	
 	def get_set_notes_from_range(range_notes:str) -> set[str]:
