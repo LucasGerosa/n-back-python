@@ -57,8 +57,12 @@ Add translations to text in the app.po file and compile it with `msgfmt app.po -
 
 To use this project, follow these steps:
 
+### Source code
 1. Run `app.py`
 2. The output files will be generated in the corresponding subfolders under `output/notas/`.
+
+### Releases
+1. (On windows) download either the msi or zip file. Then, run the nback.exe.
 
 ## Dependencies
 - Python 3.10.2. Other python versions might work but have not been tested.

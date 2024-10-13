@@ -117,7 +117,7 @@ class Note:
 	
 	def create_sound(self) -> None:
 		
-		def remove_silence(sound) -> None: #TODO: edit the file to remove the sound, not just in runtime
+		def remove_silence(sound) -> AudioSegment: #TODO: edit the file to remove the sound, not just in runtime
 			trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
 			#trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
 			#strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
@@ -243,7 +243,7 @@ class Note:
 			self.delete_file()
 		else:
 			os.rename(self.path, new_path)
-		self.set_path(new_path)
+		self.path = new_path
 	
 	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_file = False) -> None: #note: this directory should not be from the main directory of the project
 		new_path = os.path.join(ROOT_DIR, '..', directory, self.instrument, self.fileName + '.' + new_extension)
@@ -251,16 +251,16 @@ class Note:
 		#This is equivalent to "ffmpeg -i input/notas/aiff/do.aiff input/notas/aiff/do.mp3"
 		if delete_old_file:
 			self.delete_file()
-		self.set_path(new_path)
+		self.path = new_path
 	
 	def delete_file(self) -> None:
 		os.remove(self.path)
 	
-	def add_semitone(self, semitones:int): #TODO: create subtraction and addition methods (__add__, __sub__) 
+	def __add__(self, semitones:int):
 		#TODO: make this method change the note's path instead of creating a new note
 		#makes a note with the same attributes but with X semitones of difference
 		if semitones < 0:			
-			name = self.name + "b" * (semitones * -1)
+			name = self.name + "b" * (-semitones)
 		elif semitones > 0: 
 			name = self.name + "#" * semitones
 		full_name = note_str_utils.convert_sharps_to_flats(name + self.octave)
@@ -271,6 +271,9 @@ class Note:
 		
 		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.will_create_sound, self.instrument, self.note_value)
 	
+	def __sub__(self, semitones:int):
+		return self.__add__(-semitones)
+
 	@staticmethod
 	def get_greater_note(note1, note2):
 		if note1 > note2:

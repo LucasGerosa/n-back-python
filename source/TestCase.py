@@ -6,14 +6,13 @@ from xmlrpc.client import Boolean
 import sys; import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import utils.IOUtils as IOUtils
 from utils.defaults import *
 from utils import notes_config, note_str_utils, FileUtils
 from notes import notes, scales
 import numpy as np
 from fractions import Fraction
 from PyQt6 import QtCore, QtGui, QtWidgets
-from utils import PyQt6_utils
+from utils import PyQt6_utils, IOUtils
 import io
 
 
@@ -138,7 +137,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
 		different_from_last_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
 		note_list[-nBack - 1] = different_from_last_note
-		note_list[-1] = different_from_last_note.add_semitone(self.semitones)
+		note_list[-1] = different_from_last_note + self.semitones
 	
 	def _set_correct_answer(self) -> str:
 		lastNote: int = self.note_group[-1]

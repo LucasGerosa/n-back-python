@@ -1,8 +1,8 @@
 import sys; import os
-from typing import Tuple, Iterable
+from typing import Tuple, Iterable, Type
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
-from utils.IOUtils import rotate_iterable
+from utils.IOUtils import rotate_sequence
 
 
 class Modes:
@@ -61,20 +61,20 @@ class Scale:
 		return Scale(AVAILABLE_NOTES_TUPLE, "Chromatic", intervals)
 
 	@staticmethod
-	def get_relative_mode(modes_class:Modes, main_root_note:str='C', mode=0):
+	def get_relative_mode(modes_class:Type[Modes], main_root_note:str='C', mode=0):
 		main_scale_intervals:Tuple[int] = modes_class.BASE_INTERVALS
-		mode_intervals = rotate_iterable(main_scale_intervals, mode)
+		mode_intervals = rotate_sequence(main_scale_intervals, mode)
 		main_scale_notes_str_tuple = Scale.generate_scale(main_scale_intervals, main_root_note)
 		root_note = main_scale_notes_str_tuple[mode]
-		notes_str_tuple = rotate_iterable(main_scale_notes_str_tuple, mode)
+		notes_str_tuple = rotate_sequence(main_scale_notes_str_tuple, mode)
 		name = root_note + ' ' + modes_class.modes[mode] 	
 		return Scale(notes_str_tuple, name, mode_intervals, mode)
 	
 	@staticmethod
-	def get_parallel_mode(modes_class:Modes, root_note:str='C', mode=0):
+	def get_parallel_mode(modes_class:Type[Modes], root_note:str='C', mode=0):
 		main_scale_intervals:Tuple[int] = modes_class.BASE_INTERVALS
 		name = root_note + ' ' + modes_class.modes[mode]
-		mode_intervals = rotate_iterable(main_scale_intervals, mode)
+		mode_intervals = rotate_sequence(main_scale_intervals, mode)
 		notes_str_tuple = Scale.generate_scale(mode_intervals, root_note)
 		return Scale(notes_str_tuple, name, mode_intervals, mode)
 

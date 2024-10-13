@@ -24,9 +24,9 @@ def getNotes(intensity:str, instrument:str = DEFAULT_INSTRUMENT, extension = DEF
 def isEven(number:int) -> bool:
 	return number % 2 == 0
 
-def rotate_iterable(old_iterable:typing.Iterable, index:int) -> typing.Iterable:
-	new_iterable = old_iterable[index:] + old_iterable[:index]
-	return new_iterable
+def rotate_sequence(old_sequence:list | tuple, index:int) -> list | tuple:
+	new_sequence = old_sequence[index:] + old_sequence[:index]
+	return new_sequence
 
 def repeat_values_to_size(list_size:int, *values):
 	divided_size = math.ceil(list_size / len(values))

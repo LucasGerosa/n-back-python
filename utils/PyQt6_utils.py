@@ -20,10 +20,10 @@ def is_float_or_fraction(value:str):
 		except ValueError:
 			return
 
-def get_center(width=0, height=0):
-	x:int = width // 2
-	y:int = height // 2
-	return x,y
+# def get_center(width=0, height=0):
+# 	x:int = width // 2
+# 	y:int = height // 2
+# 	return x, y
 
 def get_txt_button(txt, command):
 	button = QPushButton(txt)

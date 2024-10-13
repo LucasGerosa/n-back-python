@@ -28,13 +28,13 @@ class VolumeTestThread(QtCore.QThread):
 		self.executeLoop()
 		self.finished.emit()
 
-	def executeLoop(self) -> list|None:
+	def executeLoop(self):
 		
 		try:
 
 			while not self.stop:
 				self.pre_start_execution.emit()
-				testCase = VolumeTestCase(get_note_group_from_config(self.bpm, self.instrument), 5, self.bpm, self.instrument, DEFAULT_SCALE)
+				testCase = VolumeTestCase(get_note_group_from_config(self.bpm, self.instrument), 5, self.bpm, self.instrument, DEFAULT_SCALE) #TODO: there should be a way to change the scale, maybe as a new setting.
 				self.start_execution.emit()
 				for note in testCase.note_group:
 					if self.stop:
@@ -99,7 +99,7 @@ class NbackTestThread(TestThread):
 		self.scale = scale
 
 class TonalNbackTestThread(NbackTestThread):
-	def executeLoop(self) -> list|None:
+	def executeLoop(self):
 		try:
 			testCaseList_list = []
 			nback = self.nBack
@@ -160,7 +160,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 	def __init__():
 		raise NotImplementedError("This class is not implemented yet. Please contact the developers.")
 
-	def executeLoop(self) -> list|None:
+	def executeLoop(self):
 		try:
 			testCaseList = []
 			self.id = 0
@@ -209,7 +209,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 class TonalDiscriminationTaskTestThread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
-	def executeLoop(self) -> list|None:
+	def executeLoop(self):
 		
 		try:
 			testCaseList = []
