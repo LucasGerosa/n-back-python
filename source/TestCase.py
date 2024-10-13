@@ -16,7 +16,16 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils
 import io
 
+
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
+
+class AnswerType(Enum):
+	SAME = 'same'
+	DIFFERENT = 'different'
+
+class ResultType(Enum):
+	CORRECT = 'correct'
+	INCORRECT = 'incorrect'
 
 def get_settings():
 	note_str = notes_config.get_notes_setting()
@@ -32,7 +41,7 @@ def get_settings():
 def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
 	note_str, intensity_str, note_value = get_settings()
 	if note_str == notes_config.ALL_NOTES:
-		note_group = IOUtils.getNotes(intensity=intensity_str, instrument=instrument, audio_folder='', create_sound=False, bpm=bpm, note_value=note_value)
+		note_group = IOUtils.getNotes(intensity=intensity_str, instrument=instrument, audio_folder='', will_create_sound=False, bpm=bpm, note_value=note_value)
 		return note_group
 
 	note_str_list = note_str_utils.get_final_list_notes(note_str)
@@ -41,17 +50,29 @@ def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -
 class TestCase:
 	
 	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None) -> None:
-		self.id: int = id_num
+		self._id_num: int = id_num
 		if scale == None:
-			self.scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
+			self._scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
 		else:
-			self.scale = scale
+			self._scale = scale
 		if numberOfNotes < 1:
 			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
-		self.numberOfNotes: int = numberOfNotes
-		self.note_group = self.get_random_notes(bpm, instrument, config_note_group)
+		self._numberOfNotes: int = numberOfNotes
+		self._set_random_notes_group(bpm, instrument, config_note_group)
 
-	def get_random_notes(self, bpm:float, instrument:str, config_note_group:notes.Note_group) -> notes.Note_group:
+	@property
+	def id_num(self) -> int:
+		return self._id_num
+	
+	@property
+	def scale(self) -> scales.Scale:
+		return self._scale
+	
+	@property
+	def numberOfNotes(self) -> int:
+		return self._numberOfNotes
+
+	def _set_random_notes_group(self, bpm:float, instrument:str, config_note_group:notes.Note_group) -> notes.Note_group:
 		if config_note_group == None:
 			note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		else:
@@ -70,33 +91,46 @@ class TestCase:
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
 		random_notes_list = random_notes_array.tolist()
 		random_notes_group = notes.Note_group(random_notes_list)
-		
-		return random_notes_group
+		self._note_group = random_notes_group
+
+	@property
+	def note_group(self) -> notes.Note_group:
+		return self._note_group
+
 
 class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True,semitones:int=1) -> None:
+	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1) -> None:
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
-		self.nBack: int = nBack
-		self.semitones = semitones
+		self._nBack: int = nBack
+		assert semitones != 0, f"semitones should be negative or positive. Got 0 instead."
+		self._semitones = semitones
 		super().__init__(config_note_group, id_num, numberOfNotes, bpm, instrument, scale)
 		if isLastNoteDifferent == True:
-			self.change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes)
+			self._change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes)
 		elif isLastNoteDifferent != False:
 			raise ValueError(f"isLastNoteDifferent should be a boolean. Got {isLastNoteDifferent} instead.")
-		self.correct_answer = self.get_correct_answer()
-		if isLastNoteDifferent == True and self.correct_answer != DIFFERENT:
-			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {DIFFERENT}. Got {self.correct_answer} instead.")
-		if isLastNoteDifferent == False and self.correct_answer != SAME:
-			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {SAME}. Got {self.correct_answer} instead.")
+		self._set_correct_answer()
+		if isLastNoteDifferent == True and self.correct_answer != AnswerType.DIFFERENT:
+			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {AnswerType.DIFFERENT}. Got {self.correct_answer} instead.")
+		if isLastNoteDifferent == False and self.correct_answer != AnswerType.SAME:
+			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {AnswerType.SAME}. Got {self.correct_answer} instead.")
 		
 		print()
 		print(f"Correct answer: {self.correct_answer}")
 
-	def __str__(self):
-		return f"id: {self.id}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
+	@property
+	def nBack(self) -> int:
+		return self._nBack
 
-	def change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
+	@property
+	def semitones(self) -> int:
+		return self._semitones
+
+	def __str__(self):
+		return f"id: {self.id_num}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
+
+	def _change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
 		semitone_note_list = []
 		for note in config_notes_list:
 			if note.name in self.scale.find_able_up_down_semitones(self.semitones):
@@ -106,37 +140,50 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		note_list[-nBack - 1] = different_from_last_note
 		note_list[-1] = different_from_last_note.add_semitone(self.semitones)
 	
-	def get_correct_answer(self) -> str:
+	def _set_correct_answer(self) -> str:
 		lastNote: int = self.note_group[-1]
 		nBackNote: int = self.note_group[-1 - self.nBack]
 		if lastNote == nBackNote:
-			return SAME
+			self._correct_answer = AnswerType.SAME
 		else:
-			return DIFFERENT
+			self._correct_answer = AnswerType.DIFFERENT
+	
+	@property
+	def correct_answer(self) -> str:
+		return self._correct_answer
+	
+	@property
+	def result(self) -> str:
+		return self._result
+	
+	@property
+	def answer(self) -> str:
+		return self._answer
 		
 	def validateAnswer(self, answer) -> None:
 		# Check if n-back note equals to last note
-		if self.correct_answer == SAME:
-			if answer == SAME:
-				self.result = CORRECT
-			elif answer == DIFFERENT:
-				self.result = INCORRECT
+		if self.correct_answer == AnswerType.SAME:
+			if answer == AnswerType.SAME:
+				self._result= ResultType.CORRECT
+			elif answer == AnswerType.DIFFERENT:
+				self._result= ResultType.INCORRECT
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
-		elif self.correct_answer == DIFFERENT:
-			if answer == SAME:
-				self.result = INCORRECT
-			elif answer == DIFFERENT:
-				self.result = CORRECT
+		elif self.correct_answer == AnswerType.DIFFERENT:
+			if answer == AnswerType.SAME:
+				self._result= ResultType.INCORRECT
+			elif answer == AnswerType.DIFFERENT:
+				self._result= ResultType.CORRECT
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
 			raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
-		self.answer = answer
+		self._answer = answer
 		
-		print(f"Participant's answer: {self.answer}")
+		print(f"Participant's answer: {answer}")
 		print(f"Result: {self.result}\n\n")
+		return self.result
 	
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
@@ -149,12 +196,12 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 				quantity_right_answers = 0
 				quantity_wrong_answers = 0
 				for t in testCaseList:
-					if t.result == CORRECT:
+					if t.result == ResultType.CORRECT:
 						quantity_right_answers += 1
 						total_quantity_right_answers += 1
 
 					
-					elif t.result == INCORRECT:
+					elif t.result == ResultType.INCORRECT:
 						quantity_wrong_answers += 1
 						total_quantity_wrong_answers += 1
 					
@@ -205,21 +252,31 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 				import traceback
 				print(traceback.format_exc())
 
+
 class VolumeTestCase(TestCase):
-	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None|scales.Scale) -> None:
+	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None) -> None:
 		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
 		print("Note group:")
 		for note in self.note_group:
 			print(note.name)
 		print()
 
+
 class TonalDiscriminationTaskTestCase:
 	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
-		self.id: int = id_num
+		self.id_num: int = id_num
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
 		self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
+	
+	@property
+	def result(self) -> str:
+		return self._result
+	
+	@property
+	def answer(self) -> str:
+		return self._answer
 	
 	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
 		note_group = notes.Note_group([notes.Note.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
@@ -255,24 +312,24 @@ class TonalDiscriminationTaskTestCase:
 	def slice_sequence(self, sequence, notesQuantity):
 		return sequence[:notesQuantity]
 	
-	def validateAnswer(self, answer) -> None:
+	def validateAnswer(self, answer:AnswerType) -> None:
 
 		if self.is_sequence_mismatch:
-			if answer == SAME:
-				self.result = INCORRECT
-			elif answer == DIFFERENT:
-				self.result = CORRECT
+			if answer == AnswerType.SAME:
+				self._result = ResultType.INCORRECT
+			elif answer == AnswerType.DIFFERENT:
+				self._result = ResultType.CORRECT
 			else:
 				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
-			if answer == DIFFERENT:
-				self.result = INCORRECT
-			elif answer == SAME:
-				self.result = CORRECT
+			if answer == AnswerType.DIFFERENT:
+				self._result = ResultType.INCORRECT
+			elif answer == AnswerType.SAME:
+				self._result = ResultType.CORRECT
 			else:
 				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
-		self.answer = answer
+		self._answer = answer
 		print(f"Participant's answer: {answer}")
 		print(f"Result: {self.result}\n\n")
 	
@@ -283,9 +340,9 @@ class TonalDiscriminationTaskTestCase:
 			testCase_quantity_right_answers = 0
 			testCase_quantity_wrong_answers = 0
 			for t in testCaseList:
-				if t.result == CORRECT:
+				if t.result == ResultType.CORRECT:
 					testCase_quantity_right_answers += 1
-				elif t.result == INCORRECT:
+				elif t.result == ResultType.INCORRECT:
 					testCase_quantity_wrong_answers += 1
 				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
 		
@@ -336,9 +393,10 @@ if __name__ == "__main__":
 			filtered_notes.append(note)
 	filtered_note_group = notes.Note_group(filtered_notes)
 
-def create_TestCase_from_config(TestCaseClass:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
-	config_note_group = get_note_group_from_config(bpm, instrument)
-	return TestCaseClass(config_note_group, id_num, numberOfNotes, bpm, instrument, scale, *args, **kwargs)
+#!DELETE LATER
+# def create_TestCase_from_config(TestCaseClass:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
+# 	config_note_group = get_note_group_from_config(bpm, instrument)
+# 	return TestCaseClass(config_note_group, id_num, numberOfNotes, bpm, instrument, scale, *args, **kwargs)
 
 
 if __name__ == '__main__':

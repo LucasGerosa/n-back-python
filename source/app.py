@@ -210,7 +210,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		def debug():
 			self.goto_frame(self.debug_menu)
 			
-			NbackTestCase.debug()
+			NbackTestCase.debug() #FIXME: The current debug functionality should probably be removed
 		
 		return PyQt6_utils.get_button_with_image(self.debug_image, debug)
 

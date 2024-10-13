@@ -20,5 +20,27 @@ def test_TestCase():
 	testCase = TestCase.TestCase(sample_note_group, 1, 10)
 
 def test_NbackTestCase():
-	nback_test_case = NbackTestCase(sample_note_group, 2, 1, 10)
+
+	def check_NbackTestCase(t, answer:TestCase.AnswerType):
+		last_note = t.note_group[-1]
+		nback_note = t.note_group[-2]
+		result = t.validateAnswer(answer)
+		assert t.answer == answer
+
+		if answer == t.correct_answer:
+			assert result == TestCase.ResultType.CORRECT
+		else:
+			assert result == TestCase.ResultType.INCORRECT
+
+		if t.correct_answer == TestCase.AnswerType.SAME:
+			assert last_note == nback_note
+		else:
+			assert last_note != nback_note
+		
+	nback_test_case1 = NbackTestCase(sample_note_group, id_num=0, nBack=1, numberOfNotes=10, isLastNoteDifferent=True, semitones=1)
+	check_NbackTestCase(nback_test_case1, TestCase.AnswerType.SAME)
+	#assert nback_test_case1.note_group.notes[-1]. in ('4')
+
+
+
 
