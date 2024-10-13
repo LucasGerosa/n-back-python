@@ -4,7 +4,7 @@ import typing
 import glob #module for gettiong files that match  requirement
 import sys, os
 import math
-sys.path.append(os.path.join(os.path.dirname(__file__), '..')) #hacky way of making relative imports work
+#sys.path.append(os.path.join(os.path.dirname(__file__), '..')) #hacky way of making relative imports work
 from utils.defaults import *
 from notes.notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
 

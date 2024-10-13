@@ -1,24 +1,28 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase, get_note_group_from_config
 import utils.IOUtils as IOUtils
 from utils.defaults import *
 import math
 import random
 from notes import scales
 
+DEFAULT_SCALE = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
+
 
 class VolumeTestThread(QtCore.QThread):
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
 
-	def __init__(self):
+	def __init__(self, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
 		self.stop = False
 		super().__init__()
+		self.bpm = bpm
+		self.instrument = instrument
 	
 	def run(self):
 		self.executeLoop()
@@ -30,14 +34,14 @@ class VolumeTestThread(QtCore.QThread):
 
 			while not self.stop:
 				self.pre_start_execution.emit()
-				testCase = VolumeTestCase()
+				testCase = VolumeTestCase(get_note_group_from_config(self.bpm, self.instrument), 5, self.bpm, self.instrument, DEFAULT_SCALE)
 				self.start_execution.emit()
 				for note in testCase.note_group:
 					if self.stop:
 						print("Thread was interrupted. Stopping now.\n")
 						return
 					note.play()
-
+				self.stop = True
 			if self.stop:
 				print("Thread was interrupted. Stopping now.\n")
 				return
@@ -94,7 +98,7 @@ class NbackTestThread(TestThread):
 		self.semitones = semitones
 		self.scale = scale
 
-class Test1Thread(NbackTestThread):
+class TonalNbackTestThread(NbackTestThread):
 	def executeLoop(self) -> list|None:
 		try:
 			testCaseList_list = []
@@ -146,7 +150,7 @@ class Test1Thread(NbackTestThread):
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
 
-class Test2Thread(NbackTestThread): #needs to be updated like the test 1 in order to work
+class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
 	print_hint_signal = QtCore.pyqtSignal(str)
 	delete_note_signal = QtCore.pyqtSignal()
@@ -202,7 +206,7 @@ class Test2Thread(NbackTestThread): #needs to be updated like the test 1 in orde
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
 
-class Test3Thread(TestThread):
+class TonalDiscriminationTaskTestThread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
 	def executeLoop(self) -> list|None:

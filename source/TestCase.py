@@ -73,7 +73,7 @@ class TestCase:
 		
 		return random_notes_group
 
-class NbackTestCase(TestCase):
+class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
 	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True,semitones:int=1) -> None:
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
@@ -205,6 +205,14 @@ class NbackTestCase(TestCase):
 				import traceback
 				print(traceback.format_exc())
 
+class VolumeTestCase(TestCase):
+	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None|scales.Scale) -> None:
+		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
+		print("Note group:")
+		for note in self.note_group:
+			print(note.name)
+		print()
+
 class TonalDiscriminationTaskTestCase:
 	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
 		self.id: int = id_num
@@ -318,13 +326,6 @@ class TonalDiscriminationTaskTestCase:
 		else:
 			create_csv_file(f, testCaseList)
 
-class VolumeTestCase(TestCase):
-	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale=None) -> None:
-		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
-		print("Note group:")
-		for note in self.note_group:
-			print(note.name)
-		print()
 
 if __name__ == "__main__":
 	note_group = get_note_group_from_config()
@@ -335,9 +336,9 @@ if __name__ == "__main__":
 			filtered_notes.append(note)
 	filtered_note_group = notes.Note_group(filtered_notes)
 
-def create_TestCase_from_config(T:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
-	config_note_group = get_note_group_from_config(id_num, numberOfNotes, bpm, instrument, scale)
-	return T(config_note_group, id_num, numberOfNotes, bpm, instrument, *args, **kwargs)
+def create_TestCase_from_config(TestCaseClass:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
+	config_note_group = get_note_group_from_config(bpm, instrument)
+	return TestCaseClass(config_note_group, id_num, numberOfNotes, bpm, instrument, scale, *args, **kwargs)
 
 
 if __name__ == '__main__':
