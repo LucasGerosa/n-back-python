@@ -7,6 +7,7 @@ from pydub.silence import detect_leading_silence
 import gc
 #import pyaudio
 #from pydub import utils
+#TODO: change some of the methods in these classes to private methods
 
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -90,45 +91,96 @@ check_ffmpeg()
 
 class Note:
 
-	def __init__(self, path:str, bpm:float=DEFAULT_BPM, create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
-		self.set_path(path) #TODO:don't allow the creation of a note with an invalid path
-		self.full_name:str = self.get_full_name()
-		self.name:str = self.full_name[:-1]
-		self.octave:str = self.full_name[-1]
+	def __init__(self, path:str, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
+		self.path = path #TODO:don't allow the creation of a note with an invalid path
+		self._full_name:str = self.get_full_name()
+		self._name:str = self.full_name[:-1]
+		self._octave:str = self.full_name[-1]
 		if self.extension == 'aif':
 			self.change_extension('aiff')
-		if create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
-			self.sound = AudioSegment.from_file(self.path, self.extension)
-
-		self.create_sound:bool = create_sound
+		self._will_create_sound = None
+		self.will_create_sound:bool = will_create_sound
 		self.bpm = bpm
 		self.note_value = note_value
 		self.intensity = self.get_intensity()
 	
+	@property
+	def will_create_sound(self):
+		return self._will_create_sound
+	
+	@will_create_sound.setter
+	def will_create_sound(self, will_create_sound:bool) -> None:
+		assert type(will_create_sound) == bool, f"will_create_sound must be a boolean, not {type(will_create_sound)}"
+		if will_create_sound and not self.will_create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
+			self.create_sound()
+		self._will_create_sound = will_create_sound
+	
+	def create_sound(self) -> None:
+		
+		def remove_silence(sound) -> None: #TODO: edit the file to remove the sound, not just in runtime
+			trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
+			#trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
+			#strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
+			#stripped = strip_silence(self.sound)
+			return trim_leading_silence(sound)
+		
+		self._sound = remove_silence(AudioSegment.from_file(self.path, self.extension))
+	
+	@property
+	def sound(self):
+		return self._sound
+	
+	@property
+	def path(self):
+		return self._path
+
+	@path.setter
+	def path(self, new_path) -> None:
+		self._path = new_path
+		self._directory, fileNameExt = os.path.split(new_path) #directory won't have a trailing '/'
+		self._fileName, ext = os.path.splitext(fileNameExt)
+		self._extension =  ext.split('.')[1]
+
+		instrument_dir, DEFAULT_AUDIO_EXTENSION_dir = os.path.split(self.directory)
+		if DEFAULT_AUDIO_EXTENSION_dir == DEFAULT_AUDIO_EXTENSION:
+			self._instrument:str = os.path.split(instrument_dir)[1]
+		else:
+			self._instrument:str = DEFAULT_AUDIO_EXTENSION_dir
+
+	@property
+	def directory(self):
+		return self._directory
+	
+	@property
+	def instrument(self):
+		return self._instrument
+	
+	#TODO: add setter method for changing the path when the full_name is changed
+	@property
+	def full_name(self):
+		return self._full_name
+	
+	@property
+	def name(self):
+		return self._name
+	
+	@property
+	def octave(self):
+		return self._octave
+	
+	@property
+	def fileName(self):
+		return self._fileName
+	
+	@property
+	def extension(self):
+		return self._extension
+
 	def __eq__(self, other_note) -> bool:
 		return self.path == other_note.path
 	
 	def __str__(self) -> str:
 		return f"Note object '{self.fileName}.{self.extension}' at {self.directory}."
-	
-	def remove_silence(self) -> None: #TODO: edit the file to remove the sound, not just in runtime
-		trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
-		#trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
-		#strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
-		#stripped = strip_silence(self.sound)
-		self.sound = trim_leading_silence(self.sound)
-	
-	def set_path(self, new_path) -> None:
-		self.path = new_path
-		self.directory, fileNameExt = os.path.split(new_path) #directory won't have a trailing '/'
-		self.fileName, ext = os.path.splitext(fileNameExt)
-		self.extension =  ext.split('.')[1]
-
-		instrument_dir, DEFAULT_AUDIO_EXTENSION_dir = os.path.split(self.directory)
-		if DEFAULT_AUDIO_EXTENSION_dir == DEFAULT_AUDIO_EXTENSION:
-			self.instrument:str = os.path.split(instrument_dir)[1]
-		else:
-			self.instrument:str = DEFAULT_AUDIO_EXTENSION_dir
 	
 	def get_full_name(self) -> str: #gets the name of the note (e.g. Gb3, D4, etc)
 		name = self.fileName.split('.')[-1]
@@ -173,17 +225,14 @@ class Note:
 
 	def play(self) -> None:
 		if self.extension !='mp3': #TEMPORARY
-			raise Exception(f"To be implemented; notes with extensions besides mp3 can't be played. Path of note: {self.path}")
+			raise NotImplementedError(f"Notes with extensions besides mp3 can't be played. Path of note: {self.path}")
 	
-		if not self.create_sound:
-			self.sound = AudioSegment.from_file(self.path, self.extension)
-		self.remove_silence()
-		t = bpmToSeconds(self.bpm)*4*self.note_value
+		if not self.will_create_sound:
+			self.create_sound()
 		#current_playback = self._play_with_pyaudio(self.sound, t)
 		current_playback = playback._play_with_simpleaudio(self.sound)
-		
-		time.sleep(bpmToSeconds(self.bpm)*4*self.note_value)
-		
+		t = bpmToSeconds(self.bpm)*4*self.note_value
+		time.sleep(t)
 		current_playback.stop()
 		del current_playback  # Suggest deletion of the playback object
 		gc.collect()  # Explicitly suggest garbage collection
@@ -198,7 +247,7 @@ class Note:
 	
 	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_file = False) -> None: #note: this directory should not be from the main directory of the project
 		new_path = os.path.join(ROOT_DIR, '..', directory, self.instrument, self.fileName + '.' + new_extension)
-		self.sound.export(new_path, format = new_extension)
+		self.sound.export(new_path, format = new_extension) #! Maybe this needs to be self._sound instead. Needs testing
 		#This is equivalent to "ffmpeg -i input/notas/aiff/do.aiff input/notas/aiff/do.mp3"
 		if delete_old_file:
 			self.delete_file()
@@ -207,7 +256,8 @@ class Note:
 	def delete_file(self) -> None:
 		os.remove(self.path)
 	
-	def add_semitone(self, semitones:int): #TODO: create subtraction and addition methods (__add__, __sub__)
+	def add_semitone(self, semitones:int): #TODO: create subtraction and addition methods (__add__, __sub__) 
+		#TODO: make this method change the note's path instead of creating a new note
 		#makes a note with the same attributes but with X semitones of difference
 		if semitones < 0:			
 			name = self.name + "b" * (semitones * -1)
@@ -219,7 +269,7 @@ class Note:
 		assert not note_str_utils.is_note_greater(LOWEST_NOTE, full_name), f"Tried to decrease the semitone of {self.full_name}, but {LOWEST_NOTE} is the first possible note on the program."
 		print("add_semitone(): Previous note:" + self.full_name + "; Altered note:" + full_name)
 		
-		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.create_sound, self.instrument, self.note_value)
+		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.will_create_sound, self.instrument, self.note_value)
 	
 	@staticmethod
 	def get_greater_note(note1, note2):
@@ -228,11 +278,11 @@ class Note:
 		return note2
 
 	@staticmethod
-	def get_note_from_note_name(note_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE):
+	def get_note_from_note_name(note_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE):
 		app_path = get_app_path()
 		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}")
 
-		return Note(file_name, bpm, create_sound, note_value=note_value)
+		return Note(file_name, bpm, will_create_sound, note_value=note_value)
 			
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
@@ -311,10 +361,10 @@ class Note_group:
 			note.delete_file()
 	
 	@staticmethod
-	def get_note_group_from_note_names(note_names:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> 'Note_group':
+	def get_note_group_from_note_names(note_names:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> 'Note_group':
 		notes = []
 		for note_name in note_names:
-			notes.append(Note.get_note_from_note_name(note_name, intensity, bpm, create_sound, instrument, note_value))
+			notes.append(Note.get_note_from_note_name(note_name, intensity, bpm, will_create_sound, instrument, note_value))
 		return Note_group(notes)
 
 ''' 
@@ -329,4 +379,6 @@ class Note_group:
 	'''
 
 if __name__ == '__main__':
-	pass
+	n = Note("input/piano/Piano.mf.C4.mp3")
+	for i in range(5):
+		n.play()
