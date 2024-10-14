@@ -173,11 +173,11 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 				self.test_started_signal.emit()
 				
 				i = 1
-				note_group_length = len(testCase.note_group.notes)
-				for note in testCase.note_group.notes:
+				note_group_length = len(testCase.note_group)
+				for note in testCase.note_group:
 					self.print_note_signal.emit(note.name)
 					if i < note_group_length - 1:
-						self.print_hint_signal.emit(testCase.note_group.notes[i].name)
+						self.print_hint_signal.emit(testCase.note_group[i].name)
 					for _ in range(math.floor(note.note_value * 4)):
 						if self.stop:
 							print("Thread was interrupted. Stopping now.\n")

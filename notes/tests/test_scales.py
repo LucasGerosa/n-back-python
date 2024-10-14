@@ -1,14 +1,14 @@
 import pytest
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from scales import Diatonic_Modes, Scale, rotate_iterable
+from scales import Diatonic_Modes, Scale, rotate_sequence
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
 
 
 def test_Diatonic_Modes():
 	major_scale_intervals = Diatonic_Modes.BASE_INTERVALS
 	assert Scale.generate_scale(major_scale_intervals, 'C') == ('C', 'D', 'E', 'F', 'G', 'A', 'B')
-	assert Scale.generate_scale(rotate_iterable(major_scale_intervals, 3), 'C') == ('C', 'D', 'E', 'Gb', 'G', 'A', 'B')
+	assert Scale.generate_scale(rotate_sequence(major_scale_intervals, 3), 'C') == ('C', 'D', 'E', 'Gb', 'G', 'A', 'B')
 	assert Scale.generate_scale((2, 2, 1, 2, 2, 2, 1), 'D') == ('D', 'E', 'Gb', 'G', 'A', 'B', 'Db')
 	assert Scale.generate_scale((2, 2, 1, 2, 2, 2, 1), 'B') == ('B', 'Db', 'Eb', 'E', 'Gb', 'Ab', 'Bb')
 

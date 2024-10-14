@@ -177,7 +177,9 @@ class Note:
 		return self._extension
 
 	def __eq__(self, other_note) -> bool:
-		return self.path == other_note.path
+		if isinstance(other_note, Note):
+			return self.path == other_note.path
+		raise TypeError(f"Can't compare Note object with {type(other_note)} object.")
 	
 	def __str__(self) -> str:
 		return f"Note object '{self.fileName}.{self.extension}' at {self.directory}."
@@ -256,9 +258,10 @@ class Note:
 	def delete_file(self) -> None:
 		os.remove(self.path)
 	
-	def __add__(self, semitones:int):
+	def __add__(self, semitones):
 		#TODO: make this method change the note's path instead of creating a new note
 		#makes a note with the same attributes but with X semitones of difference
+		assert isinstance(semitones, int), f"Can't add {type(semitones)} to a Note object."
 		if semitones < 0:			
 			name = self.name + "b" * (-semitones)
 		elif semitones > 0: 
@@ -267,7 +270,6 @@ class Note:
 		
 		assert not note_str_utils.is_note_greater(full_name, HIGHEST_NOTE), f"Tried to increase the semitone of {self.full_name}, getting {full_name}, but {HIGHEST_NOTE} is the last possible note on the program."
 		assert not note_str_utils.is_note_greater(LOWEST_NOTE, full_name), f"Tried to decrease the semitone of {self.full_name}, but {LOWEST_NOTE} is the first possible note on the program."
-		print("add_semitone(): Previous note:" + self.full_name + "; Altered note:" + full_name)
 		
 		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.will_create_sound, self.instrument, self.note_value)
 	
@@ -311,6 +313,12 @@ class Note_group:
 	def __getitem__(self, index):
 		return self.notes[index]
 
+	def __setitem__(self, index, value):
+		self.notes[index] = value
+	
+	def __delitem__(self, index):
+		del self.data[index]
+
 	def __contains__(self, note):
 		return note in self.notes
 	
@@ -321,7 +329,26 @@ class Note_group:
 		return 'Note_group containing ' + str(self.notes)
 
 	def __add__(self, other_note_group):
-		return Note_group(self.notes + other_note_group.notes)
+		#assert isinstance(other_note_group, Note_group), f"Can't add Note_group object with {type(other_note_group)} object."
+		if isinstance(other_note_group, Note_group):
+			return Note_group(self.notes + other_note_group.notes)
+		elif isinstance(other_note_group, list) or isinstance(other_note_group, tuple):
+			return Note_group(self.notes + other_note_group)
+		else:
+			raise TypeError(f"Can't add Note_group object with {type(other_note_group)} object.")
+	
+	def __radd__(self, other_note_group):
+		return self.__add__(other_note_group)
+	
+	def __eq__(self, value):
+		if isinstance(value, Note_group):
+			return self.notes == value.notes
+		elif isinstance(value, list) or isinstance(value, tuple):
+			return self.notes == value
+		return False
+	
+	def __ne__(self, value):
+		return not self.__eq__(value)
 	
 	def append(self, note):
 		self.notes.append(note)

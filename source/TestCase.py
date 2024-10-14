@@ -68,23 +68,21 @@ class TestCase:
 		return self._scale
 	
 	@property
-	def numberOfNotes(self) -> int:
+	def numberOfNotes(self) -> int: #TODO: create a setter function, that changes the _note_group when the number of notes, is changed?
 		return self._numberOfNotes
 
-	def _set_random_notes_group(self, bpm:float, instrument:str, config_note_group:notes.Note_group) -> notes.Note_group:
+	def _set_random_notes_group(self, bpm:float, instrument:str, config_note_group:notes.Note_group):
 		if config_note_group == None:
 			note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
 		else:
 			note_group = config_note_group
-		if note_group.notes == []:
+		if note_group == []:
 			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
 
-		print("Note group:")
 		filtered_notes = []
 		for note in note_group:
 			if note.name in self.scale.notes_str_tuple:
 				filtered_notes.append(note)
-				print(note.full_name)
 
 		notes_array = np.array(filtered_notes)
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
@@ -95,7 +93,10 @@ class TestCase:
 	@property
 	def note_group(self) -> notes.Note_group:
 		return self._note_group
-
+	
+	def print_notes(self):
+		for note in self.note_group:
+			print(note.name)
 
 class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
@@ -105,18 +106,9 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		assert semitones != 0, f"semitones should be negative or positive. Got 0 instead."
 		self._semitones = semitones
 		super().__init__(config_note_group, id_num, numberOfNotes, bpm, instrument, scale)
-		if isLastNoteDifferent == True:
-			self._change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes)
-		elif isLastNoteDifferent != False:
-			raise ValueError(f"isLastNoteDifferent should be a boolean. Got {isLastNoteDifferent} instead.")
+		self._change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes, isLastNoteDifferent)
 		self._set_correct_answer()
-		if isLastNoteDifferent == True and self.correct_answer != AnswerType.DIFFERENT:
-			raise ValueError(f"If isLastNoteDifferent is True, the correct answer should be {AnswerType.DIFFERENT}. Got {self.correct_answer} instead.")
-		if isLastNoteDifferent == False and self.correct_answer != AnswerType.SAME:
-			raise ValueError(f"If isLastNoteDifferent is False, the correct answer should be {AnswerType.SAME}. Got {self.correct_answer} instead.")
-		
-		print()
-		print(f"Correct answer: {self.correct_answer}")
+		assert (isLastNoteDifferent == True and self.correct_answer == AnswerType.DIFFERENT) or (isLastNoteDifferent == False and self.correct_answer == AnswerType.SAME), f"If isLastNoteDifferent is False, the correct answer should be {AnswerType.SAME} and vice versa. Got isLastNoteDifferent = {isLastNoteDifferent} and {self.correct_answer} instead. Last note = {self.note_group[-1].full_name}, nBack note = {self.note_group[-1 - nBack].full_name}"
 
 	@property
 	def nBack(self) -> int:
@@ -128,18 +120,36 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 
 	def __str__(self):
 		return f"id: {self.id_num}, nBack is {self.nBack}, numberOfNotes is {self.numberOfNotes}"
+	
+	def print_correct_answer(self):
+		print()
+		print(f"Correct answer: {self.correct_answer}")
 
-	def _change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note]) -> notes.Note: 
+	def print_result(self):
+		print(f"Participant's answer: {self.answer}")
+		print(f"Result: {self.result}\n\n")
+
+	def _change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note], isLastNoteDifferent:bool):
 		semitone_note_list = []
-		for note in config_notes_list:
-			if note.name in self.scale.find_able_up_down_semitones(self.semitones):
-				semitone_note_list.append(note)
+		if isLastNoteDifferent:
+			for note in config_notes_list:
+				if note.name in self.scale.find_able_up_down_semitones(self.semitones):
+					semitone_note_list.append(note)
+		else:
+			for note in config_notes_list:
+				if note.name in self.scale.find_able_up_down_semitones(self.semitones) or note.name in self.scale.find_able_up_down_semitones(-self.semitones):
+					semitone_note_list.append(note)
+		
 		assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
 		different_from_last_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
+		
 		note_list[-nBack - 1] = different_from_last_note
-		note_list[-1] = different_from_last_note + self.semitones
+		if isLastNoteDifferent:
+			note_list[-1] = different_from_last_note + self.semitones
+			return
+		note_list[-1] = note_list[-nBack - 1]
 	
-	def _set_correct_answer(self) -> str:
+	def _set_correct_answer(self):
 		lastNote: int = self.note_group[-1]
 		nBackNote: int = self.note_group[-1 - self.nBack]
 		if lastNote == nBackNote:
@@ -148,40 +158,37 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 			self._correct_answer = AnswerType.DIFFERENT
 	
 	@property
-	def correct_answer(self) -> str:
+	def correct_answer(self) -> AnswerType:
 		return self._correct_answer
 	
 	@property
-	def result(self) -> str:
+	def result(self) -> ResultType:
 		return self._result
 	
 	@property
-	def answer(self) -> str:
+	def answer(self) -> AnswerType:
 		return self._answer
 		
-	def validateAnswer(self, answer) -> None:
+	def validateAnswer(self, answer):
 		# Check if n-back note equals to last note
 		if self.correct_answer == AnswerType.SAME:
 			if answer == AnswerType.SAME:
-				self._result= ResultType.CORRECT
+				self._result = ResultType.CORRECT
 			elif answer == AnswerType.DIFFERENT:
-				self._result= ResultType.INCORRECT
+				self._result = ResultType.INCORRECT
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		elif self.correct_answer == AnswerType.DIFFERENT:
 			if answer == AnswerType.SAME:
-				self._result= ResultType.INCORRECT
+				self._result = ResultType.INCORRECT
 			elif answer == AnswerType.DIFFERENT:
-				self._result= ResultType.CORRECT
+				self._result = ResultType.CORRECT
 			else:
 				raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		else:
 			raise Exception("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self._answer = answer
-		
-		print(f"Participant's answer: {answer}")
-		print(f"Result: {self.result}\n\n")
 		return self.result
 	
 	@staticmethod
@@ -207,7 +214,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 					else:
 						raise ValueError()
 				
-					writer.writerow([t.id, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result])
+					writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result])
 				writer.writerow(['', '', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
 
 		try:
@@ -238,7 +245,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 	# 		testCase.execute()
 	# 	return testCaseList
 
-	@staticmethod
+	@staticmethod #FIXME
 	def debug() -> None:
 		NUMBER_OF_TESTCASES = 1
 		NBACK = 4
@@ -255,11 +262,6 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 class VolumeTestCase(TestCase):
 	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None) -> None:
 		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
-		print("Note group:")
-		for note in self.note_group:
-			print(note.name)
-		print()
-
 
 class TonalDiscriminationTaskTestCase:
 	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
@@ -270,11 +272,11 @@ class TonalDiscriminationTaskTestCase:
 		self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
 	
 	@property
-	def result(self) -> str:
+	def result(self) -> ResultType:
 		return self._result
 	
 	@property
-	def answer(self) -> str:
+	def answer(self) -> AnswerType:
 		return self._answer
 	
 	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
@@ -343,7 +345,7 @@ class TonalDiscriminationTaskTestCase:
 					testCase_quantity_right_answers += 1
 				elif t.result == ResultType.INCORRECT:
 					testCase_quantity_wrong_answers += 1
-				writer.writerow([t.id, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
+				writer.writerow([t.id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
 		
 		def create_csv_file(f, testCaseList):
 			with f:
