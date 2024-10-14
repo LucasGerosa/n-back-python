@@ -24,7 +24,7 @@ class Scale:
 		return f'{self.root_note} {self.name} scale containing ' + str(self.notes_str_tuple)
 	
 	def find_able_up_down_semitones(self, semitones:int):
-		assert semitones != 0, "semitones start at 1. Calling this function without semitones makes no sense."
+		assert semitones != 0, "Semitones start at 1. Calling this function without semitones makes no sense."
 		
 		if semitones > 0: #this ensures the semitones count starts at 1, making usage of this function more intuitive.
 			semitones -= 1

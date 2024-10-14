@@ -130,24 +130,25 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		print(f"Result: {self.result}\n\n")
 
 	def _change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note], isLastNoteDifferent:bool):
-		semitone_note_list = []
+		self._semitone_note_list = []
 		if isLastNoteDifferent:
 			for note in config_notes_list:
 				if note.name in self.scale.find_able_up_down_semitones(self.semitones):
-					semitone_note_list.append(note)
+					self._semitone_note_list.append(note)
 		else:
 			for note in config_notes_list:
 				if note.name in self.scale.find_able_up_down_semitones(self.semitones) or note.name in self.scale.find_able_up_down_semitones(-self.semitones):
-					semitone_note_list.append(note)
+					self._semitone_note_list.append(note)
 		
-		assert semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
-		different_from_last_note = random.choice(semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
+		
+		assert self._semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
+		different_from_last_note = random.choice(self._semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
 		
 		note_list[-nBack - 1] = different_from_last_note
 		if isLastNoteDifferent:
 			note_list[-1] = different_from_last_note + self.semitones
-			return
-		note_list[-1] = note_list[-nBack - 1]
+		else:
+			note_list[-1] = note_list[-nBack - 1]
 	
 	def _set_correct_answer(self):
 		lastNote: int = self.note_group[-1]

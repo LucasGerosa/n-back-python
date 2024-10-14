@@ -93,9 +93,6 @@ class Note:
 
 	def __init__(self, path:str, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
 		self.path = path #TODO:don't allow the creation of a note with an invalid path
-		self._full_name:str = self.get_full_name()
-		self._name:str = self.full_name[:-1]
-		self._octave:str = self.full_name[-1]
 		if self.extension == 'aif':
 			self.change_extension('aiff')
 		self._will_create_sound = None
@@ -140,7 +137,8 @@ class Note:
 		self._directory, fileNameExt = os.path.split(new_path) #directory won't have a trailing '/'
 		self._fileName, ext = os.path.splitext(fileNameExt)
 		self._extension =  ext.split('.')[1]
-
+		self._full_name = self.fileName.split('.')[-1]
+		self._name, self._octave = note_str_utils.separate_note_name_octave(self.full_name)
 		instrument_dir, DEFAULT_AUDIO_EXTENSION_dir = os.path.split(self.directory)
 		if DEFAULT_AUDIO_EXTENSION_dir == DEFAULT_AUDIO_EXTENSION:
 			self._instrument:str = os.path.split(instrument_dir)[1]
@@ -183,10 +181,6 @@ class Note:
 	
 	def __str__(self) -> str:
 		return f"Note object '{self.fileName}.{self.extension}' at {self.directory}."
-	
-	def get_full_name(self) -> str: #gets the name of the note (e.g. Gb3, D4, etc)
-		name = self.fileName.split('.')[-1]
-		return name
 	
 	def get_intensity(self) -> str: #gets the intensity of the note (e.g. pp, mf, f, etc)
 		intensity = self.fileName.split('.')[1]

@@ -39,25 +39,23 @@ def test_NbackTestCase():
 			assert last_note == nback_note
 		else:
 			assert last_note != nback_note
+	
+	def test_NbackTestCase(t:NbackTestCase, available_semitones_notes:list):
+		check_NbackTestCase(t, TestCase.AnswerType.SAME)
+		check_NbackTestCase(t, TestCase.AnswerType.DIFFERENT)
+		assert [note.full_name for note in t._semitone_note_list] == available_semitones_notes
 		
 	nback_test_case1 = NbackTestCase(sample_note_group, id_num=0, nBack=1, numberOfNotes=2, isLastNoteDifferent=True, semitones=1)
 	assert len(nback_test_case1.note_group) == 2
-	check_NbackTestCase(nback_test_case1, TestCase.AnswerType.SAME)
-	check_NbackTestCase(nback_test_case1, TestCase.AnswerType.DIFFERENT)
-	assert nback_test_case1.note_group[-1].full_name in ('F4', 'C5')
-
+	test_NbackTestCase(nback_test_case1, ['E4', 'B4'])
+	
 	nback_test_case2 = NbackTestCase(sample_note_group, id_num=0, nBack=1, numberOfNotes=2, isLastNoteDifferent=False, semitones=1)
-	check_NbackTestCase(nback_test_case2, TestCase.AnswerType.DIFFERENT)
-	check_NbackTestCase(nback_test_case2, TestCase.AnswerType.SAME)
-	assert nback_test_case1.note_group[-1].full_name in ('E4', 'F4', 'B4', 'C5')
+	test_NbackTestCase(nback_test_case2, ['E4', 'F4', 'B4', 'C5'])
 
 	nback_test_case3 = NbackTestCase(sample_note_group, id_num=0, nBack=1, numberOfNotes=2, isLastNoteDifferent=False, semitones=-1)
-	check_NbackTestCase(nback_test_case3, TestCase.AnswerType.DIFFERENT)
-	check_NbackTestCase(nback_test_case3, TestCase.AnswerType.SAME)
-	assert nback_test_case3.note_group[-1].full_name in ('E4', 'F4', 'B4', 'C5')
+	test_NbackTestCase(nback_test_case3, ['E4', 'F4', 'B4', 'C5'])
+	
 	nback_test_case4 = NbackTestCase(sample_note_group, id_num=0, nBack=1, numberOfNotes=2, isLastNoteDifferent=True, semitones=-1)
-	check_NbackTestCase(nback_test_case4, TestCase.AnswerType.DIFFERENT)
-	check_NbackTestCase(nback_test_case4, TestCase.AnswerType.SAME)
-	assert nback_test_case4.note_group[-1].full_name in ('E4', 'B4')
+	test_NbackTestCase(nback_test_case4, ['F4', 'C5'])
 
 
