@@ -1,6 +1,7 @@
 import os
 import typing
 import random
+import time
 import sys
 from pydub import AudioSegment, playback
 from pydub.silence import detect_leading_silence
@@ -95,7 +96,7 @@ class Note:
 		self.path = path #TODO:don't allow the creation of a note with an invalid path
 		if self.extension == 'aif':
 			self.change_extension('aiff')
-		self._will_create_sound = None
+		self._will_create_sound = False
 		self.will_create_sound:bool = will_create_sound
 		self.bpm = bpm
 		self.note_value = note_value
@@ -109,10 +110,10 @@ class Note:
 	def will_create_sound(self, will_create_sound:bool) -> None:
 		assert type(will_create_sound) == bool, f"will_create_sound must be a boolean, not {type(will_create_sound)}"
 		if will_create_sound and not self.will_create_sound: #this will prevent sounds from being created if they are not going to be played, improving performance
-			self.create_sound()
+			self._create_sound()
 		self._will_create_sound = will_create_sound
 	
-	def create_sound(self) -> None:
+	def _create_sound(self) -> None:
 		
 		def remove_silence(sound) -> AudioSegment: #TODO: edit the file to remove the sound, not just in runtime
 			trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
@@ -122,10 +123,15 @@ class Note:
 			return trim_leading_silence(sound)
 		
 		self._sound = remove_silence(AudioSegment.from_file(self.path, self.extension))
-	
+
 	@property
 	def sound(self):
 		return self._sound
+
+	@sound.deleter
+	def sound(self) -> None:
+		self._will_create_sound = False
+		del self._sound
 	
 	@property
 	def path(self):
@@ -224,13 +230,14 @@ class Note:
 			raise NotImplementedError(f"Notes with extensions besides mp3 can't be played. Path of note: {self.path}")
 	
 		if not self.will_create_sound:
-			self.create_sound()
+			self._create_sound()
 		#current_playback = self._play_with_pyaudio(self.sound, t)
-		current_playback = playback._play_with_simpleaudio(self.sound)
 		t = bpmToSeconds(self.bpm)*4*self.note_value
+		current_playback = playback._play_with_simpleaudio(self.sound)
 		time.sleep(t)
 		current_playback.stop()
 		del current_playback  # Suggest deletion of the playback object
+		del self.sound  # Suggest deletion of the sound object
 		gc.collect()  # Explicitly suggest garbage collection
 		
 	def change_extension(self, new_extension:str) -> None:
@@ -349,6 +356,7 @@ class Note_group:
 
 	def play(self):
 		notes_played = 0
+		time_started = time.time()
 		for note in self.notes:
 			
 			if self.stop_flag:
@@ -356,11 +364,15 @@ class Note_group:
 				break
 
 			try:
-				note.play()
+				yield note.play()
 			except Exception as e:
-				print("\nNumber of notes played before this error: " + str(notes_played) + "\n")
+				time_ended = time.time()
+				print("\nNumber of notes played before this error: " + str(notes_played))
+				print("Time elapsed: " + str(time_ended - time_started) + " seconds.\n")
 				raise e
 			notes_played += 1
+		time_ended = time.time()
+		print("Total time elapsed: " + str(time_ended - time_started) + " seconds.")
 	
 	def change_extension(self, new_extension) -> None:
 		for note in self.notes:
@@ -403,6 +415,69 @@ class Note_group:
 	'''
 
 if __name__ == '__main__':
-	n = Note("input/piano/Piano.mf.C4.mp3")
-	for i in range(5):
-		n.play()
+	import time
+	
+	def load_notes(note_num, note_group, note_value=1/4, will_create_sound=True):
+		start_time = time.time()
+		for _ in range(note_num):
+			n = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value, will_create_sound=will_create_sound)
+			note_group.append(n)
+		end_time = time.time()
+		exe_time = end_time - start_time
+		print(f"Execution time: {exe_time} seconds. Approximately {exe_time/note_num} seconds per note.")
+
+	def test_generator(note_num):
+		player = note_group.play()
+		notes_played = 0
+		for _ in range(note_num):
+			next(player)
+			notes_played += 1
+		print("Number of notes played:", notes_played)
+	
+	def test0(): #fails after 60 notes.
+		note_num = 100
+		load_notes(note_num, note_group, note_value)
+		test_generator(note_num)
+
+	def test1(): #fails; creating 2 different generators with half the notes still does not work.
+		note_num = 100
+		load_notes(note_num, note_group, note_value)
+		test_generator(note_num//2)
+		test_generator(note_num//2)
+	
+	def test2(): #fails; creating a notes and playing them 100 times doesn't work.
+		note_num = 100
+		notes_played = 0
+		for _ in range(note_num):
+			note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
+			try:
+				note.play()
+			except Exception as e:
+				print("Number of notes played before this error: " + str(notes_played))
+				raise e
+			notes_played += 1
+
+	def test3(): #fails; creating one note and playing it 100 times doesn't work.
+		note_num = 100
+		notes_played = 0
+		note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
+		for _ in range(note_num):
+			try:
+				note.play()
+			except Exception as e:
+				print("Number of notes played before this error: " + str(notes_played))
+				raise e
+			notes_played += 1
+	
+	note_value = 1/32
+	note_group = Note_group()
+	test3()
+	
+	#load_notes(note_group, 1/32)
+	
+	#test1(1/4) #49s; 60 notes
+	#test1(1/2) #97s; 60 notes
+	#test1(1/8) #25s; 60 notes
+	#test1(1/8, False) #31s; 60 notes; 6e-6s per note
+
+	

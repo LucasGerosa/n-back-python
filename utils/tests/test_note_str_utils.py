@@ -1,7 +1,7 @@
 import pytest
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes, get_greater_note
+from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes, get_greater_note, shift_note_by_semitones
 import re
 
 
@@ -54,3 +54,12 @@ def test_get_final_list_notes():
 	assert get_final_list_notes("Cbb2") == ['Bb1']
 	assert get_final_list_notes("C##276") == ['D276']
 	assert get_final_list_notes("C4F4G5") == ['C4', 'F4', 'G5']
+	assert get_final_list_notes("C4-C5-C6") == get_final_list_notes("C4-C5;C6")
+	assert get_final_list_notes("C4-C5-C6-C7") == get_final_list_notes("C4-C5;C6-C7")
+	assert get_final_list_notes("C5-C4") == get_final_list_notes("C4-C5")
+
+def test_shift_note_by_semitones():
+	assert shift_note_by_semitones('C4', 0) == 'C4'
+	assert shift_note_by_semitones('C4', 1) == 'Db4'
+	assert shift_note_by_semitones('C4', 2) == 'D4'
+	assert shift_note_by_semitones('C4', -1) == 'B3'

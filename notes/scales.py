@@ -3,14 +3,23 @@ from typing import Tuple, Iterable, Type
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
 from utils.IOUtils import rotate_sequence
+from pydub.audio_segment import classproperty
 
 
 class Modes:
-	pass
+	_modes:dict = {}
+	_BASE_INTERVALS:tuple[int, ...] = ()
+	
+	@classproperty
+	def modes(cls):
+		return cls._modes
 
+	@classproperty
+	def BASE_INTERVALS(cls):
+		return cls._BASE_INTERVALS
 class Diatonic_Modes(Modes):
-	modes = {0: 'Ionian', 1: 'Dorian', 2: 'Phrygian', 3: 'Lydian', 4: 'Mixolydian', 5: 'Aeolian', 6: 'Locrian'}
-	BASE_INTERVALS = (2, 2, 1, 2, 2, 2, 1)
+	_modes = {0: 'Ionian', 1: 'Dorian', 2: 'Phrygian', 3: 'Lydian', 4: 'Mixolydian', 5: 'Aeolian', 6: 'Locrian'}
+	_BASE_INTERVALS = (2, 2, 1, 2, 2, 2, 1)
 
 NATURAL_NOTES = ('C', 'D', 'E', 'F', 'G', 'A', 'B')
 class Scale:

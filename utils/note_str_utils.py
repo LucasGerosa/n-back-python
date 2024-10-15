@@ -51,45 +51,29 @@ def get_greater_note(note1_full_name:str, note2_full_name:str) -> str: #Ex. inpu
 		return note1_full_name
 	return note2_full_name
 
-def convert_sharps_to_flats(note_full_name:str) -> str: #Ex. input: "ab#bb3" output: "G3"
-	note_name, note_octave = separate_note_name_octave(note_full_name)
-	sharps_and_flats = note_name[1:]
-	note_char0 = note_full_name[0].upper()
-	note_char0_num = AVAILABLE_NOTES_TUPLE.index(note_char0)
-	num_sharps = 0
-	num_flats = 0
+def shift_note_by_semitones(formatted_note_full_name: str, semitones: int) -> str:
+	note_name, note_octave = separate_note_name_octave(formatted_note_full_name)
+	note_name_index = AVAILABLE_NOTES_TUPLE.index(note_name)
 	note_list_len = len(AVAILABLE_NOTES_TUPLE)
-	for sharp_or_flat in sharps_and_flats:
-		if sharp_or_flat == '#':
-			num_sharps += 1
-		elif sharp_or_flat == 'b':
-			num_flats += 1
-		else:
-			raise ValueError(f"Expected only flats (b) and sharps (#), but got {sharps_and_flats} instead. If you're the end user and is seeing this error, something is wrong with the program itself.")
+	new_note_index = (note_name_index + semitones) % note_list_len
+	new_note_octave = int(note_octave) + (note_name_index + semitones) // note_list_len
+
+	return AVAILABLE_NOTES_TUPLE[new_note_index] + str(new_note_octave)
+
+def get_list_notes_able_up_down_semitones(available_notes_str_list:list[str], semitones:int) -> list[str]:
+	for note_str in available_notes_str_list:
+		convert_sharps_to_flats(note)
+
+def convert_sharps_to_flats(note_full_name: str) -> str:
+	note_name, note_octave = separate_note_name_octave(note_full_name.capitalize())
+	sharps_and_flats = note_name[1:]  # Get everything after the first character
+	num_sharps = sharps_and_flats.count('#')
+	num_flats = sharps_and_flats.count('b')
 	increase_decrease = num_sharps - num_flats
-	new_note_char0_num = note_char0_num + increase_decrease
-	new_note_char0 = AVAILABLE_NOTES_TUPLE[new_note_char0_num % note_list_len]
-	
-	i = increase_decrease
-	if increase_decrease < 0:
-		if new_note_char0_num < 0:
-			new_note_octave = int(note_octave)
-			while i < 0: #this is in case the decrease is more than 1. For example, if the increase_decrease is -20, the note should be 2 octaves lower
-				new_note_octave -= 1
-				i += note_list_len
-			return new_note_char0 + str(new_note_octave)
-	
-	elif increase_decrease > 0:
-		if new_note_char0_num >= note_list_len:
-			new_note_octave = int(note_octave)
-			while i > 0:
-				new_note_octave += 1
-				i -= note_list_len
+	new_note = shift_note_by_semitones(note_name[0] + note_octave, increase_decrease)
 
-			return new_note_char0 + str(new_note_octave)
+	return new_note
 
-	return new_note_char0 + note_octave
-	
 def convert_flats_to_sharps(note_full_name:str) -> str: 
 	new_note_full_name = convert_sharps_to_flats(note_full_name)
 	note_name, note_octave = separate_note_name_octave(new_note_full_name)
@@ -108,8 +92,12 @@ def convert_flats_to_sharps(note_full_name:str) -> str:
 			return new_note_full_name
 
 def notes_str_set_between_notes_str(formatted_note_str1:str, formatted_note_str2:str) -> set[str]:
-	note_name1, octave1 = separate_note_name_octave(formatted_note_str1)
-	note_name2, octave2 = separate_note_name_octave(formatted_note_str2)
+	if is_note_greater(formatted_note_str1, formatted_note_str2):
+		note_name1, octave1 = separate_note_name_octave(formatted_note_str2)
+		note_name2, octave2 = separate_note_name_octave(formatted_note_str1)
+	else:
+		note_name1, octave1 = separate_note_name_octave(formatted_note_str1)
+		note_name2, octave2 = separate_note_name_octave(formatted_note_str2)
 	octave1_num = int(octave1)
 	octave2_num = int(octave2)
 
@@ -137,7 +125,9 @@ def notes_str_set_between_notes_str(formatted_note_str1:str, formatted_note_str2
 
 	return note_set
 
-def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=('-', '–')): #-> list[str]: #Ex. input: "A1;C2" output: ["A1", "C2"]
+def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=('-', '–')) -> list[str]: 
+	# Uses regex to get the notes from a notes_string containing single notes and a range of notes separated by the range_separators. Anything else in the notes_string is ignored.
+	# Ex. input: "A1;C2D3-E3 output: ['A1', 'C2', 'D3', 'Eb3', 'E3']
 	NOTE_PATTERN = "[A-Ga-g][b#]*[0-9]+"
 	notes_string = notes_string.replace(' ', '')
 	separator_pattern = f"[{''.join(map(re.escape, range_separators))}]"
@@ -154,21 +144,7 @@ def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=('-'
 
 	return sort_notes(single_notes)
 
-def get_list_notes_able_up_down_semitones(available_notes_str_list:list[str], semitones:int) -> list[str]:
-		assert semitones != 0, "Semitones start at 1. Calling this function without semitones makes no sense."
-		
-		if semitones > 0: #this ensures the semitones count starts at 1, making usage of this function more intuitive.
-			semitones -= 1
-		
-		possible_notes = []
-		note_i = 0
-		for note in available_notes_str_list:
-			#if note_i + semitones < len(available_notes_str_list) and available_notes_str_list[note_i + semitones] == 1:
-			if self.intervals[note_i + semitones] == 1:
-				possible_notes.append(note)
-			note_i += 1
-		
-		return possible_notes
 
-if __name__ == "__main__":
-	print(get_final_list_notes("C2–B2A3–B3-C4-D4G5A5"))
+if __name__ == '__main__':
+	print(get_final_list_notes('A1;C2D3-E3'))
+	 
