@@ -5,6 +5,9 @@ from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
 from utils.IOUtils import rotate_sequence
 from pydub.audio_segment import classproperty
 
+'''
+Contains the abstraction necessary for representing any type of musical scale derived from the chromatic scale, or the 12 keys from western music.
+'''
 
 class Modes:
 	_modes:dict = {}
@@ -17,12 +20,16 @@ class Modes:
 	@classproperty
 	def BASE_INTERVALS(cls):
 		return cls._BASE_INTERVALS
+
 class Diatonic_Modes(Modes):
 	_modes = {0: 'Ionian', 1: 'Dorian', 2: 'Phrygian', 3: 'Lydian', 4: 'Mixolydian', 5: 'Aeolian', 6: 'Locrian'}
 	_BASE_INTERVALS = (2, 2, 1, 2, 2, 2, 1)
 
 NATURAL_NOTES = ('C', 'D', 'E', 'F', 'G', 'A', 'B')
 class Scale:
+	'''
+	Abstraction for any musical scale within the 12 keys of western music. Any possible scale can be represented by giving the intervals of your chosen scale.
+	'''
 	def __init__(self, notes_str_tuple:Tuple[str], name:str, intervals:Tuple[int], mode=0):
 		self.mode = mode
 		self.intervals = intervals

@@ -3,80 +3,96 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils.IOUtils import getNotes
-from notes.notes import DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, os_name
+from utils.terminal_utils import *
+from notes.notes import DEFAULT_NOTE_EXTENSION, os_name
+from utils import notes_config
+'''Run this file once and follow the prompts for downloading and converting the audio files used by the program.'''
 
-def convertAudioFiles(instrument='piano', convert_from = DEFAULT_AUDIO_EXTENSION, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
-    note_group = getNotes(instrument, extension=convert_from)
-    note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files)
 
-def convertAllFiles(delete_old_files):
-    convertAudioFiles('piano', delete_old_files=delete_old_files)
-    convertAudioFiles('guitar', 'aif', delete_old_files=delete_old_files)
-
-def download_files(flag, only_download_default_intensity = True):
-    print('Downloading notes from the web. This might take a while. Press ctrl+c to cancel.')
-    try:
-        if flag == 'all':
-            get_aiffs_from_web.download_all(only_download_default_intensity)
-            return
-        
-        if flag == 'guitar':
-            get_aiffs_from_web.extract_url_from_instrument(flag, 'aif', only_download_default_intensity)
-            return
-        
-        get_aiffs_from_web.extract_url_from_instrument(flag, only_download_default_intensity = only_download_default_intensity)
-    
-    except KeyboardInterrupt:
-        print(user_input_messages.KeyboardInterrupt_message + 'download')
+def download_files(instrument_name:str, note_intensity:str, will_download_duplicates = False):
+	print('Downloading notes from the web. This might take a while. Press ctrl+c to cancel.')
+	try:
+		
+		if instrument_name == user_input_messages.ALL:
+			get_aiffs_from_web.download_all(note_intensity=note_intensity, will_download_duplicates=will_download_duplicates)
+			return
+		
+		instrument_name = instrument_name.lower()
+		
+		for instrument in get_aiffs_from_web.instruments:
+			if instrument_name == instrument.name:
+				instrument.extract_url_file(note_intensity=note_intensity, will_download_duplicates = will_download_duplicates)
+				return
+		
+		raise ValueError(f'Instrument {instrument_name} not found.')
+	
+	except KeyboardInterrupt:
+		print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + 'download')
 
 def main():
-    print("Note: it's not recommended to stop the program before it's done downloading and converting all files. If you do so, you might need to do it all over again.\n")
-    while True:
-        user_input = input(f"Download files from the web? \n\nall -> download all files\n(instrument_name) -> Only download files from the instrument. E.g. 'piano' or 'guitar'\n{user_input_messages.no} -> don't download files\n")
-        user_input2 = input(f"Download only files from the intensity chosen in the settings (default: {user_input_messages.yes})? {user_input_messages.yes_or_no}")
-        if user_input == 'all':
-            download_files('all')
-            break
-        
-        elif user_input == user_input_messages.no:
-            break
-        
-        else:
-            download_files(user_input)
+	print("Note: it's not recommended to stop the program before it's done downloading and converting all files. If you do so, you might need to do it all over again.\n")
+	while True:
+		user_input = input(f"Download files from the web?\n\n{user_input_messages.ALL} -> download all files\n(instrument_name) -> Only download files from the instrument. E.g. 'piano' or 'guitar'\n{user_input_messages.NO} -> don't download files\n\n")
 
-    try:
-        while True:
-            user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.yes_or_no}\nYou can also press ctrl+c to skip conversion.\n')
+		if user_input == user_input_messages.NO:
+			break
+		
+		scroll_terminal()
+		note_intensity = input(f"Download files of what intensity?\n\n{user_input_messages.ALL} -> download all files\n'pp' or 'mf' or 'ff' -> Only download files of this intensity\n{user_input_messages.SETTING} -> Only download files with the extension in the settings\n{user_input_messages.NO} -> don't download any files\n\n")
+		if note_intensity == user_input_messages.NO:
+			break
+		
+		if note_intensity == user_input_messages.SETTING:
+			note_intensity = notes_config.get_setting(notes_config.NOTE_INTENSITY_SETTING)
+		
+		if note_intensity != user_input_messages.ALL and note_intensity not in VALID_INTENSITIES:
+			print(f'Invalid intensity: "{note_intensity}".')
+			continue
+		
+		scroll_terminal()
+		user_input3 = input(f"Only download files that don't already exist as {DEFAULT_NOTE_EXTENSION} files (default: {user_input_messages.YES})? {user_input_messages.YES_or_NO}\n\n")
+		will_download_duplicates = user_input3 == user_input_messages.NO
+		
+		if user_input == user_input_messages.ALL:
+			download_files(user_input_messages.ALL, note_intensity=note_intensity, will_download_duplicates=will_download_duplicates)
+			break
+		
+		download_files(user_input, note_intensity=note_intensity, will_download_duplicates=will_download_duplicates)
+		break
+	
+	try:
+		while True:
+			user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.YES_or_NO}\nYou can also press ctrl+c to skip conversion.\n')
 
-            if user_input == user_input_messages.yes:
-                delete_old_files = True
-                break
-            elif user_input == user_input_messages.no:
-                delete_old_files = False
-                break
-            else:
-                user_input_messages.print_invalid_input()
-        print("Converting audio files. This might take a while; don't shut down the program. Press ctrl+c to cancel.")
+			if user_input == user_input_messages.YES:
+				delete_old_files = True
+				break
+			if user_input == user_input_messages.NO:
+				delete_old_files = False
+				break
+			user_input_messages.print_invalid_input()
 
-        convertAllFiles(delete_old_files=delete_old_files)
-    except KeyboardInterrupt:
-        print(user_input_messages.KeyboardInterrupt_message + 'conversion')
-    else:
-        print('Completed converting audio files.')
-    
-    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
-    ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
-    ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+		print("Converting audio files. This might take a while; don't shut down the program. Press ctrl+c to cancel.")
+		get_aiffs_from_web.convertAllFiles(delete_old_files=delete_old_files)
 
-    import shutil
-    if ffmpeg_in_path or ffmpeg_in_root_dir or shutil.which('ffmpeg'):
-        print("ffmpeg installed and in the correct directory.")
-        return
-    else:
-        print('ffmpeg not found.')
+	except KeyboardInterrupt:
+		print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + 'conversion')
+		
+	else:
+		print('Completed converting audio files.')
+	
+	ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+	ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
+	ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
+	ffmpeg_in_path = os.path.normcase('ffmpeg/bin') in os.path.normcase(os.environ['PATH'])
+
+	import shutil
+	if ffmpeg_in_path or ffmpeg_in_root_dir or shutil.which('ffmpeg'):
+		print("ffmpeg installed and in the correct directory.")
+		return
+	else:
+		print('ffmpeg not found.')
 
 
 if __name__ == '__main__':
-    main()
+	main()

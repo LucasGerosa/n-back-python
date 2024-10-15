@@ -24,13 +24,7 @@ This folder is where the program saves csv files, organized by folder with the p
 
 ### `note/`
 
-This folder contains the abstraction for music:
-
-- `notes.py`: Contains the main classes and functions for handling notes, including:
-  - `Note`: A class representing a musical note with methods for playing it and making other operations regarding it.
-  - `Note_group`: A container class for `Note` instances, providing more methods for managing collections of notes than lists, but not losing its functionality.
-
-- `scales.py`: Contains the abstraction necessary for representing any type of musical scale derived from the chromatic scale, or the 12 keys from western music.
+This folder contains the abstraction for music. Including representation of notes and scales.
 
 ### `tests/`
 
@@ -40,13 +34,13 @@ This folder contains unit tests for the project. It is currently very outdated a
 
 Contains files with some generally useful functions used by many files.
 
-- `notes_str_utils.py`: contains functions for handling strings that represent notes, converting, comparing height, etc.
-
-- `PyQt6__utils.py`: contains utilities for the GUI.
-
 ### `translations/`
 
 Add translations to text in the app.po file and compile it with `msgfmt app.po -o app.mo`
+
+### `setup/`
+
+Has files for setting up this program. Ideally, this would only need to be done when you install a new version of the program. This setup can be done manually instead.
 
 ### Important files
 
@@ -58,8 +52,9 @@ Add translations to text in the app.po file and compile it with `msgfmt app.po -
 To use this project, follow these steps:
 
 ### Source code
-1. Run `app.py`
-2. The output files will be generated in the corresponding subfolders under `output/notas/`.
+1. If you need to download the notes from the web automatically, run `setup/setup.py` and follow the prompts. Otherwise, download the folder with the notes of the chosen instruments and put it in the `input` folder. It should look like the following: `input/(instrument name)/(note files.mp3)`
+2. Run `app.py`
+3. The output files will be generated in the corresponding subfolders under `output/notas/`.
 
 ### Releases
 1. (On windows) download either the msi or zip file. Then, run the nback.exe.

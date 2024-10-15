@@ -10,6 +10,8 @@ BUTTON_SIZE = 80
 #OFFSET_X = 8
 #OFFSET_Y = 0
 
+'''Contains utilities for the GUI. Basically shortcuts for creating widgets and layouts for not having to repeat code in the source files.'''
+
 def is_float_or_fraction(value:str):
 	try:
 		return float(value)

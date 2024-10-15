@@ -1,84 +1,95 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__)))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import notes_config
-
+from dataclasses import dataclass
+from notes.notes import DEFAULT_AUDIO_EXTENSION, DEFAULT_NOTE_EXTENSION
+from utils.IOUtils import getNotes
 '''Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION'''
-
+'''Contains utilities for downloading audio files from the web.'''
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 input_folder = f'{ROOT_DIR}/../input'
 
+@dataclass(frozen=True)
+class Instrument:
+	name:str
+	from_extension:str
 
-def extract_url_file(input_url,folder_path=os.getcwd(), extension = '.pdf', only_download_default_intensity = True):
-    
-    import os
-    import requests
-    from urllib.parse import urljoin
-    from bs4 import BeautifulSoup
-    import pandas as pd
-    import datetime
+	def get_output_file_name(self, note_intensity:str, note_full_name:str) -> str:
+		return f'{self.name.capitalize()}.{note_intensity}.{note_full_name}.{self.from_extension}'
+	
+	def get_note_attributes_from_file_name(self, file_name:str) -> tuple:
+		instrument_name, intensity, note_name = file_name.split('.')
+		instrument_name = instrument_name.lower()
+		return instrument_name, intensity, note_name
 
-    #If there is no such folder, the script will create one automatically
-    folder_location = folder_path
-    if not os.path.exists(folder_location):os.makedirs(folder_location)
+	def extract_url_file(self, note_intensity:str, will_download_duplicates = False) -> None:
+		input_url = f'https://theremin.music.uiowa.edu/MIS{self.name}.html'
+		extension = '.' + self.from_extension
+		import os
+		import requests
+		from urllib.parse import urljoin
+		from bs4 import BeautifulSoup
+		import pandas as pd
+		output_dir = f'{input_folder}/{self.name}/aiff'
+		#If there is no such folder, the script will create one automatically
+		if not os.path.exists(output_dir): 
+			os.makedirs(output_dir)
 
-    response = requests.get(input_url)
-    soup= BeautifulSoup(response.text, "html.parser") 
+		response = requests.get(input_url)
+		soup = BeautifulSoup(response.text, "html.parser") 
 
-    link_text=list()
-    link_href=list()
-    link_file=list()
-    
-    counter=0
-    note_intensity = notes_config.get_setting(notes_config.NOTE_INTENSITY_SETTING)
+		link_text=list()
+		link_href=list()
+		link_file=list()
+		
+		counter=0
+		
+		if note_intensity != user_input_messages.ALL:
+			assert note_intensity in VALID_INTENSITIES, f'Invalid intensity: "{note_intensity}".'
 
-    for link in soup.select(f"a[href$='{extension}']"):
-        #Name the pdf files using the last portion of each link which are unique in this case
-        filename = os.path.join(folder_location,link['href'].split('/')[-1])
-        if only_download_default_intensity and not note_intensity in filename or 'mono' in filename:
-            continue
+		for link in soup.select(f"a[href$='{extension}']"):
+			file_name = link['href'].split('/')[-1]
+			file_path = os.path.join(output_dir, file_name)
+			if 'mono' in file_path:
+				continue
+			
+			if note_intensity != user_input_messages.ALL and note_intensity not in file_path:
+				continue
 
-        with open(filename, 'wb') as f:
-            f.write(requests.get(urljoin(input_url,link['href'])).content)
-            
-        link_text.append(str(link.text))
-        
-        link_href.append(link['href'])
+			if not will_download_duplicates and os.path.exists(file_path):
+				continue
+			
+			# with open(file_path, 'wb') as f:
+			# 	f.write(requests.get(urljoin(input_url,link['href'])).content)
+				
+			# link_text.append(str(link.text))
+			
+			# link_href.append(link['href'])
 
-        link_file.append(link['href'].split('/')[-1])
-        
-        counter+=1
+			# link_file.append(link['href'].split('/')[-1])
+			
+			# counter+=1
 
-        print(counter, "-Files Extracted from URL named ",link['href'].split('/')[-1])
-        
-    table_dict={"Text":link_text,"Url_Link":link_href,"File Name":link_file}
+			print(counter, "-Files Extracted from URL named ", file_name)
+		
+		print(f"All {self.name} {extension} files downloaded.")	
 
-    df=pd.DataFrame(table_dict)
-    
-    time_stamp = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-    
-    '''
-    print("Creating an Excel file with Name of FIle, Url Link and Link Text...")
+	def convertAudioFiles(self, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
+		instrument_name = self.name
+		convert_from = self.from_extension
+		note_group = getNotes(instrument_name, extension=convert_from)
+		note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files)
+	
+piano = Instrument('piano', DEFAULT_AUDIO_EXTENSION)
+guitar = Instrument('guitar', 'aif')
+instruments = [piano, guitar]
 
-    new_excel_file=os.path.join(folder_location,"Excel_Output_"+time_stamp+".xlsx")
+def download_all(note_intensity, will_download_duplicates = False) -> None:
+	for instrument in instruments: 
+		instrument.extract_url_file(note_intensity=note_intensity, will_download_duplicates=will_download_duplicates)
 
-    writer = pd.ExcelWriter(new_excel_file, engine='openpyxl')
-
-    df.to_excel(writer,sheet_name="Output")
-
-    writer.save()
-    '''
-    print(f"All {extension} files downloaded.")
-    
-def extract_url_from_instrument(instrument:str, extension:str='aiff', only_download_default_intensity = True):
-    base_url = 'https://theremin.music.uiowa.edu/MIS'
-    input_url = f'{base_url}{instrument}.html'
-    extension = '.' + extension
-    directory = f'{input_folder}/{instrument}/aiff'
-    extract_url_file(input_url, directory, extension, only_download_default_intensity)
-
-def download_all(only_download_default_intensity = True) -> None:
-    extract_url_from_instrument('piano', only_download_default_intensity = only_download_default_intensity)
-    extract_url_from_instrument('guitar', 'aif', only_download_default_intensity)
+def convertAllFiles(delete_old_files):
+	for instrument in instruments:
+		instrument.convertAudioFiles(delete_old_files=delete_old_files)
 

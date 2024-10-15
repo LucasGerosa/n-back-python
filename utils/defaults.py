@@ -8,6 +8,7 @@ TRANSLATIONS_FOLDER = 'translations'
 DEFAULT_SCALE_ROOT = 'C'
 LOWEST_NOTE = 'Bb0'
 HIGHEST_NOTE = 'C8'
+VALID_INTENSITIES = ('mf', 'ff', 'pp')
 
 #The TONAL_DISCRIMINATION_TASK_SEQUENCES samples are not actually used by the main program. They are used for created randomly ordered sequences that are actually used by the program. Running this file will shuffle the sequences and their corresponding mismatch sequences and print them to the console.
 TONAL_DISCRIMINATION_TASK_SEQUENCES4_SAMPLE = [
@@ -227,15 +228,6 @@ TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH = [
 	['B4', 'D5', 'C5', 'B4', 'A4', 'B4', 'A4', 'G4', 'A4', 'E4'],
 ]
 
-class user_input_messages:
-    yes = 'y'
-    no = 'n'
-    yes_or_no = yes + '/' + no
-    KeyboardInterrupt_message = '\nCtrl+c pressed. Canceling '
-    @staticmethod
-    def print_invalid_input():
-        print('That is not a valid input. Try again.')
-
 def shuffle_lists(list1, list2):
 
 	import random
@@ -275,6 +267,6 @@ if __name__ == '__main__':
 	sequences, sequences_m = shuffle_lists(TONAL_DISCRIMINATION_TASK_SEQUENCES8_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES8_MISMATCH_SAMPLE)
 	print(format_list(sequences), format_list(sequences_m), sep='\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n')
 	print("\n\n----------------------------------------\n\n")
-      
+	  
 	sequences, sequences_m = shuffle_lists(TONAL_DISCRIMINATION_TASK_SEQUENCES10_SAMPLE, TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH_SAMPLE)	
 	print(format_list(sequences), format_list(sequences_m), sep='\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n')

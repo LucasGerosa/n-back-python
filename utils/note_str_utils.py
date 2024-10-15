@@ -62,7 +62,7 @@ def shift_note_by_semitones(formatted_note_full_name: str, semitones: int) -> st
 
 def get_list_notes_able_up_down_semitones(available_notes_str_list:list[str], semitones:int) -> list[str]:
 	for note_str in available_notes_str_list:
-		convert_sharps_to_flats(note)
+		new_note_str = shift_note_by_semitones(note_str, semitones)
 
 def convert_sharps_to_flats(note_full_name: str) -> str:
 	note_name, note_octave = separate_note_name_octave(note_full_name.capitalize())

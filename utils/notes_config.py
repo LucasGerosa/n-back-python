@@ -13,6 +13,8 @@ LEGAL_LANGUAGES = ('pt_BR', 'en')
 LEGAL_NOTE_INTENSITIES = ('pp', 'mf', 'ff')
 ALL_NOTES = 'All'
 
+'''This module contains functions for handling name of notes, converting, comparing height, etc.'''
+
 def get_notes_setting(section = CUSTOM_SETTING) -> str:
     notes_str = get_setting(NOTES_SETTING, section = section)
     return notes_str
