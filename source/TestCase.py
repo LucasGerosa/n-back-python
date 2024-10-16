@@ -248,6 +248,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 
 	@staticmethod #FIXME
 	def debug() -> None:
+		raise NotImplementedError("This function is not implemented yet.")
 		NUMBER_OF_TESTCASES = 1
 		NBACK = 4
 		NUMBER_OF_NOTES = 6

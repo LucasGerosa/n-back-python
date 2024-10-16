@@ -293,12 +293,21 @@ class Note:
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
 
-	def __init__(self, notes:typing.Optional[typing.List[Note]] = None):
+	def __init__(self, notes_str:typing.Optional[typing.List[str]] = None):
 		self.stop_flag = False
-		if notes == None:
-			self.notes: typing.List[Note] = []
-		else:    
-			self.notes = notes #type:ignore
+		self.notes:typing.List[Note] = []
+		
+		if notes_str == None:
+			return
+
+		note_str_set = set(notes_str) #type:ignore
+		note_set = [Note.get_note_from_note_name(note_str) for note_str in note_str_set]
+		for note_str in notes_str:
+			#matched_note = next((note for note in note_set if note.full_name == note_str))
+			for note in note_set:
+				if note.full_name == note_str:
+					self.notes.append(note)
+					break		
 	
 	getNotePaths = lambda self: [note.path for note in self.notes]
 	''' Equivalent to this:
@@ -469,9 +478,17 @@ if __name__ == '__main__':
 				raise e
 			notes_played += 1
 	
+	def test4():
+		note_gp = Note_group(['F4', 'G4', 'A4', 'B4', 'C5', 'C4', 'D4', 'E4'])
+		for note in note_gp:
+			print(note)
+		
+		note_gp = Note_group(['A4']*100)
+		print(note_gp)
+	
 	note_value = 1/32
 	note_group = Note_group()
-	test3()
+	test4()
 	
 	#load_notes(note_group, 1/32)
 	

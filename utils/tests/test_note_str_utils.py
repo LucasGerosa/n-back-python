@@ -1,8 +1,7 @@
 import pytest
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes, get_greater_note, shift_note_by_semitones
-import re
+from note_str_utils import sort_notes, is_note_greater, convert_sharps_to_flats, get_final_list_notes, get_greater_note, shift_note_by_semitones, get_list_notes_able_up_down_semitones
 
 
 def test_sort_notes():
@@ -63,3 +62,15 @@ def test_shift_note_by_semitones():
 	assert shift_note_by_semitones('C4', 1) == 'Db4'
 	assert shift_note_by_semitones('C4', 2) == 'D4'
 	assert shift_note_by_semitones('C4', -1) == 'B3'
+
+def test_get_list_notes_able_up_down_semitones():
+	note_list = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
+	note_list1 = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4']
+	note_list2 = ['F4', 'G4', 'A4', 'B4', 'C5', 'C4', 'D4', 'E4']
+	assert get_list_notes_able_up_down_semitones(note_list, 1) == ['E4', 'B4']
+	assert get_list_notes_able_up_down_semitones(note_list1, 1) == ['E4']
+	assert get_list_notes_able_up_down_semitones(note_list, -1) == ['F4', 'C5']
+	assert get_list_notes_able_up_down_semitones(note_list1, -1) == ['F4']
+	assert get_list_notes_able_up_down_semitones(note_list2, 1) == ['E4', 'B4']
+	assert get_list_notes_able_up_down_semitones(note_list2, 2) == ['C4', 'D4', 'F4', 'G4', 'A4']
+	assert get_list_notes_able_up_down_semitones(note_list, 0) == note_list

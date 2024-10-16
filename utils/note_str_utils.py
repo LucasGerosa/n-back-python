@@ -61,8 +61,12 @@ def shift_note_by_semitones(formatted_note_full_name: str, semitones: int) -> st
 	return AVAILABLE_NOTES_TUPLE[new_note_index] + str(new_note_octave)
 
 def get_list_notes_able_up_down_semitones(available_notes_str_list:list[str], semitones:int) -> list[str]:
+	final_list = []
 	for note_str in available_notes_str_list:
 		new_note_str = shift_note_by_semitones(note_str, semitones)
+		if new_note_str in available_notes_str_list:
+			final_list.append(note_str)
+	return sort_notes(final_list)
 
 def convert_sharps_to_flats(note_full_name: str) -> str:
 	note_name, note_octave = separate_note_name_octave(note_full_name.capitalize())
@@ -146,5 +150,6 @@ def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=('-'
 
 
 if __name__ == '__main__':
-	print(get_final_list_notes('A1;C2D3-E3'))
+	#print(get_final_list_notes('A1;C2D3-E3'))
+	print(get_list_notes_able_up_down_semitones(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'], 2))
 	 
