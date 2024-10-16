@@ -9,7 +9,13 @@ from notes.notes import DEFAULT_AUDIO_EXTENSION, DEFAULT_NOTE_EXTENSION
 from utils.IOUtils import getAllNotes
 
 '''Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION
-Contains utilities for downloading audio files from the web, converting these files to mp3 and removing any trailing and leading silences from them.'''
+
+Contains utilities for downloading audio files from the web, converting these files to mp3 and removing any trailing and leading silences from them.
+
+Thanks to the University of Iowa for providing the audio files. The files are available at https://theremin.music.uiowa.edu/
+
+The program can work with custom audio files. Just make sure to put them in the input folder under the correct instrument folder.
+'''
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 input_folder = f'{ROOT_DIR}/../input'

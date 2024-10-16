@@ -91,6 +91,8 @@ def main():
 		get_aiffs_from_web.removeSilenceFromAllFiles()
 	except KeyboardInterrupt:
 			print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + 'removing silence. Run this setup again to remove silence from the remaining files, else they might not sound in sinc with the other files.')
+	else:
+		print('Completed removing silence from audio files.')
 	ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 	ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
 	ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
