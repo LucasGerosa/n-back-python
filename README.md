@@ -66,3 +66,6 @@ To use this project, follow these steps:
 - Qt6 must be installed in order for the GUI to appear.
 
 See the other md files for installing from source.
+
+## Known bugs
+On ubuntu, for some reason, after playing audios with simpleaudio about 60 times, it gives an error saying `_simpleaudio.SimpleaudioError: Error opening PCM device. -- CODE: -111 -- MSG: Connection refused.` It doesn't matter if it's the same audio being played 60 times or 60 different audios playing one time. I imagine it's some kind of error with drivers; that after too many attempts of connection, OS blocks further connections. I don't know how to fix that issue, and it doesn't appear on windows.
