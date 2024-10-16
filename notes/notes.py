@@ -107,9 +107,7 @@ class Note:
 	'''Represents musical notes, pointing to an mp3 file that can be played.'''
 
 	def __init__(self, path:str, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
-		self.path = path #TODO:don't allow the creation of a note with an invalid path
-		if self.extension == 'aif':
-			self.change_extension('aiff')
+		self.path = path
 		self._will_create_sound = False
 		self.will_create_sound:bool = will_create_sound
 		self.bpm = bpm
@@ -147,6 +145,7 @@ class Note:
 
 	@path.setter
 	def path(self, new_path) -> None:
+		assert os.path.exists(new_path), f"Note path {new_path} does not exist."
 		self._path = new_path
 		self._directory, fileNameExt = os.path.split(new_path) #directory won't have a trailing '/'
 		self._fileName, ext = os.path.splitext(fileNameExt)
@@ -255,13 +254,13 @@ class Note:
 		del self.sound  # Suggest deletion of the sound object
 		gc.collect()  # Explicitly suggest garbage collection
 		
-	def change_extension(self, new_extension:str) -> None:
-		new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)
-		if os.path.exists(new_path):
-			self.delete_file()
-		else:
-			os.rename(self.path, new_path)
-		self.path = new_path
+	# def change_extension(self, new_extension:str) -> None:
+	# 	new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)
+	# 	if os.path.exists(new_path):
+	# 		self.delete_file()
+	# 	else:
+	# 		os.rename(self.path, new_path)
+	# 	self.path = new_path
 	
 	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_file = False) -> None: #note: this directory should not be from the main directory of the project
 		new_path = os.path.join(ROOT_DIR, '..', directory, self.instrument, self.fileName + '.' + new_extension)
@@ -276,10 +275,12 @@ class Note:
 		end_trim = detect_leading_silence(self.sound.reverse())
 		trimmed_sound = self.sound[start_trim:len(self.sound)-end_trim]
 		trimmed_sound.export(self.path, format = self.extension)
-		#return trimmed_sound
+		if self.will_create_sound:
+			self._sound = trimmed_sound
 	
 	def delete_file(self) -> None:
 		os.remove(self.path)
+		del self
 	
 	def __add__(self, semitones):
 		#makes a note with the same attributes but with X semitones of difference
@@ -305,29 +306,29 @@ class Note:
 		return note2
 
 	@staticmethod
-	def get_note_file_name_from_note_full_name(note_full_name:str, intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT):
+	def get_note_file_name_from_note_full_name(note_full_name:str, audio_folder:str='', intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT, extension=DEFAULT_NOTE_EXTENSION):
 		app_path = get_app_path()
-		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_full_name}.{DEFAULT_NOTE_EXTENSION}")
+		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, audio_folder, f"{instrument}.{intensity}.{note_full_name}.{extension}")
 		return file_name
 
 	@staticmethod
-	def get_note_from_note_full_name(note_full_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE):
-		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, intensity, instrument)
+	def get_note_from_note_full_name(note_full_name:str, audio_folder:str='', intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE, extension=DEFAULT_NOTE_EXTENSION):
+		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, audio_folder, intensity, instrument, extension)
 		return Note(file_name, bpm, will_create_sound, note_value=note_value)
 	
 	@staticmethod
-	def does_note_file_exist(note_full_name:str, intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT):
-		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, intensity, instrument)
+	def does_note_file_exist(note_full_name:str, audio_folder:str='' ,intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT):
+		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, audio_folder, intensity, instrument)
 		return os.path.exists(file_name)
 			
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
 
-	def __init__(self, notes_str:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE):
+	def __init__(self, notes_str:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE, audio_folder='', extension=DEFAULT_NOTE_EXTENSION):
 		self._notes:typing.List[Note] = []
 		self._notes_str:list[str] = []
 		note_str_set = set(notes_str) #type:ignore
-		note_set = [Note.get_note_from_note_full_name(note_str, intensity, bpm, will_create_sound, instrument, note_value) for note_str in note_str_set]
+		note_set = [Note.get_note_from_note_full_name(note_str, audio_folder, intensity, bpm, will_create_sound, instrument, note_value, extension) for note_str in note_str_set]
 		for note_str in notes_str:
 			for note in note_set:
 				if note.full_name == note_str:
@@ -416,9 +417,10 @@ class Note_group:
 		time_ended = time.time()
 		print("Total time elapsed: " + str(time_ended - time_started) + " seconds.")
 	
-	def change_extension(self, new_extension) -> None:
-		for note in self.notes:
-			note.change_extension(new_extension)
+	#This function is not relevant for now.
+	# def change_extension(self, new_extension) -> None:
+	# 	for note in self.notes:
+	# 		note.change_extension(new_extension)
 	
 	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_files = False):
 		for note in self.notes:

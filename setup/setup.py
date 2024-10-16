@@ -6,6 +6,7 @@ from utils.defaults import *
 from utils.terminal_utils import *
 from notes.notes import DEFAULT_NOTE_EXTENSION, os_name
 from utils import notes_config
+from pydub.exceptions import CouldntDecodeError
 '''Run this file once and follow the prompts for downloading and converting the audio files used by the program.'''
 
 
@@ -62,7 +63,7 @@ def main():
 	
 	try:
 		while True:
-			user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.YES_or_NO}\nYou can also press ctrl+c to skip conversion.\n')
+			user_input = input(f'The files will now be converted. Delete aiff files after conversion? {user_input_messages.YES_or_NO}\nYou can also press ctrl+c to skip conversion (cancelling could corrupt the last mp3 file attempted to be converted).\n')
 
 			if user_input == user_input_messages.YES:
 				delete_old_files = True
@@ -73,7 +74,11 @@ def main():
 			user_input_messages.print_invalid_input()
 
 		print("Converting audio files. This might take a while; don't shut down the program. Press ctrl+c to cancel.")
-		get_aiffs_from_web.convertAllFiles(delete_old_files=delete_old_files)
+		try:
+			get_aiffs_from_web.convertAllFiles(delete_old_files=delete_old_files)
+		except CouldntDecodeError as e:
+			print(e)
+			print('The file could not be decoded. This is likely because the file is corrupted or not an audio file. Please delete the file and download it again.')
 
 	except KeyboardInterrupt:
 		print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + 'conversion')
@@ -81,6 +86,11 @@ def main():
 	else:
 		print('Completed converting audio files.')
 	
+	print('Now all the leading and trailing silence from the files will be removed. Press ctrl+c to cancel (not recommended as it could corrupt the files).')
+	try:
+		get_aiffs_from_web.removeSilenceFromAllFiles()
+	except KeyboardInterrupt:
+			print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + 'removing silence. Run this setup again to remove silence from the remaining files, else they might not sound in sinc with the other files.')
 	ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 	ffmpeg_path = f'{ROOT_DIR}/ffmpeg/bin'
 	ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
