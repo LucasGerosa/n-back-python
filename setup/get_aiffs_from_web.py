@@ -78,8 +78,12 @@ class Instrument:
 	def convertAudioFiles(self, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
 		instrument_name = self.name
 		convert_from = self.from_extension
-		note_group = getNotes(instrument_name, extension=convert_from)
-		note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files)
+		note_group = getNotes(instrument=instrument_name, extension=convert_from)
+		for note in note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files):
+			print("Successfully converted", note.path)
+	
+	def removeSilence(self, note_extension = DEFAULT_NOTE_EXTENSION) -> None:
+		note_group = getNotes(instrument_name, note_extension) 
 	
 piano = Instrument('piano', DEFAULT_AUDIO_EXTENSION)
 guitar = Instrument('guitar', 'aif')

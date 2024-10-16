@@ -4,16 +4,19 @@ import typing
 import glob #module for gettiong files that match  requirement
 import sys, os
 import math
-#sys.path.append(os.path.join(os.path.dirname(__file__), '..')) #hacky way of making relative imports work
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) #hacky way of making relative imports work
 from utils.defaults import *
 from notes.notes import Note, Note_group, DEFAULT_NOTE_EXTENSION, DEFAULT_AUDIO_EXTENSION, AUDIO_FOLDER, NOTES_FOLDER, ROOT_DIR
 
-def getNotes(intensity:str, instrument:str = DEFAULT_INSTRUMENT, extension = DEFAULT_NOTE_EXTENSION, audio_folder = AUDIO_FOLDER, will_create_sound:bool=True, bpm:float=DEFAULT_BPM, note_value:float=DEFAULT_NOTE_VALUE) -> Note_group:
+def getNotes(intensity=DEFAULT_INTENSITY, instrument:str = DEFAULT_INSTRUMENT, extension:str = DEFAULT_NOTE_EXTENSION, audio_folder:str = AUDIO_FOLDER, will_create_sound:bool=True, bpm:float=DEFAULT_BPM, note_value:float=DEFAULT_NOTE_VALUE) -> Note_group: #type:ignore
 
 	path = os.path.join(ROOT_DIR, '..', NOTES_FOLDER, instrument, audio_folder, f"*.{extension}")
 	file_paths = glob.glob(path)
-	noteList = [Note(path = file_path, will_create_sound=will_create_sound, bpm=bpm, note_value=note_value) for file_path in file_paths if intensity in file_path] #List comprehension
-	note_group = Note_group(noteList)
+	note_str_list = []
+	for file_path in file_paths:
+		note_str_list.append(Note.get_note_attributes_from_path(file_path)[-2])
+	
+	note_group = Note_group(note_str_list, intensity, bpm, will_create_sound, instrument, note_value)
 	return note_group
 
 # def test() -> None: #for debugging purposes
@@ -36,5 +39,6 @@ def repeat_values_to_size(list_size:int, *values):
 	return values_list
 
 if __name__ == '__main__':
-	size = 3
-	print(repeat_values_to_size(size, 1, 2))
+	#size = 3
+	#print(repeat_values_to_size(size, 1, 2))
+	print(getNotes(audio_folder='', will_create_sound=False))

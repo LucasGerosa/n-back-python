@@ -8,8 +8,6 @@ from pydub.silence import detect_leading_silence
 import gc
 #import pyaudio
 #from pydub import utils
-#TODO: change some of the methods in these classes to private methods
-
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
@@ -21,6 +19,10 @@ DEFAULT_NOTE_EXTENSION = 'mp3'
 DEFAULT_AUDIO_EXTENSION = 'aiff'
 NOTES_FOLDER = 'input'
 AUDIO_FOLDER = 'aiff'
+
+'''
+This module provides abstraction for musical notes, allowing the user to play them and manipulate them, as well as convert and edit note files from aiff to mp3.
+'''
 
 import platform
 os_name = platform.system()
@@ -88,9 +90,21 @@ def check_ffmpeg():
 
 	raise OSError(f'ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
+def remove_silence_and_save(note_path):
+	pass
+
+def remove_silence_and_save_all_notes():
+	for instrument in os.listdir(NOTES_FOLDER):
+		instrument_path = os.path.join(NOTES_FOLDER, instrument)
+		for note in os.listdir(instrument_path):
+			note_path = os.path.join(instrument_path, note)
+			remove_silence_and_save(note_path)
+
+#remove_silence_and_save_all_notes()
 check_ffmpeg()
 
 class Note:
+	'''Represents musical notes, pointing to an mp3 file that can be played.'''
 
 	def __init__(self, path:str, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
 		self.path = path #TODO:don't allow the creation of a note with an invalid path
@@ -115,14 +129,8 @@ class Note:
 	
 	def _create_sound(self) -> None:
 		
-		def remove_silence(sound) -> AudioSegment: #TODO: edit the file to remove the sound, not just in runtime
-			trim_leading_silence = lambda x: x[detect_leading_silence(x) :]
-			#trim_trailing_silence = lambda x: trim_leading_silence(x.reverse()).reverse() #removes silence from 
-			#strip_silence = lambda x: trim_trailing_silence(trim_leading_silence(x))
-			#stripped = strip_silence(self.sound)
-			return trim_leading_silence(sound)
-		
-		self._sound = remove_silence(AudioSegment.from_file(self.path, self.extension))
+		self._sound:AudioSegment = AudioSegment.from_file(self.path, self.extension)
+		#self._sound = self.remove_silence()
 
 	@property
 	def sound(self):
@@ -150,6 +158,13 @@ class Note:
 			self._instrument:str = os.path.split(instrument_dir)[1]
 		else:
 			self._instrument:str = DEFAULT_AUDIO_EXTENSION_dir
+	
+	@staticmethod
+	def get_note_attributes_from_path(path:str) -> tuple:
+		directory, file_name = os.path.split(path)
+		file_name, extension = os.path.splitext(file_name)
+		instrument, intensity, note_full_name = file_name.split('.')
+		return directory, instrument.lower(), intensity, note_full_name, extension
 
 	@property
 	def directory(self):
@@ -232,7 +247,7 @@ class Note:
 		if not self.will_create_sound:
 			self._create_sound()
 		#current_playback = self._play_with_pyaudio(self.sound, t)
-		t = bpmToSeconds(self.bpm)*4*self.note_value
+		t = bpmToSeconds(self.bpm) * 4 * self.note_value
 		current_playback = playback._play_with_simpleaudio(self.sound)
 		time.sleep(t)
 		current_playback.stop()
@@ -250,17 +265,23 @@ class Note:
 	
 	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_file = False) -> None: #note: this directory should not be from the main directory of the project
 		new_path = os.path.join(ROOT_DIR, '..', directory, self.instrument, self.fileName + '.' + new_extension)
-		self.sound.export(new_path, format = new_extension) #! Maybe this needs to be self._sound instead. Needs testing
+		self.sound.export(new_path, format = new_extension)
 		#This is equivalent to "ffmpeg -i input/notas/aiff/do.aiff input/notas/aiff/do.mp3"
 		if delete_old_file:
 			self.delete_file()
 		self.path = new_path
 	
+	def remove_silence(self) -> AudioSegment:
+		start_trim = detect_leading_silence(self.sound)
+		end_trim = detect_leading_silence(self.sound.reverse())
+		trimmed_sound = self.sound[start_trim:len(self.sound)-end_trim]
+		trimmed_sound.export(self.path, format = self.extension)
+		#return trimmed_sound
+	
 	def delete_file(self) -> None:
 		os.remove(self.path)
 	
 	def __add__(self, semitones):
-		#TODO: make this method change the note's path instead of creating a new note
 		#makes a note with the same attributes but with X semitones of difference
 		assert isinstance(semitones, int), f"Can't add {type(semitones)} to a Note object."
 		if semitones < 0:			
@@ -272,7 +293,7 @@ class Note:
 		assert not note_str_utils.is_note_greater(full_name, HIGHEST_NOTE), f"Tried to increase the semitone of {self.full_name}, getting {full_name}, but {HIGHEST_NOTE} is the last possible note on the program."
 		assert not note_str_utils.is_note_greater(LOWEST_NOTE, full_name), f"Tried to decrease the semitone of {self.full_name}, but {LOWEST_NOTE} is the first possible note on the program."
 		
-		return Note.get_note_from_note_name(full_name, self.intensity, self.bpm, self.will_create_sound, self.instrument, self.note_value)
+		return Note.get_note_from_note_full_name(full_name, self.intensity, self.bpm, self.will_create_sound, self.instrument, self.note_value)
 	
 	def __sub__(self, semitones:int):
 		return self.__add__(-semitones)
@@ -284,30 +305,43 @@ class Note:
 		return note2
 
 	@staticmethod
-	def get_note_from_note_name(note_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE):
+	def get_note_file_name_from_note_full_name(note_full_name:str, intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT):
 		app_path = get_app_path()
-		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_name}.{DEFAULT_NOTE_EXTENSION}")
+		file_name = os.path.join(app_path, NOTES_FOLDER, instrument, f"{instrument.capitalize()}.{intensity}.{note_full_name}.{DEFAULT_NOTE_EXTENSION}")
+		return file_name
 
+	@staticmethod
+	def get_note_from_note_full_name(note_full_name:str, intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE):
+		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, intensity, instrument)
 		return Note(file_name, bpm, will_create_sound, note_value=note_value)
+	
+	@staticmethod
+	def does_note_file_exist(note_full_name:str, intensity:str=DEFAULT_INTENSITY, instrument:str=DEFAULT_INSTRUMENT):
+		file_name = Note.get_note_file_name_from_note_full_name(note_full_name, intensity, instrument)
+		return os.path.exists(file_name)
 			
 class Note_group:
 	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
 
-	def __init__(self, notes_str:typing.Optional[typing.List[str]] = None):
-		self.stop_flag = False
-		self.notes:typing.List[Note] = []
-		
-		if notes_str == None:
-			return
-
+	def __init__(self, notes_str:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE):
+		self._notes:typing.List[Note] = []
+		self._notes_str:list[str] = []
 		note_str_set = set(notes_str) #type:ignore
-		note_set = [Note.get_note_from_note_name(note_str) for note_str in note_str_set]
+		note_set = [Note.get_note_from_note_full_name(note_str, intensity, bpm, will_create_sound, instrument, note_value) for note_str in note_str_set]
 		for note_str in notes_str:
-			#matched_note = next((note for note in note_set if note.full_name == note_str))
 			for note in note_set:
 				if note.full_name == note_str:
-					self.notes.append(note)
+					self._notes.append(note)
+					self._notes_str.append(note_str)
 					break		
+	
+	@property
+	def notes(self):
+		return self._notes
+
+	@property
+	def notes_str(self):
+		return self._notes_str
 	
 	getNotePaths = lambda self: [note.path for note in self.notes]
 	''' Equivalent to this:
@@ -324,6 +358,7 @@ class Note_group:
 		return self.notes[index]
 
 	def __setitem__(self, index, value):
+		raise NotImplementedError("Setting items in a Note_group is not recommended. It's preferable to create a Note_group only when you have all the notes you need.")
 		self.notes[index] = value
 	
 	def __delitem__(self, index):
@@ -336,16 +371,16 @@ class Note_group:
 		return iter(self.notes)
 
 	def __str__(self):
-		return 'Note_group containing ' + str(self.notes)
+		return 'Note_group containing ' + str(self.notes_str)
 
 	def __add__(self, other_note_group):
 		#assert isinstance(other_note_group, Note_group), f"Can't add Note_group object with {type(other_note_group)} object."
 		if isinstance(other_note_group, Note_group):
-			return Note_group(self.notes + other_note_group.notes)
+			return Note_group(self.notes_str + other_note_group.notes_str)
 		elif isinstance(other_note_group, list) or isinstance(other_note_group, tuple):
-			return Note_group(self.notes + other_note_group)
+			return Note_group(self.notes_str + other_note_group)
 		else:
-			raise TypeError(f"Can't add Note_group object with {type(other_note_group)} object.")
+			raise TypeError(f"Can't add Note_group object with {other_note_group} ({type(other_note_group)}) object.")
 	
 	def __radd__(self, other_note_group):
 		return self.__add__(other_note_group)
@@ -361,19 +396,17 @@ class Note_group:
 		return not self.__eq__(value)
 	
 	def append(self, note):
+		raise NotImplementedError("Appending notes to a Note_group is not recommended. It's preferable to create a Note_group only when you have all the notes you need.")
 		self.notes.append(note)
 
 	def play(self):
 		notes_played = 0
 		time_started = time.time()
 		for note in self.notes:
-			
-			if self.stop_flag:
-				self.stop_flag = False
-				break
 
 			try:
-				yield note.play()
+				note.play()
+				yield 
 			except Exception as e:
 				time_ended = time.time()
 				print("\nNumber of notes played before this error: " + str(notes_played))
@@ -387,9 +420,15 @@ class Note_group:
 		for note in self.notes:
 			note.change_extension(new_extension)
 	
-	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_files = False) -> None:
+	def convert(self, new_extension:str = DEFAULT_NOTE_EXTENSION, directory:str = NOTES_FOLDER, delete_old_files = False):
 		for note in self.notes:
 			note.convert(new_extension, directory, delete_old_files)
+			yield note
+	
+	def remove_silence(self):
+		for note in self:
+			note.remove_silence(note.sound)
+			yield
 	
 	def getRandomNote(self):
 		number_of_notes = len(self.notes)
@@ -404,13 +443,6 @@ class Note_group:
 	def delete_files(self) -> None:
 		for note in self.notes:
 			note.delete_file()
-	
-	@staticmethod
-	def get_note_group_from_note_names(note_names:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str='piano', note_value:float=DEFAULT_NOTE_VALUE) -> 'Note_group':
-		notes = []
-		for note_name in note_names:
-			notes.append(Note.get_note_from_note_name(note_name, intensity, bpm, will_create_sound, instrument, note_value))
-		return Note_group(notes)
 
 ''' 
 	For future reference for working with aiff or wav
@@ -444,18 +476,15 @@ if __name__ == '__main__':
 		print("Number of notes played:", notes_played)
 	
 	def test0(): #fails after 60 notes.
-		note_num = 100
 		load_notes(note_num, note_group, note_value)
 		test_generator(note_num)
 
 	def test1(): #fails; creating 2 different generators with half the notes still does not work.
-		note_num = 100
 		load_notes(note_num, note_group, note_value)
 		test_generator(note_num//2)
 		test_generator(note_num//2)
 	
 	def test2(): #fails; creating a notes and playing them 100 times doesn't work.
-		note_num = 100
 		notes_played = 0
 		for _ in range(note_num):
 			note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
@@ -467,9 +496,9 @@ if __name__ == '__main__':
 			notes_played += 1
 
 	def test3(): #fails; creating one note and playing it 100 times doesn't work.
-		note_num = 100
 		notes_played = 0
 		note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
+		playback._play_with_simpleaudio(note.sound)
 		for _ in range(note_num):
 			try:
 				note.play()
@@ -487,7 +516,7 @@ if __name__ == '__main__':
 		print(note_gp)
 	
 	note_value = 1/32
-	note_group = Note_group()
+	note_num = 100
 	test4()
 	
 	#load_notes(note_group, 1/32)
