@@ -10,7 +10,9 @@ from notes import scales
 
 DEFAULT_SCALE = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
 
-
+'''
+This file coordinates the different threads of the audio and GUI. It serves as a middle man between the GUI and the tests in the TestCase file.
+'''
 class VolumeTestThread(QtCore.QThread):
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()

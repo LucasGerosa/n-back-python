@@ -15,7 +15,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils, IOUtils
 import io
 
-
+'''This file oordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
+'''
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 
 class AnswerType(Enum):

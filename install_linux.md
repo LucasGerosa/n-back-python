@@ -1,7 +1,7 @@
 Downloading from source
 - Download the source code through the [releases](https://github.com/rbpimenta/n-back-python/releases), or, with git installed, type
 ```
-git clone https://github.com/rbpimenta/n-back-python.git
+git clone https://github.com/LucasGerosa/n-back-python.git
 ```
 in the terminal.
 
@@ -33,4 +33,4 @@ If this fails, you might need to install pip
 
 - ```sudo apt install ffmpeg```
 
-- ```python3 setup.py``` and follow the prompts to install all the mp3 files.
+- Either do ```python3 setup.py``` and follow the prompts to install all the mp3 files, or download them [manually](https://drive.google.com/drive/folders/19axa31xTREufETdWL1Ecop8WFUGSBidj?usp=drive_link) and put them in the input folder.

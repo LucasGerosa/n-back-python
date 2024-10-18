@@ -5,14 +5,45 @@
 
 This project is designed to do musical tests involving cognition by using musical notes. Currently, the main tests being supported are the tonal n-back test and tonal discrimination task used by Ding et al. (2018).
 
+## Usage
+
+To use this project, follow these steps:
+
+### Releases
+1. (On windows) download either the msi or zip file. Then, run the nback.exe.
+
+### Running from source code
+1. If you need to download the notes from the web automatically, run `setup/setup.py` and follow the prompts. Otherwise, download the folder with the notes of the chosen instruments and put it in the `input` folder. It should look like the following: `input/(instrument name)/(note files.mp3)`
+2. Run `app.py`
+3. The output files will be generated in the corresponding subfolders under `output/notas/`.
+
+See the `install_linux.md` file for more help installing on linux.
+
+## Dependencies
+- Python 3.10.2. Other python versions might work but have not been tested.
+- All required packets are in the requirements.txt
+- Run `setup.py` to set up any additional dependencies, or do the setup manually in the [setup](#setup) section.
+- Qt6 must be installed in order for the GUI to appear.
+
+See the other md files for installing from source.
+
 ## Folder Structure
 
 ### `source/`
 
-Has the main files that direct the program. Creating new tests involves new code on all 3 of them.
-- `app.py`: Contains the main GUI elements and controls the flow of the program. Run this file to run the program. This file is huge, and some refactoring should be done to organize it and abstract away some clutter.
-- `test_threads.py`: Coordinates the different threads of the audio and GUI.
-- `TestCase.py`: Coordinates the logic of each test, as well as validating and saving user responses.
+Has the main files that direct the program. They coordinate not only the GUI, but manage the note objects (see next folder) for use in the tests. They also validate and save the user responses.
+
+### `note/`
+
+This folder contains the abstraction for music. Including representation of notes and scales.
+
+### `utils/`
+
+Contains files with some generally useful functions used by many files. Files from this folder are generally not specific to this project and could be used for other projects.
+
+### `/tests/`
+
+In the above folders, there will be a `tests` folder containing unit test files for the main files. Run `pytest` at the project directory to run all the unit tests.
 
 ### `input/`
 
@@ -22,17 +53,6 @@ This folder contains the audio files used by the program.
 
 This folder is where the program saves csv files, organized by folder with the participant name or ID.
 
-### `note/`
-
-This folder contains the abstraction for music. Including representation of notes and scales.
-
-### `tests/`
-
-This folder contains unit tests for the project. It is currently very outdated and not used.
-
-### `utils/`
-
-Contains files with some generally useful functions used by many files.
 
 ### `translations/`
 
@@ -42,33 +62,14 @@ Add translations to text in the app.po file and compile it with `msgfmt app.po -
 
 Has files for setting up this program. Ideally, this would only need to be done once, when you install a new version of the program. This setup can be done manually instead. Download the input folder from this [drive](https://drive.google.com/drive/folders/19axa31xTREufETdWL1Ecop8WFUGSBidj?usp=drive_link), or put custom audio files (follow the same naming conventions as the ones in the drive) in the correct folder with the instrument name in the input folder.
 
-### Important files
+### Other files
 
 - `app.spec` is used to generate a an executable with pyinstaller with the following command:
 `pyinstaller app.spec --distpath path_to_this_project -y`
-
-## Usage
-
-To use this project, follow these steps:
-
-### Source code
-1. If you need to download the notes from the web automatically, run `setup/setup.py` and follow the prompts. Otherwise, download the folder with the notes of the chosen instruments and put it in the `input` folder. It should look like the following: `input/(instrument name)/(note files.mp3)`
-2. Run `app.py`
-3. The output files will be generated in the corresponding subfolders under `output/notas/`.
-
-### Releases
-1. (On windows) download either the msi or zip file. Then, run the nback.exe.
-
-## Dependencies
-- Python 3.10.2. Other python versions might work but have not been tested.
-- All required packets are in the requirements.txt
-- Run setup.py to set up any additional dependencies, or do the setup manually in the [setup](#setup) section.
-- Qt6 must be installed in order for the GUI to appear.
-
-See the other md files for installing from source.
+- `Nback.aip`: contains the settings used for generating an msi file for a nicer installation.
 
 ## Known bugs
-On ubuntu, for some reason, after playing audios with simpleaudio about 60 times, it gives an error saying `_simpleaudio.SimpleaudioError: Error opening PCM device. -- CODE: -111 -- MSG: Connection refused.` It doesn't matter if it's the same audio being played 60 times or 60 different audios playing one time. I imagine it's some kind of error with drivers; that after too many attempts of connection, OS blocks further connections. I don't know how to fix that issue, and it doesn't appear on windows.
+Check the [issues](https://github.com/LucasGerosa/n-back-python/issues) on github.
 
 ## Audio files
 Thanks to the University of Iowa for providing the audio files. The files are available at https://theremin.music.uiowa.edu/
