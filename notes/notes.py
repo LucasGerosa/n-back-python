@@ -104,7 +104,7 @@ def remove_silence_and_save_all_notes():
 check_ffmpeg()
 
 class Note:
-	'''Represents musical notes, pointing to an mp3 file that can be played.'''
+	'''Represents musical notes, pointing to an mp3 file that can be played, or other audio files that can't be played.'''
 
 	def __init__(self, path:str, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, note_value:float=DEFAULT_NOTE_VALUE) -> None:
 		self.path = path
@@ -239,19 +239,16 @@ class Note:
 		# p.terminate()
 
 	def play(self) -> None:
-		if self.extension !='mp3': #TEMPORARY
-			raise NotImplementedError(f"Notes with extensions besides mp3 can't be played. Path of note: {self.path}")
+		if self.extension !='mp3':
+			raise NotImplementedError(f"Notes with extensions besides mp3 can't be played yet. Path of note: {self.path}")
 	
-		if not self.will_create_sound:
-			self._create_sound()
-		#current_playback = self._play_with_pyaudio(self.sound, t)
+		# if not self.will_create_sound: #this is probably not needed anymore in the current iteration of the program
+		# 	self._create_sound()
+		# #current_playback = self._play_with_pyaudio(self.sound, t)
 		t = bpmToSeconds(self.bpm) * 4 * self.note_value
 		current_playback = playback._play_with_simpleaudio(self.sound)
 		time.sleep(t)
 		current_playback.stop()
-		del current_playback  # Suggest deletion of the playback object
-		del self.sound  # Suggest deletion of the sound object
-		gc.collect()  # Explicitly suggest garbage collection
 		
 	# def change_extension(self, new_extension:str) -> None:
 	# 	new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)
@@ -363,7 +360,7 @@ class Note_group:
 	
 	def __delitem__(self, index):
 		del self._notes[index]
-		def self._notes_str[index]
+		del self._notes_str[index]
 
 	def __contains__(self, note):
 		return note in self.notes
@@ -375,7 +372,6 @@ class Note_group:
 		return 'Note_group containing ' + str(self.notes_str)
 
 	def __add__(self, other_note_group):
-		#assert isinstance(other_note_group, Note_group), f"Can't add Note_group object with {type(other_note_group)} object."
 		if isinstance(other_note_group, Note_group):
 			return Note_group(self.notes_str + other_note_group.notes_str)
 		elif isinstance(other_note_group, list) or isinstance(other_note_group, tuple):
@@ -455,7 +451,7 @@ class Note_group:
 		framerate/sample_rate: E.g. 44,100 Hz standard rate for CD quality
 		Number of frames
 		Values of a frame
-	'''
+'''
 
 if __name__ == '__main__':
 	import time

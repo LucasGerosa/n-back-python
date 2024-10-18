@@ -67,6 +67,7 @@ Has files for setting up this program. Ideally, this would only need to be done 
 - `app.spec` is used to generate a an executable with pyinstaller with the following command:
 `pyinstaller app.spec --distpath path_to_this_project -y`
 - `Nback.aip`: contains the settings used for generating an msi file for a nicer installation.
+- `settings.ini`: settings used for the tests of the program. These can be modified through the GUI.
 
 ## Known bugs
 Check the [issues](https://github.com/LucasGerosa/n-back-python/issues) on github.
