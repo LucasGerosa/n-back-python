@@ -173,7 +173,6 @@ class Note:
 	def instrument(self):
 		return self._instrument
 	
-	#TODO: add setter method for changing the path when the full_name is changed
 	@property
 	def full_name(self):
 		return self._full_name
@@ -322,9 +321,9 @@ class Note:
 		return os.path.exists(file_name)
 			
 class Note_group:
-	'''Container class for Note instances. This can be treated pretty much as a list of notes with extra methods.'''
+	'''Container class for Note instances. This is a more memory and time efficient way of storing a sequence of notes, as duplicate notes, e.g. inputting 'C4' 100 times, will create a note_group storing 100 references to a single note object..'''
 
-	def __init__(self, notes_str:typing.List[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE, audio_folder='', extension=DEFAULT_NOTE_EXTENSION):
+	def __init__(self, notes_str:typing.List[str]|typing.Tuple[str], intensity:str=DEFAULT_INTENSITY, bpm:float=DEFAULT_BPM, will_create_sound:bool=True, instrument:str=DEFAULT_INSTRUMENT, note_value:float=DEFAULT_NOTE_VALUE, audio_folder='', extension=DEFAULT_NOTE_EXTENSION):
 		self._notes:typing.List[Note] = []
 		self._notes_str:list[str] = []
 		note_str_set = set(notes_str) #type:ignore
@@ -363,7 +362,8 @@ class Note_group:
 		self.notes[index] = value
 	
 	def __delitem__(self, index):
-		del self.data[index]
+		del self._notes[index]
+		def self._notes_str[index]
 
 	def __contains__(self, note):
 		return note in self.notes

@@ -9,9 +9,6 @@ from fractions import Fraction
 import TestGUI
 
 '''This file is the main file that should be run to run the program. It ties together all the elements of the GUI and calls functions that deal with the tests (in testThreads.py and TestCase.py)'''
-
-# Specify the translation domain and path to the translations directory
-#print(os.path.dirname(__file__),"\n")
 	
 class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI, TestGUI.VisuotonalNbackTestGUI):
 

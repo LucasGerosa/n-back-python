@@ -15,7 +15,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils, IOUtils
 import io
 
-'''This file oordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
+'''This file coordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
 '''
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 
@@ -238,14 +238,6 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 				write_content_to_csv(writer, testCaseList_list)
 
 			f.close()
-
-	# @staticmethod
-	# def executeFromFile(playerName:str, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> list:
-	# 	p = FileUtils.readFromFile(bpm=bpm, instrument=instrument)
-	# 	testCaseList:List[NbackTestCase] = p.testCaseList
-	# 	for testCase in testCaseList:
-	# 		testCase.execute()
-	# 	return testCaseList
 
 	@staticmethod #FIXME
 	def debug() -> None:
