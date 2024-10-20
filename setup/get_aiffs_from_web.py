@@ -1,3 +1,14 @@
+'''
+
+Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION
+
+Contains utilities for downloading audio files from the web, converting these files to mp3 and removing any trailing and leading silences from them.
+
+Thanks to the University of Iowa for providing the audio files. The files are available at https://theremin.music.uiowa.edu/
+
+The program can work with custom audio files. Just make sure to put them in the input folder under the correct instrument folder.
+
+'''
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -5,17 +16,8 @@ from utils.defaults import *
 from utils.terminal_utils import user_input_messages
 from utils import general_utils
 from dataclasses import dataclass
-from notes.notes import DEFAULT_AUDIO_EXTENSION, DEFAULT_NOTE_EXTENSION
-from utils.IOUtils import getAllNotes
+from notes.notes import DEFAULT_AUDIO_EXTENSION, DEFAULT_NOTE_EXTENSION, getAllNotes
 
-'''Modified from  https://github.com/pranav7712/OFFICE_AUTOMATION
-
-Contains utilities for downloading audio files from the web, converting these files to mp3 and removing any trailing and leading silences from them.
-
-Thanks to the University of Iowa for providing the audio files. The files are available at https://theremin.music.uiowa.edu/
-
-The program can work with custom audio files. Just make sure to put them in the input folder under the correct instrument folder.
-'''
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 input_folder = f'{ROOT_DIR}/../input'
@@ -48,10 +50,6 @@ class Instrument:
 
 		response = requests.get(input_url)
 		soup = BeautifulSoup(response.text, "html.parser") 
-
-		# link_text=list()
-		# link_href=list()
-		# link_file=list()
 		
 		if note_intensity != user_input_messages.ALL:
 			assert note_intensity in VALID_INTENSITIES, f'Invalid intensity: "{note_intensity}".'
@@ -94,11 +92,7 @@ class Instrument:
 			except KeyboardInterrupt:
 				print(user_input_messages.KEYBOARDINTERRUPT_MESSAGE + f'download. Just in case, {file_path} has been removed as it was not fully downloaded.')
 				os.remove(file_path)
-			# link_text.append(str(link.text))
-			
-			# link_href.append(link['href'])
 
-			# link_file.append(link['href'].split('/')[-1])
 			counter+=1
 
 			print(counter, "-Files Extracted from URL named ", file_name)
@@ -108,9 +102,10 @@ class Instrument:
 	def convertAudioFiles(self, convert_to = DEFAULT_NOTE_EXTENSION, delete_old_files = False) -> None: #Converts all files from aiff to mp3
 		instrument_name = self.name
 		convert_from = self.from_extension
-		note_group = getAllNotes(instrument=instrument_name, extension=convert_from)
-		for note in note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files):
-			print("Successfully converted", note.path)
+		for intensity in VALID_INTENSITIES:
+			note_group = getAllNotes(intensity, instrument=instrument_name, extension=convert_from)
+			for note in note_group.convert(new_extension=convert_to, delete_old_files=delete_old_files):
+				print("Successfully converted", note.path)
 	
 	def removeSilence(self, note_extension = DEFAULT_NOTE_EXTENSION) -> None:
 		for intensity in VALID_INTENSITIES:

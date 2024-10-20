@@ -1,3 +1,5 @@
+'''Run this file once and follow the prompts for downloading and converting the audio files used by the program.'''
+
 import get_aiffs_from_web
 import os
 import sys
@@ -7,8 +9,6 @@ from utils.terminal_utils import *
 from notes.notes import DEFAULT_NOTE_EXTENSION, os_name
 from utils import notes_config
 from pydub.exceptions import CouldntDecodeError
-
-'''Run this file once and follow the prompts for downloading and converting the audio files used by the program.'''
 
 
 def download_files(instrument_name:str, note_intensity:str, will_download_duplicates = False):

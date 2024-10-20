@@ -2,7 +2,7 @@ import sys; import os
 from typing import Tuple, Iterable, Type
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.note_str_utils import AVAILABLE_NOTES_TUPLE
-from utils.IOUtils import rotate_sequence
+from utils.general_utils import rotate_sequence
 from pydub.audio_segment import classproperty
 
 '''

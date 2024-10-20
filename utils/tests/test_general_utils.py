@@ -1,6 +1,6 @@
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from IOUtils import *
+from utils.general_utils import *
 
 def test_rotate_sequence():
 	assert rotate_sequence(('C', 'D', 'E', 'F', 'G', 'A', 'B'), 1) == ('D', 'E', 'F', 'G', 'A', 'B', 'C')

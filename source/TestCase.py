@@ -1,18 +1,18 @@
 import csv
 import string
 from enum import Enum
-from typing import List
+from typing import List, Tuple
 from xmlrpc.client import Boolean
 import sys; import os
 import random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import notes_config, note_str_utils, FileUtils
+from utils import general_utils, notes_config, note_str_utils, FileUtils
 from notes import notes, scales
 import numpy as np
 from fractions import Fraction
 from PyQt6 import QtCore, QtGui, QtWidgets
-from utils import PyQt6_utils, IOUtils
+from utils import PyQt6_utils
 import io
 
 '''This file coordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
@@ -27,29 +27,30 @@ class ResultType(Enum):
 	CORRECT = 'correct'
 	INCORRECT = 'incorrect'
 
-def get_settings():
-	note_str = notes_config.get_notes_setting()
-	intensity_str = notes_config.get_intensity_setting()
+def get_settings(instrument=DEFAULT_INSTRUMENT, extension=notes.DEFAULT_NOTE_EXTENSION) -> tuple[list[str], str, float]: #type: ignore
+	
+	def get_final_notes_str_from_note_str(note_config_str:str, intensity:str, instrument:str, extension:str) -> list[str]:
+		if note_config_str == notes_config.ALL_NOTES:
+			notes_str_list = notes.getAllNotesStr(intensity=intensity, instrument=instrument, extension=extension, audio_folder='')
+
+		else:
+			notes_str_list = note_str_utils.get_final_list_notes(note_config_str)
+
+		return notes_str_list
+	
+	intensity = notes_config.get_intensity_setting()
+	note_str_list = get_final_notes_str_from_note_str(notes_config.get_notes_setting(), intensity, instrument, extension)
 	note_value_str = notes_config.get_setting(notes_config.NOTE_VALUE_SETTING)
 	try:
-		note_value = float(Fraction(note_value_str))
+		note_value:float = float(Fraction(note_value_str))
 	
 	except ValueError:
 		raise ValueError(f"The setting '{notes_config.NOTE_VALUE_SETTING}' needs to be a number. Got {note_value_str} instead. Reset your settings or contact the developers.")
-	return note_str, intensity_str, note_value
-
-def get_note_group_from_config(bpm=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT) -> notes.Note_group:
-	note_str, intensity_str, note_value = get_settings()
-	if note_str == notes_config.ALL_NOTES:
-		note_group = IOUtils.getNotes(intensity=intensity_str, instrument=instrument, audio_folder='', will_create_sound=False, bpm=bpm, note_value=note_value)
-		return note_group
-
-	note_str_list = note_str_utils.get_final_list_notes(note_str)
-	return notes.Note_group.get_note_group_from_note_names(note_str_list, intensity_str, bpm, note_value=note_value)
+	return note_str_list, intensity, note_value
 
 class TestCase:
 	
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None) -> None:
+	def __init__(self, id_num:int, numberOfNotes:int, scale:None|scales.Scale = None) -> None:
 		self._id_num: int = id_num
 		if scale == None:
 			self._scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
@@ -58,7 +59,6 @@ class TestCase:
 		if numberOfNotes < 1:
 			raise ValueError(f"numberOfNotes should be > 0. Got {numberOfNotes} instead.")
 		self._numberOfNotes: int = numberOfNotes
-		self._set_random_notes_group(bpm, instrument, config_note_group)
 
 	@property
 	def id_num(self) -> int:
@@ -69,27 +69,27 @@ class TestCase:
 		return self._scale
 	
 	@property
-	def numberOfNotes(self) -> int: #TODO: create a setter function, that changes the _note_group when the number of notes, is changed?
+	def numberOfNotes(self) -> int:
 		return self._numberOfNotes
 
-	def _set_random_notes_group(self, bpm:float, instrument:str, config_note_group:notes.Note_group):
-		if config_note_group == None:
-			note_group = get_note_group_from_config(bpm=bpm, instrument=instrument)
+	def get_random_notes_str(self, instrument:str, config_notes_str:None|tuple[List[str], str, float]=None, extension:str=notes.DEFAULT_NOTE_EXTENSION) -> Tuple[List[str], List[str], str, float]:
+		
+		if config_notes_str == None:
+			notes_str, intensity, note_value = get_settings(instrument=instrument, extension=extension)
 		else:
-			note_group = config_note_group
-		if note_group == []:
-			raise Exception("No notes were found. Check if the input folder exists and there are folders for the instruments with mp3 files inside.")
+			notes_str, intensity, note_value = config_notes_str #type:ignore
+		
+		assert notes_str, f"No notes were found. Check if the input folder exists and there is a folder for '{instrument}' with {extension} files inside."
 
-		filtered_notes = []
-		for note in note_group:
-			if note.name in self.scale.notes_str_tuple:
-				filtered_notes.append(note)
+		available_notes_str = []
+		for note_str in notes_str:
+			if note_str_utils.separate_note_name_octave(note_str)[0] in self.scale.notes_str_tuple:
+				available_notes_str.append(note_str)
 
-		notes_array = np.array(filtered_notes)
+		notes_array = np.array(available_notes_str)
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
-		random_notes_list = random_notes_array.tolist()
-		random_notes_group = notes.Note_group(random_notes_list)
-		self._note_group = random_notes_group
+		random_notes_list:list[str] = random_notes_array.tolist()
+		return available_notes_str, random_notes_list, intensity, note_value #type:ignore
 
 	@property
 	def note_group(self) -> notes.Note_group:
@@ -101,15 +101,13 @@ class TestCase:
 
 class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
-	def __init__(self, config_note_group:notes.Note_group, id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1) -> None:
+	def __init__(self, config_notes_str:None|tuple[list, str, float], id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
 		self._nBack: int = nBack
 		assert semitones != 0, f"semitones should be negative or positive. Got 0 instead."
 		self._semitones = semitones
-		super().__init__(config_note_group, id_num, numberOfNotes, bpm, instrument, scale)
-		self._change_nBack_and_last_note(nBack, self.note_group.notes, config_note_group.notes, isLastNoteDifferent)
-		self._set_correct_answer()
-		assert (isLastNoteDifferent == True and self.correct_answer == AnswerType.DIFFERENT) or (isLastNoteDifferent == False and self.correct_answer == AnswerType.SAME), f"If isLastNoteDifferent is False, the correct answer should be {AnswerType.SAME} and vice versa. Got isLastNoteDifferent = {isLastNoteDifferent} and {self.correct_answer} instead. Last note = {self.note_group[-1].full_name}, nBack note = {self.note_group[-1 - nBack].full_name}"
+		super().__init__(id_num, numberOfNotes, scale)
+		self._set_note_group(config_notes_str, bpm, instrument, isLastNoteDifferent, semitones, extension)
 
 	@property
 	def nBack(self) -> int:
@@ -130,34 +128,28 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		print(f"Participant's answer: {self.answer}")
 		print(f"Result: {self.result}\n\n")
 
-	def _change_nBack_and_last_note(self, nBack:int, note_list:List[notes.Note], config_notes_list:List[notes.Note], isLastNoteDifferent:bool):
-		self._semitone_note_list = []
-		if isLastNoteDifferent:
-			for note in config_notes_list:
-				if note.name in self.scale.find_able_up_down_semitones(self.semitones):
-					self._semitone_note_list.append(note)
-		else:
-			for note in config_notes_list:
-				if note.name in self.scale.find_able_up_down_semitones(self.semitones) or note.name in self.scale.find_able_up_down_semitones(-self.semitones):
-					self._semitone_note_list.append(note)
-		
-		
-		assert self._semitone_note_list != [], f"No available notes for increasing {self.semitones} semitone."
-		different_from_last_note = random.choice(self._semitone_note_list) # a random choice from notes that can either go up or down {semitones} semitones
-		
-		note_list[-nBack - 1] = different_from_last_note
-		if isLastNoteDifferent:
-			note_list[-1] = different_from_last_note + self.semitones
-		else:
-			note_list[-1] = note_list[-nBack - 1]
-	
-	def _set_correct_answer(self):
-		lastNote: int = self.note_group[-1]
-		nBackNote: int = self.note_group[-1 - self.nBack]
-		if lastNote == nBackNote:
-			self._correct_answer = AnswerType.SAME
-		else:
-			self._correct_answer = AnswerType.DIFFERENT
+	def _set_note_group(self, config_notes_str:None|tuple[list, str, float], bpm:float, instrument:str, isLastNoteDifferent:bool, semitones:int, extension:str) -> None:
+
+		def change_nBack_and_last_note(available_notes_str:List[str], note_str_list:list[str], isLastNoteDifferent:bool, semitones:int):
+			
+			self._semitone_note_str_list = note_str_utils.get_list_notes_able_up_down_semitones(available_notes_str, semitones)
+			if not isLastNoteDifferent:
+				self._semitone_note_str_list += note_str_utils.get_list_notes_able_up_down_semitones(available_notes_str, -semitones)
+			
+			assert self._semitone_note_str_list, f"No available notes for increasing {semitones} semitone from the notes {available_notes_str}."
+			
+			different_from_last_note = random.choice(self._semitone_note_str_list) # a random choice from notes that can either go up or down {semitones} semitones
+			note_str_list[-self.nBack - 1] = different_from_last_note
+			if isLastNoteDifferent:
+				note_str_list[-1] = note_str_utils.shift_note_by_semitones(different_from_last_note, semitones)
+				self._correct_answer = AnswerType.DIFFERENT
+			else:
+				note_str_list[-1] = different_from_last_note
+				self._correct_answer = AnswerType.SAME
+
+		available_notes_str, random_notes_str, intensity, note_value = self.get_random_notes_str(instrument, config_notes_str, extension)
+		change_nBack_and_last_note(available_notes_str, random_notes_str, isLastNoteDifferent, semitones)
+		self._note_group = notes.Note_group(random_notes_str, intensity, bpm, instrument, note_value, extension=extension)
 	
 	@property
 	def correct_answer(self) -> AnswerType:
@@ -255,8 +247,8 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 
 
 class VolumeTestCase(TestCase):
-	def __init__(self, config_note_group:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None) -> None:
-		super().__init__(config_note_group, 0, numberOfNotes, bpm, instrument, scale)
+	def __init__(self, config_notes_str:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None) -> None:
+		super().__init__(config_notes_str, 0, numberOfNotes, bpm, instrument, scale)
 
 class TonalDiscriminationTaskTestCase:
 	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
@@ -393,7 +385,3 @@ if __name__ == "__main__":
 # def create_TestCase_from_config(TestCaseClass:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
 # 	config_note_group = get_note_group_from_config(bpm, instrument)
 # 	return TestCaseClass(config_note_group, id_num, numberOfNotes, bpm, instrument, scale, *args, **kwargs)
-
-
-if __name__ == '__main__':
-	pass

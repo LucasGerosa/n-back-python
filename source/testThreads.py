@@ -2,7 +2,7 @@ from PyQt6 import QtCore
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase, get_note_group_from_config
-import utils.IOUtils as IOUtils
+import utils.general_utils as general_utils
 from utils.defaults import *
 import math
 import random
@@ -108,9 +108,9 @@ class TonalNbackTestThread(NbackTestThread):
 			series_id = 0
 			while series_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
-				boolean_list = random.shuffle(IOUtils.repeat_values_to_size(self.test_case_n, True, False)) #list for which sequences are going to be same or different
+				boolean_list = random.shuffle(general_utils.repeat_values_to_size(self.test_case_n, True, False)) #list for which sequences are going to be same or different
 				quantity_of_true = len([x for x in boolean_list if x == True])
-				up_or_down_list = random.shuffle(IOUtils.repeat_values_to_size(quantity_of_true, 1, -1)) #list for which sequences are different are going to be up a semitone
+				up_or_down_list = random.shuffle(general_utils.repeat_values_to_size(quantity_of_true, 1, -1)) #list for which sequences are different are going to be up a semitone
 				print("Is last note different: " + str(boolean_list),'Is note up: ' + str(up_or_down_list))
 				up_or_down_list_id = 0
 				testCaseList = []

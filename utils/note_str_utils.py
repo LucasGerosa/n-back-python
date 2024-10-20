@@ -18,8 +18,6 @@ AVAILABLE_NOTES_TUPLE = (
 )
 
 def sort_notes(note_iterable:Iterable[str]) -> list[str]: #sorts an iterable of note names
-	if not note_iterable:
-		raise ValueError("The iterable is empty.")
 	note_name_list = [convert_sharps_to_flats(note_str) for note_str in note_iterable]
 	
 	def sort_note_key(note_str: str) -> tuple:
