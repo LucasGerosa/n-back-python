@@ -72,7 +72,7 @@ class TestCase:
 	def numberOfNotes(self) -> int:
 		return self._numberOfNotes
 
-	def get_random_notes_str(self, instrument:str, config_notes_str:None|tuple[List[str], str, float]=None, extension:str=notes.DEFAULT_NOTE_EXTENSION) -> Tuple[List[str], List[str], str, float]:
+	def get_random_notes_str(self, instrument:str, config_notes_str:None|tuple[List[str], str, float]=None, extension:str=notes.DEFAULT_NOTE_EXTENSION) -> Tuple[List[str], str, float, List[str]]:
 		
 		if config_notes_str == None:
 			notes_str, intensity, note_value = get_settings(instrument=instrument, extension=extension)
@@ -89,7 +89,7 @@ class TestCase:
 		notes_array = np.array(available_notes_str)
 		random_notes_array = np.random.choice(notes_array, self.numberOfNotes)
 		random_notes_list:list[str] = random_notes_array.tolist()
-		return available_notes_str, random_notes_list, intensity, note_value #type:ignore
+		return random_notes_list, intensity, note_value, available_notes_str #type:ignore
 
 	@property
 	def note_group(self) -> notes.Note_group:
@@ -147,7 +147,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 				note_str_list[-1] = different_from_last_note
 				self._correct_answer = AnswerType.SAME
 
-		available_notes_str, random_notes_str, intensity, note_value = self.get_random_notes_str(instrument, config_notes_str, extension)
+		random_notes_str, intensity, note_value, available_notes_str = self.get_random_notes_str(instrument, config_notes_str, extension)
 		change_nBack_and_last_note(available_notes_str, random_notes_str, isLastNoteDifferent, semitones)
 		self._note_group = notes.Note_group(random_notes_str, intensity, bpm, instrument, note_value, extension=extension)
 	
@@ -247,16 +247,21 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 
 
 class VolumeTestCase(TestCase):
-	def __init__(self, config_notes_str:notes.Note_group, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None) -> None:
-		super().__init__(config_notes_str, 0, numberOfNotes, bpm, instrument, scale)
+	def __init__(self, config_notes_str:None|tuple[list, str, float]=None, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
+		super().__init__(0, numberOfNotes, scale)
+		self._set_note_group(config_notes_str, bpm, instrument, extension)
 
+	def _set_note_group(self, config_notes_str:None|tuple[list, str, float], bpm:float, instrument:str, extension:str) -> None:
+		random_notes_str, intensity, note_value = self.get_random_notes_str(instrument, config_notes_str, extension)[:3]
+		self._note_group = notes.Note_group(random_notes_str, intensity, bpm, instrument, note_value, extension=extension)
+	
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id=0) -> None:
+	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id:int=0, intensity=DEFAULT_INTENSITY, note_value=DEFAULT_NOTE_VALUE, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		self.id_num: int = id_num
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
-		self.note_group1 = self.get_note_group_from_sequence(bpm, instrument, sequence)
-		self.note_group2 = self.get_note_group_from_sequence(bpm, instrument, sequence_mismatch)
+		self.note_group1 = notes.Note_group(sequence, intensity=intensity, bpm=bpm, instrument=instrument, note_value=note_value, extension=extension)
+		self.note_group2 = notes.Note_group(sequence_mismatch, intensity=intensity, bpm=bpm, instrument=instrument, note_value=note_value, extension=extension)
 	
 	@property
 	def result(self) -> ResultType:
@@ -265,10 +270,6 @@ class TonalDiscriminationTaskTestCase:
 	@property
 	def answer(self) -> AnswerType:
 		return self._answer
-	
-	def get_note_group_from_sequence(self, bpm:float, instrument:str, sequence:list[str]) -> notes.Note_group:
-		note_group = notes.Note_group([notes.Note.get_note_from_note_name(intensity='mf', note_name=note_str, bpm=bpm, instrument=instrument) for note_str in sequence])
-		return note_group
 
 	def get_random_sequence(self, notesQuantity:int):
 		if notesQuantity == 4:
@@ -284,7 +285,7 @@ class TonalDiscriminationTaskTestCase:
 			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
 			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH
 		else:
-			raise ValueError(f"Invalid notes quantity: {notesQuantity}. The only quantities currently available are 4, 6, 8 and 10.")
+			raise NotImplementedError(f"Invalid notes quantity: {notesQuantity}. The only quantities currently available are 4, 6, 8 and 10.")
 		
 		#sequence_index = random.randint(0, len(sample_sequences) - 1)
 
@@ -373,15 +374,5 @@ class TonalDiscriminationTaskTestCase:
 
 
 if __name__ == "__main__":
-	note_group = get_note_group_from_config()
-	filtered_notes = []
-	for note in note_group:
-		print(note.name)
-		if not "#" in note.name and not "b" in note.name:
-			filtered_notes.append(note)
-	filtered_note_group = notes.Note_group(filtered_notes)
+	t = VolumeTestCase()
 
-#!DELETE LATER
-# def create_TestCase_from_config(TestCaseClass:TestCase, scale:scales.Scale, id_num:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, *args, **kwargs):
-# 	config_note_group = get_note_group_from_config(bpm, instrument)
-# 	return TestCaseClass(config_note_group, id_num, numberOfNotes, bpm, instrument, scale, *args, **kwargs)

@@ -25,5 +25,4 @@ def repeat_values_to_size(list_size:int, *values):
 
 if __name__ == '__main__':
 	#size = 3
-	#print(repeat_values_to_size(size, 1, 2))
-	pass
+	print(repeat_values_to_size(-1, 1, 2, True))

@@ -23,7 +23,6 @@ def test_TestCase():
 	print(notes_str2)
 	assert all(note_str in sample_note_list for note_str in notes_str2)
 
-
 def test_NbackTestCase():
 	def check_NbackTestCase(t:NbackTestCase, answer:TestCase.AnswerType):
 		last_note = t.note_group[-1]

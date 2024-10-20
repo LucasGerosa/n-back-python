@@ -1,7 +1,7 @@
 from PyQt6 import QtCore
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase, get_note_group_from_config
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
 import utils.general_utils as general_utils
 from utils.defaults import *
 import math
@@ -36,14 +36,12 @@ class VolumeTestThread(QtCore.QThread):
 
 			while not self.stop:
 				self.pre_start_execution.emit()
-				testCase = VolumeTestCase(get_note_group_from_config(self.bpm, self.instrument), 5, self.bpm, self.instrument, DEFAULT_SCALE) #TODO: there should be a way to change the scale, maybe as a new setting.
+				testCase = VolumeTestCase(None, 5, self.bpm, self.instrument, DEFAULT_SCALE)
 				self.start_execution.emit()
-				for note in testCase.note_group:
+				for _ in testCase.note_group.play():
 					if self.stop:
 						print("Thread was interrupted. Stopping now.\n")
 						return
-					note.play()
-				self.stop = True
 			if self.stop:
 				print("Thread was interrupted. Stopping now.\n")
 				return
@@ -59,6 +57,7 @@ class TestThread(QtCore.QThread):
 	started_trial_signal = QtCore.pyqtSignal(int)
 	
 	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		assert test_case_n > 0
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
@@ -91,11 +90,11 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
-	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:str=None, semitones:int=1):
+	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, semitones:int=1):
 
 		super().__init__(trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
 		if scale == None:
-			self.scale = scales.MajorScale() #FIXME
+			self.scale = DEFAULT_SCALE
 			return
 		self.semitones = semitones
 		self.scale = scale
@@ -108,10 +107,12 @@ class TonalNbackTestThread(NbackTestThread):
 			series_id = 0
 			while series_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
-				boolean_list = random.shuffle(general_utils.repeat_values_to_size(self.test_case_n, True, False)) #list for which sequences are going to be same or different
+				boolean_list = general_utils.repeat_values_to_size(self.test_case_n, True, False)
+				random.shuffle(boolean_list) #list for which sequences are going to be same or different
 				quantity_of_true = len([x for x in boolean_list if x == True])
-				up_or_down_list = random.shuffle(general_utils.repeat_values_to_size(quantity_of_true, 1, -1)) #list for which sequences are different are going to be up a semitone
-				print("Is last note different: " + str(boolean_list),'Is note up: ' + str(up_or_down_list))
+				up_or_down_list = general_utils.repeat_values_to_size(quantity_of_true, 1, -1) #list for which sequences are different are going to be up a semitone
+				random.shuffle(up_or_down_list)
+				print("Is last note different: " + str(boolean_list),'Semitones: ' + str(up_or_down_list))
 				up_or_down_list_id = 0
 				testCaseList = []
 				testCaseId = 0
@@ -125,7 +126,7 @@ class TonalNbackTestThread(NbackTestThread):
 						up_or_down_list_id += 1
 					else:
 						semitones = None
-					testCase = NbackTestCase(self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
+					testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()

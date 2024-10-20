@@ -5,7 +5,7 @@ from utils import PyQt6_utils
 from utils.defaults import *
 import time
 from notes import scales
-from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType
 
 class VolumeTestGUI(parent_GUI.parent_GUI):
 
@@ -275,12 +275,12 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
 		def yes():
-			testCase.validateAnswer(answer=SAME)
+			testCase.validateAnswer(answer=AnswerType.SAME)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
 		def no():
-			testCase.validateAnswer(answer=DIFFERENT)
+			testCase.validateAnswer(answer=AnswerType.DIFFERENT)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
@@ -310,12 +310,12 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 			answer = 1 if yes_button.isChecked() else 2
 			self.validateAnswer(answer=answer)'''
 		def yes():
-			testCase.validateAnswer(answer=SAME)
+			testCase.validateAnswer(answer=AnswerType.SAME)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 
 		def no():
-			testCase.validateAnswer(answer=DIFFERENT)
+			testCase.validateAnswer(answer=AnswerType.DIFFERENT)
 			destroy_yes_no()
 			self.notes_thread.wait_condition.wakeOne()
 

@@ -106,10 +106,6 @@ class Note:
 	@property
 	def sound(self):
 		return self._sound
-
-	@sound.deleter
-	def sound(self) -> None:
-		del self._sound
 	
 	@property
 	def path(self):
@@ -395,16 +391,6 @@ class Note_group:
 		for note in self:
 			note.remove_silence(note.sound)
 			yield
-	
-	def getRandomNote(self):
-		number_of_notes = len(self.notes)
-		if number_of_notes == 0:
-			return None
-		random_number = random.randint(0, number_of_notes - 1)
-		# retrieve sound from id
-		random_note = self.notes[random_number]
-		random_note.play()
-		return random_note
 
 	def delete_files(self) -> None:
 		for note in self.notes:
@@ -440,68 +426,31 @@ def getAllNotes(intensity=DEFAULT_INTENSITY, instrument:str = DEFAULT_INSTRUMENT
 
 
 if __name__ == '__main__':
-	import time
-	
-	def load_notes(note_num, note_group, note_value=1/4):
-		start_time = time.time()
-		for _ in range(note_num):
-			n = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
-			note_group.append(n)
-		end_time = time.time()
-		exe_time = end_time - start_time
-		print(f"Execution time: {exe_time} seconds. Approximately {exe_time/note_num} seconds per note.")
-
-	def test_generator(note_num):
-		player = note_group.play()
-		notes_played = 0
-		for _ in range(note_num):
-			next(player)
-			notes_played += 1
-		print("Number of notes played:", notes_played)
-	
-	def test0(): #fails after 60 notes.
-		load_notes(note_num, note_group, note_value)
-		test_generator(note_num)
-
-	def test1(): #fails; creating 2 different generators with half the notes still does not work.
-		load_notes(note_num, note_group, note_value)
-		test_generator(note_num//2)
-		test_generator(note_num//2)
-	
-	def test2(): #fails; creating a notes and playing them 100 times doesn't work.
-		notes_played = 0
-		for _ in range(note_num):
-			note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
-			try:
-				note.play()
-			except Exception as e:
-				print("Number of notes played before this error: " + str(notes_played))
-				raise e
-			notes_played += 1
-
-	def test3(): #fails; creating one note and playing it 100 times doesn't work.
-		notes_played = 0
-		note = Note("input/piano/Piano.mf.C4.mp3", note_value=note_value)
-		playback._play_with_simpleaudio(note.sound)
-		for _ in range(note_num):
-			try:
-				note.play()
-			except Exception as e:
-				print("Number of notes played before this error: " + str(notes_played))
-				raise e
-			notes_played += 1
 	
 	def test4():
-		note_gp = Note_group(['F4', 'G4', 'A4', 'B4', 'C5', 'C4', 'D4', 'E4'])
-		for note in note_gp:
-			print(note)
+		# note_gp = Note_group(['F4', 'G4', 'A4', 'B4', 'C5', 'C4', 'D4', 'E4'])
+		# for note in note_gp:
+		# 	print(note)
 		
 		note_gp = Note_group(['A4']*100)
 		print(note_gp)
+		for _ in note_gp.play():
+			pass
 	
-	note_value = 1/32
+	def test1():
+		sound = AudioSegment.from_file("/home/lucas/Documents/GitHub/n-back-python/input/piano/piano.mf.C4.mp3", 'mp3' )
+		print(sound)
+		for _ in range(50):
+			p = playback._play_with_simpleaudio(sound)
+			time.sleep(1)
+			p.stop()
+			print("Played")
+	note_value = 1/4
 	note_num = 100
-	test4()
+	#note1 = Note(, 60, note_value)
+	#note1.play()
+	test1()
+	#test4()
 	
 	#load_notes(note_group, 1/32)
 	
