@@ -36,7 +36,7 @@ class VolumeTestThread(QtCore.QThread):
 
 			while not self.stop:
 				self.pre_start_execution.emit()
-				testCase = VolumeTestCase(None, 5, self.bpm, self.instrument, DEFAULT_SCALE)
+				testCase = VolumeTestCase(None, 20, self.bpm, self.instrument, DEFAULT_SCALE)
 				self.start_execution.emit()
 				for _ in testCase.note_group.play():
 					if self.stop:
@@ -125,16 +125,16 @@ class TonalNbackTestThread(NbackTestThread):
 						semitones = up_or_down_list[up_or_down_list_id] * self.semitones
 						up_or_down_list_id += 1
 					else:
-						semitones = None
+						semitones = self.semitones
 					testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
 					
-					testCase.note_group.play()
-					if self.stop:
-						print("Thread was interrupted. Stopping now.\n")
-						return
+					for _ in testCase.note_group.play():
+						if self.stop:
+							print("Thread was interrupted. Stopping now.\n")
+							return
 					self.done_testCase.emit(testCase)
 					self.wait_for_signal()
 					testCaseId += 1

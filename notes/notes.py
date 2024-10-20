@@ -106,6 +106,10 @@ class Note:
 	@property
 	def sound(self):
 		return self._sound
+
+	@sound.deleter
+	def sound(self) -> None:
+		del self._sound
 	
 	@property
 	def path(self):
@@ -233,8 +237,9 @@ class Note:
 	
 	def remove_silence(self) -> AudioSegment:
 		start_trim = detect_leading_silence(self.sound)
-		end_trim = detect_leading_silence(self.sound.reverse())
-		trimmed_sound = self.sound[start_trim:len(self.sound)-end_trim]
+		# end_trim = detect_leading_silence(self.sound.reverse()) #removing trailing silence screws up the sound
+		# trimmed_sound = self.sound[start_trim:len(self.sound)-end_trim]
+		trimmed_sound = self.sound[start_trim:]
 		trimmed_sound.export(self.path, format = self.extension)
 		self._sound = trimmed_sound
 	
@@ -367,7 +372,7 @@ class Note_group:
 
 			try:
 				note.play()
-				yield 
+				yield note
 			except Exception as e:
 				time_ended = time.time()
 				print("\nNumber of notes played before this error: " + str(notes_played))
@@ -389,8 +394,18 @@ class Note_group:
 	
 	def remove_silence(self):
 		for note in self:
-			note.remove_silence(note.sound)
-			yield
+			note.remove_silence()
+			yield note
+	
+	def getRandomNote(self):
+		number_of_notes = len(self.notes)
+		if number_of_notes == 0:
+			return None
+		random_number = random.randint(0, number_of_notes - 1)
+		# retrieve sound from id
+		random_note = self.notes[random_number]
+		random_note.play()
+		return random_note
 
 	def delete_files(self) -> None:
 		for note in self.notes:
@@ -426,37 +441,12 @@ def getAllNotes(intensity=DEFAULT_INTENSITY, instrument:str = DEFAULT_INSTRUMENT
 
 
 if __name__ == '__main__':
+	import time
 	
-	def test4():
-		# note_gp = Note_group(['F4', 'G4', 'A4', 'B4', 'C5', 'C4', 'D4', 'E4'])
-		# for note in note_gp:
-		# 	print(note)
-		
-		note_gp = Note_group(['A4']*100)
-		print(note_gp)
-		for _ in note_gp.play():
-			pass
-	
-	def test1():
-		sound = AudioSegment.from_file("/home/lucas/Documents/GitHub/n-back-python/input/piano/piano.mf.C4.mp3", 'mp3' )
-		print(sound)
-		for _ in range(50):
-			p = playback._play_with_simpleaudio(sound)
-			time.sleep(1)
-			p.stop()
-			print("Played")
 	note_value = 1/4
 	note_num = 100
-	#note1 = Note(, 60, note_value)
-	#note1.play()
-	test1()
-	#test4()
-	
-	#load_notes(note_group, 1/32)
-	
-	#test1(1/4) #49s; 60 notes
-	#test1(1/2) #97s; 60 notes
-	#test1(1/8) #25s; 60 notes
-	#test1(1/8, False) #31s; 60 notes; 6e-6s per note
+	note_group = getAllNotes(audio_folder='', extension=DEFAULT_NOTE_EXTENSION)
+	for note in note_group.play():
+		print("Played", note.full_name)
 
 	

@@ -109,7 +109,7 @@ class Instrument:
 	
 	def removeSilence(self, note_extension = DEFAULT_NOTE_EXTENSION) -> None:
 		for intensity in VALID_INTENSITIES:
-			note_group = getAllNotes(intensity, self.name, note_extension)
+			note_group = getAllNotes(intensity, self.name, note_extension, "")
 			for note in note_group.remove_silence():
 				print("Successfully removed silence from", note.path)
 	
@@ -129,3 +129,5 @@ def removeSilenceFromAllFiles():
 	for instrument in instruments:
 		instrument.removeSilence()
 
+if __name__ == '__main__':
+	removeSilenceFromAllFiles()
