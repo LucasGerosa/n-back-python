@@ -117,7 +117,7 @@ def create_question(layout, question_str:str, *answer_str):
 
 class FormField:
 
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str, validate_func:typing.Callable, translate:typing.Callable):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:typing.Callable=lambda: (True, ""), translate:typing.Callable = lambda x:x):
 		self.label = QtWidgets.QLabel(label)
 		self.default_txt = default_txt
 		self.text_box = QtWidgets.QLineEdit()
@@ -144,21 +144,24 @@ class FormField:
 
 	@staticmethod
 	def is_positive_digit(text: str) -> tuple[bool, str]:
+		result, error_message = FormField.is_non_empty(text)
+		if not result:
+			return False, error_message
 		if not (text.isdigit() and int(text) > 0):
-			return False, f'Please enter an integer bigger than 0, not {text}'
+			return False, f'Please enter an integer bigger than 0, not "{text}"'
 		return True, ""
 	
 	@staticmethod
 	def is_positive_float_or_fraction(text: str) -> tuple[bool, str]:
 		num = general_utils.is_float_or_fraction(text)
 		if not num or num <= 0:
-			return False, f'Please enter a fraction or a decimal bigger than 0, not {text}'
+			return False, f'Please enter a fraction or a decimal bigger than 0, not "{text}"'
 		return True, ""
 	
 	@staticmethod
 	def is_valid_instrument(text: str) -> tuple[bool, str]:
 		if text not in INSTRUMENTS:
-			return False, f'Please enter a valid instrument, not {text}'
+			return False, f'Please enter a valid instrument, not "{text}"'
 		return True, ""
 	
 	@staticmethod
@@ -169,25 +172,19 @@ class FormField:
 
 class Forms:
 	
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable, fields:list[FormField]|None = None):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
 		self.fields = fields
 		self.translate = translate
-		reset_button = QtWidgets.QPushButton(translate("Reset"))
-		layout_v.addWidget(reset_button)
 		self.layout_v = layout_v
-		def reset():
-			for field in fields:
-				field.reset()
-		reset_button.clicked.connect(reset)
 	
-	def create_field(self, label, default_txt, validate_func):
+	def create_field(self, label, default_txt = "", validate_func:typing.Callable=lambda: (True, "")):
 		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate)
 		self.fields.append(field)
 		return field
 	
-	def check_fields(self) -> list:
+	def validate_fields(self) -> list:
 		incorrect_fields:list[str] = []
 		for field in self.fields:
 			if not field.validate_field()[0]:
@@ -196,7 +193,24 @@ class Forms:
 		return incorrect_fields
 	
 	def summon_incorrect_fields_msgbox(self, incorrect_fields:list[str]) -> None:
-		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+self.translate(".\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+self.translate("\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+	
+	def create_player_ID_field(self):
+		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_positive_digit)
+	
+	def create_instrument_field(self):
+		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_valid_instrument)
+	
+	def create_bpm_field(self):
+		return self.create_field(self.translate("How many bpm?"), str(DEFAULT_BPM), FormField.is_positive_float_or_fraction)
+	
+	def summon_reset_button(self):
+		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
+		self.layout_v.addWidget(reset_button)
+		def reset():
+			for field in self.fields:
+				field.reset()
+		reset_button.clicked.connect(reset)
 
 if __name__ == "__main__":
 	field = FormField(QtWidgets.QVBoxLayout(), "Test", "1", FormField.is_positive_digit, lambda x: x)

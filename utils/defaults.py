@@ -13,6 +13,7 @@ VALID_INTENSITIES = ('mf', 'ff', 'pp')
 #The following sequences have been randomly shuffled from the setup/generate_TDT_sequences.py script.
 
 AVAILABLE_TDT_NOTE_QUANTITIES = (4, 6, 8, 10)
+AVAILABLE_NUMBER_OF_TRIALS = 10
 TONAL_DISCRIMINATION_TASK_SEQUENCES4 = [ #The sequences of notes to be played in the tonal discrimination task
 	['B4', 'D5', 'A4', 'G4'],
 	['E4', 'C4', 'F4', 'D4'],

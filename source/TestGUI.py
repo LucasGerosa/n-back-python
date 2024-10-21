@@ -94,21 +94,29 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			if int(text) in AVAILABLE_TDT_NOTE_QUANTITIES:
 				return True, ""
 			return False, "Currently, the only quantity of notes available is 4, 6, 8, 10."
+		
+		def is_number_of_trials_valid(text:str) -> tuple[bool, str]:
+			result, error_message = PyQt6_utils.FormField.is_positive_digit(text)
+			if not result:
+				return False, error_message
+			if int(text) <= AVAILABLE_NUMBER_OF_TRIALS:
+				return True, ""
+			return False, f"Since just {AVAILABLE_NUMBER_OF_TRIALS} sequences exist for the TDT test for now, number_of_trials must be less than or equal to {AVAILABLE_NUMBER_OF_TRIALS}. Got {text} instead."
 
 		forms = PyQt6_utils.Forms(layout_v, self.translate)
-		player_ID_field = forms.create_field(self.translate("Participant ID"), "123456", PyQt6_utils.FormField.is_positive_digit)
-		number_of_trials_field = forms.create_field(self.translate("How many trials?"), "10", PyQt6_utils.FormField.is_positive_digit)
+		player_ID_field = forms.create_player_ID_field()
+		number_of_trials_field = forms.create_field(self.translate("How many trials?"), "10", is_number_of_trials_valid)
 		number_of_notes_field = forms.create_field(self.translate("How many notes?"), "4", is_notes_quantity_valid)
-		bpm_field = forms.create_field(self.translate("How many bpm?"), str(DEFAULT_BPM), PyQt6_utils.FormField.is_positive_float_or_fraction)
-		instrument_field = forms.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, PyQt6_utils.FormField.is_valid_instrument)
+		bpm_field = forms.create_bpm_field()
+		instrument_field = forms.create_instrument_field()
+		forms.summon_reset_button()
 
 		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		#button_size = play_test_button.sizeHint()
 
 		def play_test() -> None:
-			incorrect_fields = forms.check_fields()
-			print(incorrect_fields)
+			incorrect_fields = forms.validate_fields()
 			if incorrect_fields != []:
 				forms.summon_incorrect_fields_msgbox(incorrect_fields)
 				return
@@ -391,7 +399,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 				incorrect_fields.append(instrument_q)
 			
 			if incorrect_fields != []:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+self.translate(".\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+ ".\n\n" + self.translate("Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
 				return
 			
 			def is_notes_quantity_valid():

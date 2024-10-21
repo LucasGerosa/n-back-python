@@ -145,14 +145,8 @@ msgid "The following fields are incorrect or incomplete:\n\n"
 msgstr "Os seguintes campos estão incorretos ou incompletos:\n\n"
 
 #: source/app.py:301
-msgid ""
-".\n"
-"\n"
-" Correct them and try again"
-msgstr ""
-".\n"
-"\n"
-" Corrija-os e tente novamente"
+msgid "Correct them and try again"
+msgstr "Corrija-os e tente novamente"
 
 #: source/app.py:305
 msgid "The quantity of notes needs to be greater than nback"
@@ -319,9 +313,9 @@ msgid "Participant ID"
 
 msgstr "ID do participante"
 
-msgid "Starting n-back (int)"
+msgid "Starting n-back"
 
-msgstr "N-back inicial (int)"
+msgstr "N-back inicial"
 
 msgid "Currently, the only quantity of notes available is 4, 6, 8, 10."
 

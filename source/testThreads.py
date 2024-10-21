@@ -226,6 +226,12 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 class TonalDiscriminationTaskTestThread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
+	
+	def __init__(self, playerName:str, number_of_trials:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		assert number_of_trials <= AVAILABLE_NUMBER_OF_TRIALS, f"Since just {AVAILABLE_NUMBER_OF_TRIALS} sequences exist for the TDT test for now, number_of_trials must be less than or equal to {AVAILABLE_NUMBER_OF_TRIALS}. Got {number_of_trials} instead."
+		super().__init__(playerName, number_of_trials, notesQuantity, bpm, instrument)
+
+
 	def executeLoop(self):
 		
 		try:
