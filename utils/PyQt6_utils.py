@@ -150,7 +150,8 @@ class FormField:
 	
 	@staticmethod
 	def is_positive_float_or_fraction(text: str) -> tuple[bool, str]:
-		if not general_utils.is_float_or_fraction(text) or float(text) <= 0:
+		num = general_utils.is_float_or_fraction(text)
+		if not num or num <= 0:
 			return False, f'Please enter a fraction or a decimal bigger than 0, not {text}'
 		return True, ""
 	
@@ -168,16 +169,23 @@ class FormField:
 
 class Forms:
 	
-	def __init__(self, fields:tuple[FormField], layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable):
-		
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable, fields:list[FormField]|None = None):
+		if fields is None:
+			fields = []
 		self.fields = fields
 		self.translate = translate
 		reset_button = QtWidgets.QPushButton(translate("Reset"))
 		layout_v.addWidget(reset_button)
+		self.layout_v = layout_v
 		def reset():
 			for field in fields:
 				field.reset()
 		reset_button.clicked.connect(reset)
+	
+	def create_field(self, label, default_txt, validate_func):
+		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate)
+		self.fields.append(field)
+		return field
 	
 	def check_fields(self) -> list:
 		incorrect_fields:list[str] = []

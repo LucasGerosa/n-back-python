@@ -112,12 +112,12 @@ msgid "n-back (int)"
 msgstr "n-back (int)"
 
 #: source/app.py:205
-msgid "How many notes (int)"
-msgstr "Quantas notas (int)"
+msgid "How many notes?"
+msgstr "Quantas notas?"
 
 #: source/app.py:206
-msgid "How many bpm (float)"
-msgstr "Quantos bpm (float)"
+msgid "How many bpm?"
+msgstr "Quantos bpm?"
 
 #: source/app.py:207
 msgid "Instrument (piano or guitar)"

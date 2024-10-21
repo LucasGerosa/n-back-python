@@ -5,13 +5,14 @@ from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestC
 import TestCase
 from notes import notes
 from utils import note_str_utils
+from utils.defaults import AVAILABLE_TDT_NOTE_QUANTITIES
 
 sample_note_list = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
 sample_tuple = (sample_note_list, 'mf', 1/4)
 
 
 def test_TonalDiscriminationTaskTestCase():
-	for i in (4, 6, 8, 10):
+	for i in AVAILABLE_TDT_NOTE_QUANTITIES: #TODO add the tests
 		pass
 	tdt_testCase = TonalDiscriminationTaskTestCase(10)
 	

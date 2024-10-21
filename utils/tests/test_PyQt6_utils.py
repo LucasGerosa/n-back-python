@@ -11,7 +11,7 @@ def forms(qtbot):
 	layout = QtWidgets.QVBoxLayout()
 	field = FormField(layout, "Test Field", "1", FormField.is_positive_digit, lambda x: x)
 	qtbot.addWidget(field.text_box)  # Add the field to the test bot
-	forms = Forms((field,), layout, lambda x: x)
+	forms = Forms(layout, lambda x: x, [field,])
 	return forms
 
 def test_positive_digit_validation(qtbot, forms):
