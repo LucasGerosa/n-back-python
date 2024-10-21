@@ -38,7 +38,9 @@ class VolumeTestThread(QtCore.QThread):
 				self.pre_start_execution.emit()
 				testCase = VolumeTestCase(None, 20, self.bpm, self.instrument, DEFAULT_SCALE)
 				self.start_execution.emit()
-				for _ in testCase.note_group.play():
+				for note in testCase.note_group.notes:
+					print(note.full_name)
+					note.play()
 					if self.stop:
 						print("Thread was interrupted. Stopping now.\n")
 						return
@@ -56,8 +58,11 @@ class TestThread(QtCore.QThread):
 	pre_start_execution = QtCore.pyqtSignal()
 	started_trial_signal = QtCore.pyqtSignal(int)
 	
-	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
-		assert test_case_n > 0
+	def __init__(self, playerName:str, test_case_n:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
+		assert test_case_n > 0, f"test_case_n must be greater than 0. Got {test_case_n} instead."
+		assert notesQuantity > 0, f"notesQuantity must be greater than 0. Got {notesQuantity} instead."
+		assert bpm > 0, f"bpm must be greater than 0. Got {bpm} instead."
+
 		self.lock = QtCore.QReadWriteLock()
 		self.mutex = QtCore.QMutex()
 		self.wait_condition = QtCore.QWaitCondition()
@@ -65,11 +70,9 @@ class TestThread(QtCore.QThread):
 		super().__init__()
 		self.playerName = playerName
 		self.test_case_n = test_case_n
-		self.nBack = nBack
 		self.notesQuantity = notesQuantity
 		self.bpm = bpm
 		self.instrument = instrument
-		self.trials = trials
 		self.id = 0
 	
 	def wait_for_signal(self):
@@ -90,9 +93,13 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
-	def __init__(self, trials:int, playerName:str, test_case_n:int, nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, semitones:int=1):
-
-		super().__init__(trials, playerName, test_case_n, nBack, notesQuantity, bpm, instrument)
+	def __init__(self, trials:int, playerName:str, test_case_n:int, initial_nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, semitones:int=1):
+		assert initial_nBack > 0, f"initial_nBack must be greater than 0. Got {initial_nBack} instead."
+		assert initial_nBack + trials <= notesQuantity, f"initial_nBack + trials must be less than or equal to notesQuantity. Got initial_nBack = {initial_nBack}, trials = {trials}, notesQuantity = {notesQuantity}."
+		assert trials > 0, f"trials must be greater than 0. Got {trials} instead."
+		self.trials = trials
+		self.initial_nBack = initial_nBack
+		super().__init__(playerName, test_case_n, notesQuantity, bpm, instrument)
 		if scale == None:
 			self.scale = DEFAULT_SCALE
 			return
@@ -103,7 +110,7 @@ class TonalNbackTestThread(NbackTestThread):
 	def executeLoop(self):
 		try:
 			testCaseList_list = []
-			nback = self.nBack
+			nback = self.initial_nBack
 			series_id = 0
 			while series_id < self.trials and not self.stop:
 				self.started_trial_signal.emit(nback)
@@ -112,7 +119,7 @@ class TonalNbackTestThread(NbackTestThread):
 				quantity_of_true = len([x for x in boolean_list if x == True])
 				up_or_down_list = general_utils.repeat_values_to_size(quantity_of_true, 1, -1) #list for which sequences are different are going to be up a semitone
 				random.shuffle(up_or_down_list)
-				print("Is last note different: " + str(boolean_list),'Semitones: ' + str(up_or_down_list))
+				print(f"Nback: {nback}; Is last note different: " + str(boolean_list),'Semitones: ' + str(up_or_down_list))
 				up_or_down_list_id = 0
 				testCaseList = []
 				testCaseId = 0
@@ -121,22 +128,29 @@ class TonalNbackTestThread(NbackTestThread):
 				while testCaseId < self.test_case_n and not self.stop:
 					self.pre_start_execution.emit()
 					isLastNoteDifferent = boolean_list[testCaseId]
+					print()
 					if isLastNoteDifferent == True:
 						semitones = up_or_down_list[up_or_down_list_id] * self.semitones
 						up_or_down_list_id += 1
+						print("Last note is different.")
 					else:
 						semitones = self.semitones
+						print("Last note is equal.")
 					testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
 					testCaseList.append(testCase)
 					self.start_execution.emit()
 					self.wait_for_signal()
 					
-					for _ in testCase.note_group.play():
+					for note in testCase.note_group.notes:
+						print(note.full_name)
+						note.play()
 						if self.stop:
 							print("Thread was interrupted. Stopping now.\n")
 							return
+					
 					self.done_testCase.emit(testCase)
 					self.wait_for_signal()
+					testCase.print_result()
 					testCaseId += 1
 					self.id += 1
 				series_id += 1
@@ -169,7 +183,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 			self.id = 0
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = NbackTestCase(self.trials, self.id, self.nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
+				testCase = NbackTestCase(self.trials, self.id, self.initial_nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
@@ -220,24 +234,33 @@ class TonalDiscriminationTaskTestThread(TestThread):
 			#boolean_list = IOUtils.repeat_values_to_size(self.test_case_n) #list for which trials are going to be same or different
 			while self.id < self.test_case_n and not self.stop:
 				self.pre_start_execution.emit()
-				testCase = TonalDiscriminationTaskTestCase(self.id, self.notesQuantity, self.bpm, self.instrument, self.id)
+				testCase = TonalDiscriminationTaskTestCase(self.notesQuantity, self.bpm, self.instrument, self.id)
 				testCaseList.append(testCase)
 				self.start_execution.emit()
 				self.wait_for_signal()
 				
-				testCase.note_group1.play()
-				if self.stop:
-					print("Thread was interrupted. Stopping now.\n")
-					return
-				
+				for note in testCase.note_group1.notes:
+					print(note.full_name)
+					note.play()
+					if self.stop:
+						print("Thread was interrupted. Stopping now.\n")
+						return
+					
 				self.between_note_groups.emit()
 				self.wait_for_signal()
 
-				testCase.note_group2.play()
+				for note in testCase.note_group2.notes:
+					print(note.full_name)
+					note.play()
+					if self.stop:
+						print("Thread was interrupted. Stopping now.\n")
+						return
+					
 				self.done_testCase.emit(testCase)
 				self.wait_for_signal()
-
+				testCase.print_result()
 				self.id += 1
+
 			if self.stop:
 				print("Thread was interrupted. Stopping now.\n")
 				return

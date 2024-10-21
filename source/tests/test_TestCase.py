@@ -10,11 +10,14 @@ sample_note_list = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
 sample_tuple = (sample_note_list, 'mf', 1/4)
 
 
-# def test_TonalDiscriminationTaskTestCase():
-# 	tdt_testCase = TonalDiscriminationTaskTestCase(0, 10)
+def test_TonalDiscriminationTaskTestCase():
+	for i in (4, 6, 8, 10):
+		pass
+	tdt_testCase = TonalDiscriminationTaskTestCase(10)
+	
 
-# def test_VolumeTestCase():
-# 	volumeTestCase = VolumeTestCase(sample_note_list)
+def test_VolumeTestCase():
+	volumeTestCase = VolumeTestCase(sample_tuple)
 
 def test_TestCase():
 	testCase = TestCase.TestCase(1, 10)

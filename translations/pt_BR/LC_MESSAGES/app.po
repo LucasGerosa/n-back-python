@@ -326,3 +326,7 @@ msgstr "N-back inicial (int)"
 msgid "Currently, the only quantity of notes available is 4, 6, 8, 10."
 
 msgstr "Atualmente, a única quantidade de notas disponível é 4, 6, 8, 10."
+
+msgid "The quantity of notes needs to be greater than or equal to the initial n-back + quantity of trials."
+
+msgstr "A quantidade de notas deve ser maior ou igual ao n-back inicial + quantidade de séries."

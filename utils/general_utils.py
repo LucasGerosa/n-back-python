@@ -1,9 +1,16 @@
 import os
 import sys, os
 import math
+from fractions import Fraction
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 
+
+def is_float_or_fraction(value:str):
+	try:
+		return float(Fraction(value))
+	except ValueError:
+		return False
 
 def lower_first_letter(s:str) -> str:
 	"""Return the string with the first letter in lowercase."""

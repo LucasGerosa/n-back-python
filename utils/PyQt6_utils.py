@@ -1,26 +1,21 @@
+'''Contains utilities for the GUI. Basically shortcuts for creating widgets and layouts for not having to repeat code in the source files.'''
+
 from PyQt6.QtCore import Qt, QSize, QRegularExpression, QTimer
 from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication, QIntValidator, QDoubleValidator, QRegularExpressionValidator, QPalette, QColor
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
-from fractions import Fraction
 from collections.abc import Iterable
 from PyQt6 import QtCore, QtGui, QtWidgets
+import typing
+import sys; import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from utils.defaults import *
+from utils import general_utils
 
 FONT = QFont('Arial', 18)
 BUTTON_SIZE = 80
 #OFFSET_X = 8
 #OFFSET_Y = 0
 
-'''Contains utilities for the GUI. Basically shortcuts for creating widgets and layouts for not having to repeat code in the source files.'''
-
-def is_float_or_fraction(value:str):
-	try:
-		return float(value)
-
-	except ValueError:
-		try:
-			return float(Fraction(value))
-		except ValueError:
-			return
 
 # def get_center(width=0, height=0):
 # 	x:int = width // 2
@@ -119,3 +114,83 @@ def create_question(layout, question_str:str, *answer_str):
 
 
 	return answers, question, layout_v_h, destroy_all
+
+class FormField:
+
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str, validate_func:typing.Callable, translate:typing.Callable):
+		self.label = QtWidgets.QLabel(label)
+		self.default_txt = default_txt
+		self.text_box = QtWidgets.QLineEdit()
+		self.reset()
+		self.validate_field = lambda:validate_func(self.text_box.text())
+		self.text_box.editingFinished.connect(lambda: self.run_real_time_validation(validate_func, translate))
+		layout_v_h = QtWidgets.QHBoxLayout()
+		layout_v_h.addWidget(self.label)
+		layout_v_h.addWidget(self.text_box)
+		layout_v.addLayout(layout_v_h)
+
+	def reset(self):
+		self.text_box.setText(self.default_txt)
+
+	def run_real_time_validation(self, validate_func: typing.Callable, translate: typing.Callable):
+		"""Run validation and summon message box if necessary after editing is finished."""
+		result, error_message = validate_func(self.text_box.text())
+		if not result:
+			self.summon_msgbox(translate, error_message)
+		
+	@staticmethod
+	def summon_msgbox(translate:typing.Callable, message_text:str) -> None:
+		get_msg_box(translate("Incorrect input"), translate(message_text), QtWidgets.QMessageBox.Icon.Warning).exec()
+
+	@staticmethod
+	def is_positive_digit(text: str) -> tuple[bool, str]:
+		if not (text.isdigit() and int(text) > 0):
+			return False, f'Please enter an integer bigger than 0, not {text}'
+		return True, ""
+	
+	@staticmethod
+	def is_positive_float_or_fraction(text: str) -> tuple[bool, str]:
+		if not general_utils.is_float_or_fraction(text) or float(text) <= 0:
+			return False, f'Please enter a fraction or a decimal bigger than 0, not {text}'
+		return True, ""
+	
+	@staticmethod
+	def is_valid_instrument(text: str) -> tuple[bool, str]:
+		if text not in INSTRUMENTS:
+			return False, f'Please enter a valid instrument, not {text}'
+		return True, ""
+	
+	@staticmethod
+	def is_non_empty(text: str) -> tuple[bool, str]:
+		if text == "":
+			return False, "Please enter something."
+		return True, ""
+
+class Forms:
+	
+	def __init__(self, fields:tuple[FormField], layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable):
+		
+		self.fields = fields
+		self.translate = translate
+		reset_button = QtWidgets.QPushButton(translate("Reset"))
+		layout_v.addWidget(reset_button)
+		def reset():
+			for field in fields:
+				field.reset()
+		reset_button.clicked.connect(reset)
+	
+	def check_fields(self) -> list:
+		incorrect_fields:list[str] = []
+		for field in self.fields:
+			if not field.validate_field()[0]:
+				incorrect_fields.append(field.label.text())
+			
+		return incorrect_fields
+	
+	def summon_incorrect_fields_msgbox(self, incorrect_fields:list[str]) -> None:
+		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+self.translate(".\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+
+if __name__ == "__main__":
+	field = FormField(QtWidgets.QVBoxLayout(), "Test", "1", FormField.is_positive_digit, lambda x: x)
+	field.text_box.setText("this should not work")
+	print(field.validate_field())

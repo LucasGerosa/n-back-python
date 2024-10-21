@@ -19,11 +19,11 @@ import io
 '''
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 
-class AnswerType(Enum):
+class AnswerType():
 	SAME = 'same'
 	DIFFERENT = 'different'
 
-class ResultType(Enum):
+class ResultType():
 	CORRECT = 'correct'
 	INCORRECT = 'incorrect'
 
@@ -101,10 +101,12 @@ class TestCase:
 
 class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
-	def __init__(self, config_notes_str:None|tuple[list, str, float], id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
+	def __init__(self, config_notes_str:None|tuple[list, str, float], id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1, extension=notes.DEFAULT_NOTE_EXTENSION) -> None: #TODO: I don't think id_num is a necessary parameter.
+		assert nBack > 0, f"N-back should be > 0. Got {nBack} instead."
+		assert numberOfNotes > 0, f"numberOfNotes should be > 0. Got {numberOfNotes} instead."
 		assert numberOfNotes > nBack, f"numberOfNotes should be > nBack. Got numberOfNotes = {numberOfNotes} and nBack = {nBack} instead."
-		self._nBack: int = nBack
 		assert semitones != 0, f"semitones should be negative or positive. Got 0 instead."
+		self._nBack: int = nBack
 		self._semitones = semitones
 		super().__init__(id_num, numberOfNotes, scale)
 		self._set_note_group(config_notes_str, bpm, instrument, isLastNoteDifferent, semitones, extension)
@@ -125,8 +127,8 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		print(f"Correct answer: {self.correct_answer}")
 
 	def print_result(self):
-		print(f"Participant's answer: {self.answer}")
-		print(f"Result: {self.result}\n\n")
+		print(f"\nParticipant's answer: {self.answer}")
+		print(f"Result: {self.result}\n")
 
 	def _set_note_group(self, config_notes_str:None|tuple[list, str, float], bpm:float, instrument:str, isLastNoteDifferent:bool, semitones:int, extension:str) -> None:
 
@@ -197,6 +199,7 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 				quantity_wrong_answers = 0
 				for t in testCaseList:
 					if t.result == ResultType.CORRECT:
+						
 						quantity_right_answers += 1
 						total_quantity_right_answers += 1
 
@@ -256,8 +259,7 @@ class VolumeTestCase(TestCase):
 		self._note_group = notes.Note_group(random_notes_str, intensity, bpm, instrument, note_value, extension=extension)
 	
 class TonalDiscriminationTaskTestCase:
-	def __init__(self, id_num:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id:int=0, intensity=DEFAULT_INTENSITY, note_value=DEFAULT_NOTE_VALUE, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
-		self.id_num: int = id_num
+	def __init__(self, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id:int=0, intensity=DEFAULT_INTENSITY, note_value=DEFAULT_NOTE_VALUE, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
 		self.note_group1 = notes.Note_group(sequence, intensity=intensity, bpm=bpm, instrument=instrument, note_value=note_value, extension=extension)
@@ -291,15 +293,16 @@ class TonalDiscriminationTaskTestCase:
 
 		sequence = sample_sequences[self.sequence_id] #this means the sequences are just going to be sampled in the same order always.
 		sequence_mismatch = sample_sequences_mismatch[self.sequence_id]
-		#sliced_sequence = self.slice_sequence(sequence, notesQuantity)
-		#sliced_sequence_mismatch = self.slice_sequence(sequence_mismatch, notesQuantity)
-		#return sliced_sequence, sliced_sequence_mismatch
 		self.is_sequence_mismatch = sequence != sequence_mismatch
 		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
 		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):
 		return sequence[:notesQuantity]
+	
+	def print_result(self):
+		print(f"Participant's answer: {self.answer}")
+		print(f"Result: {self.result}\n\n")
 	
 	def validateAnswer(self, answer:AnswerType) -> None:
 
@@ -319,8 +322,6 @@ class TonalDiscriminationTaskTestCase:
 				raise ValueError("Unexpected value caused by bad handling of unexpected values. Ask the developers to fix this.")
 		
 		self._answer = answer
-		print(f"Participant's answer: {answer}")
-		print(f"Result: {self.result}\n\n")
 	
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
@@ -328,12 +329,14 @@ class TonalDiscriminationTaskTestCase:
 			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
 			testCase_quantity_right_answers = 0
 			testCase_quantity_wrong_answers = 0
+			id_num = 0
 			for t in testCaseList:
 				if t.result == ResultType.CORRECT:
 					testCase_quantity_right_answers += 1
 				elif t.result == ResultType.INCORRECT:
 					testCase_quantity_wrong_answers += 1
-				writer.writerow([t.id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
+				writer.writerow([id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
+				id_num += 1
 		
 		def create_csv_file(f, testCaseList):
 			with f:

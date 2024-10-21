@@ -441,12 +441,11 @@ def getAllNotes(intensity=DEFAULT_INTENSITY, instrument:str = DEFAULT_INSTRUMENT
 
 
 if __name__ == '__main__':
-	import time
 	
-	note_value = 1/4
-	note_num = 100
-	note_group = getAllNotes(audio_folder='', extension=DEFAULT_NOTE_EXTENSION)
-	for note in note_group.play():
-		print("Played", note.full_name)
-
+	def test_all_notes():
+		note_group = getAllNotes(audio_folder='', extension=DEFAULT_NOTE_EXTENSION)
+		for note in note_group.play():
+			print("Played", note.full_name)
+	
+	test_all_notes()
 	

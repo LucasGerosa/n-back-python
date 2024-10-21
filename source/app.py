@@ -1,3 +1,6 @@
+'''This file is the main file that should be run to run the program. It ties together all the elements of the GUI and calls functions that deal with the tests (in testThreads.py and TestCase.py)'''
+import warnings
+warnings.filterwarnings("ignore", message="Couldn't find ffmpeg or avconv", category=RuntimeWarning)
 from PyQt6 import QtWidgets, QtCore, QtGui
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -8,7 +11,6 @@ from typing import Dict, Optional, List
 from fractions import Fraction
 import TestGUI
 
-'''This file is the main file that should be run to run the program. It ties together all the elements of the GUI and calls functions that deal with the tests (in testThreads.py and TestCase.py)'''
 	
 class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI, TestGUI.VisuotonalNbackTestGUI):
 
