@@ -54,7 +54,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		h_buttons = (self.get_settings_button(), self.get_play_button())
 		layout_h, layout_v, self.main_menu = self.setup_menu(self.translate("Main menu"), h_buttons)
 
-	def setup_settings(self):
+	def setup_settings(self) -> None:
 		def create_save_function(text_box, setting_name):
 			def save_function():
 				notes_config.change_setting(setting_name, text_box.text())
@@ -70,24 +70,18 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
 
-		setting_dict: Dict[str, QtWidgets.QLineEdit] = {}
+		forms = PyQt6_utils.Forms(layout_v, self.translate)
 
 		for setting_name in all_settings:
-			layout_v_h = QtWidgets.QHBoxLayout()
-
-			setting_name_label = QtWidgets.QLabel(self.translate(setting_name.capitalize()))
-			layout_v_h.addWidget(setting_name_label)
-
-			text_box = QtWidgets.QLineEdit()
 			setting_value = all_settings.get(setting_name)
+			forms.create_field(self.translate(setting_name).capitalize(), setting_value, )
+
+
 			text_box.setText(setting_value)
 			text_box.returnPressed.connect(create_save_function(text_box, setting_name))
 			layout_v_h.addWidget(text_box)
-			setting_dict[setting_name] = text_box
-			layout_v.addLayout(layout_v_h)
-
-		if setting_dict == {}:
-			raise ValueError("There are no settings. This is a bug. Please contact the developers.")
+		
+		forms.summon_reset_button()
 
 		save_button = QtWidgets.QPushButton(self.translate("Save"))
 
@@ -137,17 +131,6 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		save_button.clicked.connect(save_all)
 		layout_v.addWidget(save_button)
 
-		reset_button = QtWidgets.QPushButton(self.translate("Reset settings"))
-
-		def reset_settings():
-			config = notes_config.reset_settings()
-			for setting_name in setting_dict:
-				text_box = setting_dict[setting_name]
-				text_box.setText(config[setting_name])
-			PyQt6_utils.get_msg_box(self.translate("Settings reset"), self.translate("Settings have been successfully reset.")).exec()
-
-		reset_button.clicked.connect(reset_settings)
-		layout_v.addWidget(reset_button)
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),

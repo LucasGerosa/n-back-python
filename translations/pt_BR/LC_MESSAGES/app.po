@@ -209,29 +209,26 @@ msgstr "A última nota tocada é igual à nota {} antes da última?"
 msgid "Number of trials"
 msgstr "Quantidade de séries"
 
-msgid "Notes"
-msgstr "Notas"
+msgid "notes"
+msgstr "notas"
 
-msgid "Note intensity"
-msgstr "Intensidade da nota"
+msgid "note intensity"
+msgstr "intensidade da nota"
 
-msgid "Note duration"
-msgstr "Duração da nota"
+msgid "note duration"
+msgstr "duração da nota"
 
-msgid "Language"
-msgstr "Idioma"
+msgid "language"
+msgstr "idioma"
 
-msgid "All"
-msgstr "Todas"
+msgid "all"
+msgstr "todas"
 
 msgid "Information"
 msgstr "Informação"
 
 msgid "Help"
 msgstr "Ajuda"
-
-msgid "How many sequences?"
-msgstr "Quantas sequências?"
 
 msgid ""
 "The following trial will have\n"
