@@ -87,7 +87,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 
-		def is_notes_quantity_valid(text:str) -> tuple[bool, str]:
+		def is_number_of_notes_valid(text:str) -> tuple[bool, str]:
 			result, error_message = PyQt6_utils.FormField.is_positive_digit(text)
 			if not result:
 				return False, error_message
@@ -105,8 +105,8 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 
 		forms = PyQt6_utils.Forms(layout_v, self.translate)
 		player_ID_field = forms.create_player_ID_field()
-		number_of_trials_field = forms.create_field(self.translate("How many trials?"), "10", is_number_of_trials_valid)
-		number_of_notes_field = forms.create_field(self.translate("How many notes?"), "4", is_notes_quantity_valid)
+		number_of_trials_field = forms.create_number_of_trials_field("10", is_number_of_trials_valid)
+		number_of_notes_field = forms.create_number_of_notes_field("4", is_number_of_notes_valid)
 		bpm_field = forms.create_bpm_field()
 		instrument_field = forms.create_instrument_field()
 		forms.summon_reset_button()
@@ -281,72 +281,27 @@ class TonalNbackTestGUI(NbackTestGUI):
 		
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
-		player_name_q = self.translate("Participant ID")
-		sequences_q = self.translate("How many sequences?")
-		trials_q = self.translate("How many trials?")
-		n_back_q = self.translate("Starting n-back (int)")
-		notes_quantity_q = self.translate("How many notes (int)")
-		bpm_q = self.translate("How many bpm (float)")
-		instrument_q = self.translate("Instrument (piano or guitar)")
-		labels = (player_name_q, sequences_q, trials_q, n_back_q, notes_quantity_q, bpm_q, instrument_q)
-		set_text = ("Gerosa", '10', '6', '1', '10', str(DEFAULT_BPM), DEFAULT_INSTRUMENT) #TODO: have the default fields in the settings.ini file
-		if len(set_text) != len(labels):
-			raise Exception(f"len(set_text) ({len(set_text)}) is not equal to len(labels) ({len(labels)})")
-		draft_forms_dict = dict(zip(labels, set_text))
-		column_labels, column_text_box = PyQt6_utils.setup_forms(layout_v, draft_forms_dict)
 
-		def check_isdigit(q):
-			text_box = column_text_box[labels.index(q)]
-			text = text_box.text()
-			return text.isdigit() and int(text) > 0, text
-
-		def check_isfloat(q):
-			text_box = column_text_box[labels.index(q)]
-			text = text_box.text()
-			value = PyQt6_utils.is_float_or_fraction(text)
-			return not (value == None or value <= 0), text
-
-		def check_isinstrument(q):
-			text_box = column_text_box[labels.index(q)]
-			text = text_box.text()
-			return text in INSTRUMENTS, text
-
-		def check_isempty(q):
-			text_box = column_text_box[labels.index(q)]
-			text = text_box.text()
-			return text != ""
-
-		def msgbox_if_digit(q):
-			is_digit, text = check_isdigit(q)
-			if not is_digit:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), f"{self.translate('Please enter an integer bigger than 0, not')} \"{text}\"", QtWidgets.QMessageBox.Icon.Warning).exec()
-
-		def msgbox_if_float(q):
-			is_float, text = check_isfloat(q)
-			if not is_float:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), f"{self.translate('Please enter a fraction or a decimal bigger than 0, not')} \"{text}\"", QtWidgets.QMessageBox.Icon.Warning).exec()
-
+		def is_initial_nback_valid(nback:str, number_of_notes_field:PyQt6_utils.FormField, number_of_trials_field:PyQt6_utils.FormField) -> tuple[bool, str]:
+			result, error_message = PyQt6_utils.FormField.is_positive_digit(nback)
+			if not result:
+				return False, error_message
+			if not number_of_notes_field.validate_field()[0] or not number_of_trials_field.validate_field()[0]:
+				return True, ""
+			if int(number_of_notes_field.text_box.text()) < int(nback) + int(number_of_trials_field.text_box.text()):
+				return False, "The number of notes needs to be greater than or equal to the initial n-back + number of trials."
 		
-		def msgbox_if_instrument(q):
-			is_instrument, text = check_isinstrument(q)
-			if not is_instrument:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("Please enter a valid instrument, not \"{text}\""), QtWidgets.QMessageBox.Icon.Warning).exec()
-
-		def msgbox_if_empty(q):
-			is_empty = check_isempty(q)
-			if not is_empty:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("Please enter something."), QtWidgets.QMessageBox.Icon.Warning).exec()
-
-		def connect(q, func): # Tells python what to do when the user finishes typing in the msg boxes
-			column_text_box[labels.index(q)].editingFinished.connect(lambda:func(q))
-
-		connect(sequences_q, msgbox_if_digit)
-		connect(n_back_q, msgbox_if_digit)
-		connect(notes_quantity_q, msgbox_if_digit)
-		connect(bpm_q, msgbox_if_float)
-		connect(instrument_q, msgbox_if_instrument)
-		connect(player_name_q, msgbox_if_empty)
-		connect(trials_q, msgbox_if_digit)
+			return True, ""
+		
+		forms = PyQt6_utils.Forms(layout_v, self.translate)
+		player_ID_field = forms.create_player_ID_field()
+		number_of_trials_field = forms.create_number_of_trials_field("6")
+		number_of_sequences_field = forms.create_field(self.translate("How many sequences?"), "10", PyQt6_utils.FormField.is_positive_digit)
+		number_of_notes_field = forms.create_number_of_notes_field("10", PyQt6_utils.FormField.is_positive_digit)
+		initial_nback_field = forms.create_field(self.translate("Starting n-back"), "1", lambda initial_nback:is_initial_nback_valid(initial_nback, number_of_notes_field, number_of_trials_field))
+		bpm_field = forms.create_bpm_field()
+		instrument_field = forms.create_instrument_field()
+		forms.summon_reset_button()
 
 		layout_v_h = QtWidgets.QHBoxLayout()
 		'''
@@ -361,56 +316,24 @@ class TonalNbackTestGUI(NbackTestGUI):
 		random_c_major_radio_button.setStyleSheet("font-size: 20px;")
 		random_c_major_radio_button.setChecked(True)
 		layout_v_h.addWidget(random_c_major_radio_button)
+		layout_v.addLayout(layout_v_h)
 		'''
 		tonal_c_major_radio_button = QtWidgets.QRadioButton(self.translate("Tonal C major scale"))
 		tonal_c_major_radio_button.setFont(PyQt6_utils.FONT)
 		tonal_c_major_radio_button.setStyleSheet("font-size: 20px;")
 		layout_v_h.addWidget(tonal_c_major_radio_button) '''
 
-		
-		layout_v.addLayout(layout_v_h)
 
-		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
-		layout_v.addWidget(reset_button)
-		def reset():
-			i = 0
-			for text in set_text:
-				column_text_box[i].setText(text)
-				i += 1
-		reset_button.clicked.connect(reset)
 		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
 		play_test_button.setFont(PyQt6_utils.FONT)
 		#button_size = play_test_button.sizeHint()
 
 		def play_test() -> None:
-			def get_text(q):
-				return column_text_box[labels.index(q)].text()
-			
-			incorrect_fields:list[str] = []
-			player_name = get_text(player_name_q)
-			if player_name == "":
-				incorrect_fields.append(player_name_q)
-			for q in (sequences_q, n_back_q, trials_q, notes_quantity_q):
-				if not check_isdigit(q)[0]:
-					incorrect_fields.append(q)
-			if not check_isfloat(bpm_q)[0]:
-				incorrect_fields.append(bpm_q)
-			if not check_isinstrument(instrument_q)[0]:
-				incorrect_fields.append(instrument_q)
-			
+			incorrect_fields = forms.validate_fields()
 			if incorrect_fields != []:
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+ ".\n\n" + self.translate("Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+				forms.summon_incorrect_fields_msgbox(incorrect_fields)
 				return
-			
-			def is_notes_quantity_valid():
-				notes_quantity = column_text_box[labels.index(notes_quantity_q)].text()
-				n_back = column_text_box[labels.index(n_back_q)].text()
-				trials = column_text_box[labels.index(trials_q)].text()
-				return int(notes_quantity) >= int(n_back) + int(trials)
 
-			if not is_notes_quantity_valid():
-				PyQt6_utils.get_msg_box(self.translate("Incorrect input"), self.translate("The quantity of notes needs to be greater than or equal to the initial n-back + quantity of trials."), QtWidgets.QMessageBox.Icon.Warning).exec()
-				return
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
@@ -461,17 +384,18 @@ class TonalNbackTestGUI(NbackTestGUI):
 				loadingLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 				layout_v.addWidget(loadingLabel)
 			
-			test_case = int(get_text(sequences_q))
-			n_back = int(get_text(n_back_q))
-			notes_quantity = int(get_text(notes_quantity_q))
-			bpm = float(get_text(bpm_q))
-			instrument = get_text(instrument_q)
-			trials = int(get_text(trials_q))
+			number_of_sequences = int(number_of_sequences_field.text_box.text())
+			initial_nback = int(initial_nback_field.text_box.text())
+			player_name = player_ID_field.text_box.text()
+			number_of_notes = int(number_of_notes_field.text_box.text())
+			bpm = float(Fraction((bpm_field.text_box.text())))
+			instrument = instrument_field.text_box.text()
+			number_of_trials = int(number_of_trials_field.text_box.text())
 			loadingLabel = None
 			if random_c_major_radio_button.isChecked():
 				scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
 
-			self.notes_thread = Thread(trials, player_name, test_case, n_back, notes_quantity, bpm, instrument, scale=scale)
+			self.notes_thread = Thread(number_of_trials, player_name, number_of_sequences, initial_nback, number_of_notes, bpm, instrument, scale=scale)
 			self.notes_thread.finished.connect(on_execute_loop_thread_finished)
 			self.notes_thread.start_execution.connect(ask_continue_test)
 			self.notes_thread.pre_start_execution.connect(create_loading_label)

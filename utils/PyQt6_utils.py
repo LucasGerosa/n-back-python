@@ -117,7 +117,7 @@ def create_question(layout, question_str:str, *answer_str):
 
 class FormField:
 
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:typing.Callable=lambda: (True, ""), translate:typing.Callable = lambda x:x):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:typing.Callable[[str], tuple[bool, str]]=lambda: (True, ""), translate:typing.Callable = lambda x:x):
 		self.label = QtWidgets.QLabel(label)
 		self.default_txt = default_txt
 		self.text_box = QtWidgets.QLineEdit()
@@ -203,6 +203,12 @@ class Forms:
 	
 	def create_bpm_field(self):
 		return self.create_field(self.translate("How many bpm?"), str(DEFAULT_BPM), FormField.is_positive_float_or_fraction)
+	
+	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:typing.Callable = FormField.is_positive_digit):
+		return self.create_field(self.translate("How many notes?"), number_of_notes, is_number_of_notes_valid)
+
+	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:typing.Callable = FormField.is_positive_digit):
+		return self.create_field(self.translate("How many trials?"), number_of_trials, is_number_of_trials_valid)
 	
 	def summon_reset_button(self):
 		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
