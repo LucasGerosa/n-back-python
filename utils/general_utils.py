@@ -9,7 +9,7 @@ from utils.defaults import *
 def is_float_or_fraction(value:str):
 	try:
 		return float(Fraction(value))
-	except ValueError:
+	except (ValueError, ZeroDivisionError):
 		return False
 
 def lower_first_letter(s:str) -> str:

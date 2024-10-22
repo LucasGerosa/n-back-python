@@ -102,13 +102,67 @@ def create_question(layout, question_str:str, *answer_str):
 
 	return answers, question, layout_v_h, destroy_all
 
+from PyQt6 import QtGui, QtCore
 
+class FractionValidator(QtGui.QDoubleValidator):
+	def validate(self, input_str: str, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
+		if not input_str or (input_str == '-' and self.bottom() < 0):
+			return (QtGui.QValidator.State.Intermediate, input_str, pos)
+		# Allow intermediate fractions like "3/"
+		if '/' in input_str:
+			try:
+				numerator, denominator = input_str.split('/')
+				if numerator.isdigit() and denominator == "":
+					return (QtGui.QValidator.State.Intermediate, input_str, pos)
+				if numerator.isdigit() and denominator.isdigit() and int(denominator) != 0:
+					if int(numerator) / int(denominator) > self.bottom():
+						return (QtGui.QValidator.State.Acceptable, input_str, pos)
+			except ValueError:
+				return (QtGui.QValidator.State.Invalid, input_str, pos)
+		
+		# Validate as a float and ensure it adheres to range and decimal restrictions
+		fraction_float = general_utils.is_float_or_fraction(input_str)
+		if fraction_float is not None:
+			if fraction_float > self.bottom() and fraction_float <= self.top():
+				# Ensure valid number of decimals
+				if '.' in input_str:
+					decimal_part = input_str.split('.')[1]
+					if len(decimal_part) > self.decimals():
+						return (QtGui.QValidator.State.Invalid, input_str, pos)
+				return (QtGui.QValidator.State.Acceptable, input_str, pos)
+			else:
+				return (QtGui.QValidator.State.Invalid, input_str, pos)
+
+		return (QtGui.QValidator.State.Invalid, input_str, pos)
+
+class StrictIntValidator(QtGui.QIntValidator):
+	def validate(self, input_str: str, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
+		# Allow intermediate empty state
+		if not input_str:
+			return (QtGui.QValidator.State.Intermediate, input_str, pos)
+		
+		# Check if the input is a valid integer
+		if input_str.isdigit():
+			value = int(input_str)
+			# Ensure the value is within bounds
+			if not (value < self.bottom() or value > self.top()):
+				return (QtGui.QValidator.State.Acceptable, input_str, pos)
+		# If input is neither empty nor a valid integer, return Invalid
+		return (QtGui.QValidator.State.Invalid, input_str, pos)
+	
 class FormField:
 
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, ""), translate:TRANSLATE_CALLABLE = lambda txt:txt):
+	positive_int_validator = StrictIntValidator(1, 99999)
+	positive_fraction_validator = FractionValidator(1, 99999, 2)
+
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, ""), translate:TRANSLATE_CALLABLE = lambda txt:txt, placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None):
 		self.label = QtWidgets.QLabel(label)
 		self.default_txt = default_txt
 		self.text_box = QtWidgets.QLineEdit()
+		self.text_box.setPlaceholderText(placeHolderText)
+		self.text_box.returnPressed.connect(on_returnPressed)
+		if validator:
+			self.text_box.setValidator(validator)
 		self.reset()
 		self.validate_field = lambda:validate_func(self.text_box.text(), translate)
 		self.text_box.editingFinished.connect(lambda: self.run_real_time_validation(validate_func, translate))
@@ -161,7 +215,7 @@ class FormField:
 
 
 class Forms:
-	
+
 	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:TRANSLATE_CALLABLE = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
@@ -169,8 +223,8 @@ class Forms:
 		self.translate = translate
 		self.layout_v = layout_v
 	
-	def create_field(self, label, default_txt = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, "")):
-		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate)
+	def create_field(self, label:str, default_txt:str = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, ""), placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None) -> FormField:
+		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate, placeHolderText, on_returnPressed, validator)
 		self.fields.append(field)
 		return field
 	
@@ -190,19 +244,19 @@ class Forms:
 		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:")+ "\n\n" + '\n'.join(formatted_errors) + "\n\n" + self.translate("Correct them and try again."), QtWidgets.QMessageBox.Icon.Warning).exec()
 	
 	def create_player_ID_field(self):
-		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_positive_digit)
+		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_non_empty)
 	
 	def create_instrument_field(self):
 		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_valid_instrument)
 	
 	def create_bpm_field(self):
-		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_positive_float_or_fraction)
+		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_non_empty, validator=FormField.positive_fraction_validator)
 	
-	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:typing.Callable = FormField.is_positive_digit):
-		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid)
+	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:VALIDATE_CALLABLE = FormField.is_non_empty):
+		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid, validator=FormField.positive_int_validator)
 
-	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:typing.Callable = FormField.is_positive_digit):
-		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid)
+	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:VALIDATE_CALLABLE = FormField.is_non_empty):
+		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid, validator=FormField.positive_int_validator)
 	
 	def summon_reset_button(self):
 		reset_button = QtWidgets.QPushButton(self.translate("Reset"))

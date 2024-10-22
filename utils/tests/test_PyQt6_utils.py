@@ -1,8 +1,8 @@
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from PyQt6_utils import FormField, Forms
 from PyQt6 import QtWidgets, QtGui, QtCore
 import pytest
+from PyQt6_utils import FormField, Forms
 
 
 @pytest.fixture
@@ -64,3 +64,12 @@ def test_valid_instrument_validation(qtbot, forms):
 	field.text_box.setText("piano")
 	result, error_message = field.validate_field()
 	assert result, "Validation should pass for valid instrument"
+
+def test_placeHolderText(qtbot, forms):
+	field =	forms.create_field("Test placeholder", placeHolderText="Please enter something...", validate_func=FormField.is_non_empty)
+	result, error_message = field.validate_field()
+	assert not result, f"Validation should fail for empty input. Got {result} instead. Error message: {error_message}. {field.text_box.text()}"
+
+	field.text_box.setText("valid")
+	result, error_message = field.validate_field()
+	assert result, "Validation should pass for valid input"
