@@ -17,17 +17,17 @@ def forms():
 
 def test_positive_digit_validation(qtbot, forms):
 	field = forms.fields[0]
-	assert not forms.validate_fields(), "No fields should be invalid"
+	assert not forms.validate_fields()[0], "No fields should be invalid"
 
 	field.text_box.setText("invalid")
 	result, error_message = field.validate_field()
 	assert not result, f"Validation should fail for non-integer input. Got {result} instead. Error message: {error_message}"
-	assert forms.validate_fields() == ["Test Field positive integer"], "Field should be invalid"
+	assert forms.validate_fields()[0] == ["Test Field positive integer"], "Field should be invalid"
 
 	field.text_box.setText("232312")
 	result, error_message = field.validate_field()
 	assert result, "Validation should pass for valid integer input"
-	assert not forms.validate_fields(), "No fields should be invalid"
+	assert not forms.validate_fields()[0], "No fields should be invalid"
 
 def test_positive_float_or_fraction_validation(qtbot, forms):
 	field = forms.fields[1]

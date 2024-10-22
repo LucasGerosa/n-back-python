@@ -116,7 +116,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 			
 			if wrong_inputs != []:
 				wrong_inputs = [self.translate(setting_name) for setting_name in wrong_inputs]
-				PyQt6_utils.get_msg_box(self.translate("Settings failed to save"), self.translate("The following settings are incorrect or incomplete:\n\n")+ '\n'.join(wrong_inputs)+self.translate(".\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+				PyQt6_utils.get_msg_box(self.translate("Settings failed to save"), self.translate("The following settings are incorrect or incomplete:") + "\n\n" + '\n'.join(wrong_inputs)  + "\n\n" + self.translate("Correct them and try again."), QtWidgets.QMessageBox.Icon.Warning).exec()
 				return
 			
 			for setting_name in setting_dict:

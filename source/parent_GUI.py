@@ -11,12 +11,11 @@ def set_language(language_code):
 		return translation.gettext
 
 	except FileNotFoundError:
-		# TODO: Fallback to default English language if the translation catalog is not found
-		raise FileNotFoundError(f'Could not find translation catalog for language code {language_code}')
-
+		print(f'Could not find translation catalog for language code {language_code}; defaulting to English.')
+		return lambda x: x
 class parent_GUI(QtWidgets.QMainWindow):
 
-	def __init__(self):
+	def __init__(self) -> None:
 		super().__init__()
 		self.removed_widgets = []
 		self.primary_screen = QtGui.QGuiApplication.primaryScreen()
@@ -24,7 +23,7 @@ class parent_GUI(QtWidgets.QMainWindow):
 		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
 		self.states = []
-		self.translate = set_language(notes_config.get_all_settings()["language"])
+		self.translate:PyQt6_utils.TRANSLATE_CALLABLE = set_language(notes_config.get_all_settings()["language"])
 
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key.Key_F11:

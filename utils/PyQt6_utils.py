@@ -11,8 +11,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import general_utils
 
+
 FONT = QFont('Arial', 18)
 BUTTON_SIZE = 80
+TRANSLATE_CALLABLE = typing.Callable[[str], str]
+VALIDATE_CALLABLE = typing.Callable[[str, TRANSLATE_CALLABLE], tuple[bool, str]]
 #OFFSET_X = 8
 #OFFSET_Y = 0
 
@@ -30,6 +33,7 @@ def get_txt_button(txt, command):
 	button.clicked.connect(command)
 	return button
 
+
 def get_msg_box(title, msg, icon=QMessageBox.Icon.Information):
 	msg_box = QMessageBox()
 
@@ -41,24 +45,6 @@ def get_msg_box(title, msg, icon=QMessageBox.Icon.Information):
 	msg_box.setDefaultButton(ok_button)
 	return msg_box
 
-def setup_forms(layout_v: QVBoxLayout, forms_dict:dict):
-	column_labels:list[QLabel] = []
-	column_text_box:list[QLineEdit] = []
-	forms_dict_keys = tuple(forms_dict.keys())
-	for label in forms_dict_keys:
-		column_labels.append(QLabel(label))
-		text_box = QLineEdit()
-		column_text_box.append(text_box)
-		text_box.setText(forms_dict[label])
-	setup_columns(layout_v, column_labels, column_text_box)
-	return column_labels, column_text_box
-
-def setup_columns(layout_v: QVBoxLayout, *columns: Iterable[QWidget|QLineEdit]):
-	for row in zip(*columns):
-		layout_v_h = QHBoxLayout()
-		for widget in row:
-			layout_v_h.addWidget(widget)
-		layout_v.addLayout(layout_v_h)
 
 def get_button_with_image(icon:QIcon, command):
 	button = QPushButton()
@@ -69,12 +55,14 @@ def get_button_with_image(icon:QIcon, command):
 	button.clicked.connect(command)
 	return button
 
+
 def create_frame_title(title:str):
 	label = QLabel(title)
 
 	label.setFont(FONT)
 	#self.center_widget_x(label, 0, 400, 80)
 	return label
+
 
 def find_child_layout(parent_layout:QtWidgets.QLayout):
 
@@ -112,17 +100,17 @@ def create_question(layout, question_str:str, *answer_str):
 			answer.deleteLater()
 		layout_v_h.deleteLater()
 
-
 	return answers, question, layout_v_h, destroy_all
+
 
 class FormField:
 
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:typing.Callable[[str], tuple[bool, str]]=lambda: (True, ""), translate:typing.Callable = lambda x:x):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, ""), translate:TRANSLATE_CALLABLE = lambda txt:txt):
 		self.label = QtWidgets.QLabel(label)
 		self.default_txt = default_txt
 		self.text_box = QtWidgets.QLineEdit()
 		self.reset()
-		self.validate_field = lambda:validate_func(self.text_box.text())
+		self.validate_field = lambda:validate_func(self.text_box.text(), translate)
 		self.text_box.editingFinished.connect(lambda: self.run_real_time_validation(validate_func, translate))
 		layout_v_h = QtWidgets.QHBoxLayout()
 		layout_v_h.addWidget(self.label)
@@ -132,68 +120,74 @@ class FormField:
 	def reset(self):
 		self.text_box.setText(self.default_txt)
 
-	def run_real_time_validation(self, validate_func: typing.Callable, translate: typing.Callable):
+	def run_real_time_validation(self, validate_func:VALIDATE_CALLABLE, translate:TRANSLATE_CALLABLE) -> None:
 		"""Run validation and summon message box if necessary after editing is finished."""
-		result, error_message = validate_func(self.text_box.text())
+		result, error_message = validate_func(self.text_box.text(), translate)
 		if not result:
-			self.summon_msgbox(translate, error_message)
+			self.summon_msgbox(error_message, translate)
 		
 	@staticmethod
-	def summon_msgbox(translate:typing.Callable, message_text:str) -> None:
-		get_msg_box(translate("Incorrect input"), translate(message_text), QtWidgets.QMessageBox.Icon.Warning).exec()
+	def summon_msgbox(message_text:str, translate:TRANSLATE_CALLABLE) -> None:
+		get_msg_box(translate("Incorrect input"), message_text, QtWidgets.QMessageBox.Icon.Warning).exec()
 
 	@staticmethod
-	def is_positive_digit(text: str) -> tuple[bool, str]:
-		result, error_message = FormField.is_non_empty(text)
+	def is_positive_digit(text:str, translate:TRANSLATE_CALLABLE) -> tuple[bool, str]:
+		result, error_message = FormField.is_non_empty(text, translate)
 		if not result:
 			return False, error_message
 		if not (text.isdigit() and int(text) > 0):
-			return False, f'Please enter an integer bigger than 0, not "{text}"'
+			return False, translate('Please enter an integer bigger than 0, not "{}".').format(text)
 		return True, ""
 	
 	@staticmethod
-	def is_positive_float_or_fraction(text: str) -> tuple[bool, str]:
+	def is_positive_float_or_fraction(text:str, translate:TRANSLATE_CALLABLE) -> tuple[bool, str]:
 		num = general_utils.is_float_or_fraction(text)
 		if not num or num <= 0:
-			return False, f'Please enter a fraction or a decimal bigger than 0, not "{text}"'
+			return False, translate('Please enter a fraction or a decimal bigger than 0, not "{}".').format(text)
 		return True, ""
 	
 	@staticmethod
-	def is_valid_instrument(text: str) -> tuple[bool, str]:
+	def is_valid_instrument(text:str, translate:TRANSLATE_CALLABLE) -> tuple[bool, str]:
 		if text not in INSTRUMENTS:
-			return False, f'Please enter a valid instrument, not "{text}"'
+			VALID_INSTRUMENTS_STR = ', '.join(INSTRUMENTS)
+			return False, translate('Please enter a valid instrument ({VALID_INSTRUMENTS_STR}), not "{text}".').format(VALID_INSTRUMENTS_STR=VALID_INSTRUMENTS_STR, text=text) 
 		return True, ""
 	
 	@staticmethod
-	def is_non_empty(text: str) -> tuple[bool, str]:
+	def is_non_empty(text:str, translate:TRANSLATE_CALLABLE) -> tuple[bool, str]:
 		if text == "":
-			return False, "Please enter something."
+			return False, translate("Please enter something.")
 		return True, ""
+
 
 class Forms:
 	
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:typing.Callable = lambda x:x, fields:list[FormField]|None = None):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:TRANSLATE_CALLABLE = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
 		self.fields = fields
 		self.translate = translate
 		self.layout_v = layout_v
 	
-	def create_field(self, label, default_txt = "", validate_func:typing.Callable=lambda: (True, "")):
+	def create_field(self, label, default_txt = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, "")):
 		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate)
 		self.fields.append(field)
 		return field
 	
-	def validate_fields(self) -> list:
+	def validate_fields(self) -> tuple[list, list]:
 		incorrect_fields:list[str] = []
+		error_messages:list[str] = []
 		for field in self.fields:
-			if not field.validate_field()[0]:
+			result, error_message = field.validate_field()
+			if not result:
 				incorrect_fields.append(field.label.text())
+				error_messages.append(error_message)
 			
-		return incorrect_fields
+		return incorrect_fields, error_messages
 	
-	def summon_incorrect_fields_msgbox(self, incorrect_fields:list[str]) -> None:
-		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:\n\n")+ '\n'.join(incorrect_fields)+self.translate("\n\n Correct them and try again"), QtWidgets.QMessageBox.Icon.Warning).exec()
+	def summon_incorrect_fields_msgbox(self, incorrect_fields:list[str], error_messages:list[str]) -> None:
+		formatted_errors = [f"{field}: {message}" for field, message in zip(incorrect_fields, error_messages)]
+		get_msg_box(self.translate("Incorrect input"), self.translate("The following fields are incorrect or incomplete:")+ "\n\n" + '\n'.join(formatted_errors) + "\n\n" + self.translate("Correct them and try again."), QtWidgets.QMessageBox.Icon.Warning).exec()
 	
 	def create_player_ID_field(self):
 		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_positive_digit)
@@ -202,13 +196,13 @@ class Forms:
 		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_valid_instrument)
 	
 	def create_bpm_field(self):
-		return self.create_field(self.translate("How many bpm?"), str(DEFAULT_BPM), FormField.is_positive_float_or_fraction)
+		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_positive_float_or_fraction)
 	
 	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:typing.Callable = FormField.is_positive_digit):
-		return self.create_field(self.translate("How many notes?"), number_of_notes, is_number_of_notes_valid)
+		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid)
 
 	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:typing.Callable = FormField.is_positive_digit):
-		return self.create_field(self.translate("How many trials?"), number_of_trials, is_number_of_trials_valid)
+		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid)
 	
 	def summon_reset_button(self):
 		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
