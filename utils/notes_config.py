@@ -4,13 +4,12 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 CUSTOM_SETTING = 'custom'
-NOTES_SETTING = 'Notes'
-NOTE_INTENSITY_SETTING = 'Note intensity'
+NOTES_SETTING = 'notes'
+NOTE_INTENSITY_SETTING = 'note intensity'
 DEFAULT = 'DEFAULT'
-NOTE_VALUE_SETTING = 'Note duration'
-LANGUAGE_SETTING = 'Language'
+NOTE_VALUE_SETTING = 'note duration'
+LANGUAGE_SETTING = 'language'
 LEGAL_LANGUAGES = ('pt_BR', 'en')
-LEGAL_NOTE_INTENSITIES = ('pp', 'mf', 'ff')
 ALL_NOTES = 'All'
 
 '''This module contains functions for handling name of notes, converting, comparing height, etc.'''

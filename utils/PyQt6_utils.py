@@ -219,10 +219,22 @@ class Forms:
 	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:TRANSLATE_CALLABLE = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
+
 		self.fields = fields
 		self.translate = translate
 		self.layout_v = layout_v
 	
+	def summon_validate_all_button(self, validate_all_button:QtWidgets.QPushButton, post_validation_func:typing.Callable = lambda:None) -> None:
+		validate_all_button.clicked.connect(lambda: self.post_validate_all(post_validation_func))
+		self.layout_v.addWidget(validate_all_button)
+	
+	def post_validate_all(self, post_validation_func:typing.Callable):
+		incorrect_fields, error_messages = self.validate_fields()
+		if incorrect_fields != []:
+			self.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
+			return
+		post_validation_func()
+
 	def create_field(self, label:str, default_txt:str = "", validate_func:VALIDATE_CALLABLE=lambda *_: (True, ""), placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None) -> FormField:
 		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate, placeHolderText, on_returnPressed, validator)
 		self.fields.append(field)

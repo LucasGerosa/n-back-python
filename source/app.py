@@ -64,28 +64,42 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		h_buttons = self.get_debug_button(),
 		v_buttons = self.get_main_menu_button(),
 		layout_h, layout_v, self.settings = self.setup_menu(self.translate("Settings"), widgets_h=h_buttons, widgets_v=v_buttons)
-		all_settings = notes_config.get_all_settings()
+
 		layout_v_h = QtWidgets.QHBoxLayout()
 		layout_v.addLayout(layout_v_h)
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
 
 		forms = PyQt6_utils.Forms(layout_v, self.translate)
+		def create_field(setting:str, validate_func:PyQt6_utils.VALIDATE_CALLABLE=lambda *_: (True, "")):
+			forms.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func)
+		
+		create_field(notes_config.NOTES_SETTING)
+		create_field(notes_config.NOTE_INTENSITY_SETTING)
+		create_field(notes_config.NOTE_VALUE_SETTING)
+		create_field(notes_config.LANGUAGE_SETTING) #TODO: add validators
 
-		for setting_name in all_settings:
-			setting_value = all_settings.get(setting_name)
-			forms.create_field(self.translate(setting_name).capitalize(), setting_value, )
+		# for setting_name in all_settings:
+		# 	setting_value = all_settings.get(setting_name)
+			
 
 
-			text_box.setText(setting_value)
-			text_box.returnPressed.connect(create_save_function(text_box, setting_name))
-			layout_v_h.addWidget(text_box)
+		# 	text_box.setText(setting_value)
+		# 	text_box.returnPressed.connect(create_save_function(text_box, setting_name))
+		# 	layout_v_h.addWidget(text_box)
 		
 		forms.summon_reset_button()
 
 		save_button = QtWidgets.QPushButton(self.translate("Save"))
 
 		def save_all():
+			
+			incorrect_fields, error_messages = forms.validate_fields()
+			if incorrect_fields != []:
+				forms.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
+				return
+			
+
 			wrong_inputs = []
 			setting_value_tuple = tuple(setting_dict.values())
 
@@ -96,7 +110,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 				wrong_inputs.append(notes_config.NOTES_SETTING)
 
 			note_intensity = setting_value_tuple[1].text()
-			if note_intensity not in notes_config.LEGAL_NOTE_INTENSITIES:
+			if note_intensity not in VALID_INTENSITIES:
 				wrong_inputs.append(notes_config.NOTE_INTENSITY_SETTING)
 
 			try:

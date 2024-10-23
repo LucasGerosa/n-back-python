@@ -112,16 +112,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		instrument_field = forms.create_instrument_field()
 		forms.summon_reset_button()
 
-		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
-		play_test_button.setFont(PyQt6_utils.FONT)
-		#button_size = play_test_button.sizeHint()
-
 		def play_test() -> None:
-			incorrect_fields, error_messages = forms.validate_fields()
-			if incorrect_fields != []:
-				forms.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
-				return
-			
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
@@ -203,9 +194,9 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			#stop_button = self.get_stop_button(self.notes_thread)
 			#layout_h.insertWidget(2, stop_button)
 
-		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
-		play_test_button.clicked.connect(play_test)
-		layout_v.addWidget(play_test_button)
+		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
+		play_test_button.setFont(PyQt6_utils.FONT)
+		forms.summon_validate_all_button(validate_all_button=play_test_button, post_validation_func=play_test)
 
 	def get_TDT_button(self):
 		return PyQt6_utils.get_txt_button(self.translate('Tonal discrimination task'), lambda: self.goto_frame(self.test_menus[2]))
