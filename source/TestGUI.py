@@ -87,8 +87,8 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 
-		def is_number_of_notes_valid(text:str, translate:PyQt6_utils.TRANSLATE_CALLABLE) -> tuple[bool, str]:
-			result, error_message = PyQt6_utils.FormField.is_positive_digit(text, translate)
+		def is_number_of_notes_valid(translate:PyQt6_utils.TRANSLATE_CALLABLE, text:str) -> tuple[bool, str]:
+			result, error_message = PyQt6_utils.FormField.is_non_empty(translate, text)
 			if not result:
 				return False, error_message
 			if int(text) in AVAILABLE_TDT_NOTE_QUANTITIES:
@@ -96,8 +96,8 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			AVAILABLE_TDT_NOTE_QUANTITIES_STR = ', '.join(map(str, AVAILABLE_TDT_NOTE_QUANTITIES))
 			return False, translate("Currently, the only number of notes available is {}.").format(AVAILABLE_TDT_NOTE_QUANTITIES_STR)
 		
-		def is_number_of_trials_valid(text:str, translate:PyQt6_utils.TRANSLATE_CALLABLE) -> tuple[bool, str]:
-			result, error_message = PyQt6_utils.FormField.is_positive_digit(text, translate)
+		def is_number_of_trials_valid(translate:PyQt6_utils.TRANSLATE_CALLABLE, text:str) -> tuple[bool, str]:
+			result, error_message = PyQt6_utils.FormField.is_non_empty(translate, text)
 			if not result:
 				return False, error_message
 			if int(text) <= AVAILABLE_NUMBER_OF_TRIALS:
@@ -273,27 +273,22 @@ class TonalNbackTestGUI(NbackTestGUI):
 		
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
-
-		def is_initial_nback_valid(nback:str, translate:PyQt6_utils.TRANSLATE_CALLABLE, number_of_notes_field:PyQt6_utils.FormField, number_of_trials_field:PyQt6_utils.FormField) -> tuple[bool, str]:
-			result, error_message = PyQt6_utils.FormField.is_positive_digit(nback, translate)
-			if not result:
-				return False, error_message
-			if not number_of_notes_field.validate_field()[0] or not number_of_trials_field.validate_field()[0]:
-				return True, ""
-			if int(number_of_notes_field.text_box.text()) < int(nback) + int(number_of_trials_field.text_box.text()):
-				return False, translate("The number of notes needs to be greater than or equal to the initial n-back + number of trials.")
 		
+		def is_number_of_trials_notes_initial_nback_valid(translate:PyQt6_utils.TRANSLATE_CALLABLE, number_of_trials:str, number_of_notes:str, initial_nback:str) -> tuple[bool, str]:
+			if int(number_of_notes) < int(initial_nback) + int(number_of_trials):
+				return False, translate("The number of notes needs to be greater than or equal to the initial n-back + number of trials.")
 			return True, ""
 		
 		forms = PyQt6_utils.Forms(layout_v, self.translate)
 		player_ID_field = forms.create_player_ID_field()
 		number_of_trials_field = forms.create_number_of_trials_field("6")
 		number_of_sequences_field = forms.create_field(self.translate("Number of sequences"), "10", PyQt6_utils.FormField.is_non_empty, validator=PyQt6_utils.FormField.positive_int_validator)
-		number_of_notes_field = forms.create_number_of_notes_field("10", PyQt6_utils.FormField.is_positive_digit)
-		initial_nback_field = forms.create_field(self.translate("Starting n-back"), "1", lambda initial_nback, translate:is_initial_nback_valid(initial_nback, translate, number_of_notes_field, number_of_trials_field), validator=PyQt6_utils.FormField.positive_int_validator)
+		number_of_notes_field = forms.create_number_of_notes_field("10")
+		initial_nback_field = forms.create_field(self.translate("Starting n-back"), "1",  PyQt6_utils.FormField.is_non_empty, validator=PyQt6_utils.FormField.positive_int_validator)
 		bpm_field = forms.create_bpm_field()
 		instrument_field = forms.create_instrument_field()
 		forms.summon_reset_button()
+		forms.add_validation_multiple_fields(is_number_of_trials_notes_initial_nback_valid, number_of_trials_field, number_of_notes_field, initial_nback_field)
 
 		layout_v_h = QtWidgets.QHBoxLayout()
 		'''
@@ -321,11 +316,6 @@ class TonalNbackTestGUI(NbackTestGUI):
 		#button_size = play_test_button.sizeHint()
 
 		def play_test() -> None:
-			incorrect_fields, error_messages = forms.validate_fields()
-			if incorrect_fields != []:
-				forms.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
-				return
-
 			layout_h, layout_v, test1_test = self.setup_menu(back_button=False)
 			self.states.append(self.takeCentralWidget())
 			self.setCentralWidget(test1_test)
@@ -437,7 +427,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 			#layout_h.insertWidget(2, stop_button)
 
 		#self.center_widget_x(button, 100, button_size.width(), button_size.height())
-		play_test_button.clicked.connect(play_test)
+		forms.summon_validate_all_button(validate_all_button=play_test_button, post_validation_func=play_test)
 		layout_v.addWidget(play_test_button)
 
 	def get_tonal_nback_test_button(self):

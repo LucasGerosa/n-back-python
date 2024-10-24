@@ -28,3 +28,4 @@ soupsieve==2.4
 tomli==2.0.2
 urllib3==1.26.15
 pytest-cov==5.0.0
+pytest-qt==4.4.0
