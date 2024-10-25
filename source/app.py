@@ -5,7 +5,7 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import PyQt6_utils, notes_config, note_str_utils
+from utils import PyQt6_utils, forms, notes_config, note_str_utils
 from source.testThreads import TonalNbackTestThread, VisuoTonalNbackTestThread, TestThread
 from typing import Dict, Optional, List
 from fractions import Fraction
@@ -70,9 +70,9 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
 
-		forms = PyQt6_utils.Forms(layout_v, self.translate)
-		def create_field(setting:str, validate_func:PyQt6_utils.VALIDATE_CALLABLE=lambda *_: (True, "")):
-			forms.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func)
+		form = forms.Forms(layout_v, self.translate)
+		def create_field(setting:str, validate_func:forms.SimpleValidateCallable=lambda *_: (True, "")):
+			form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func)
 		
 		create_field(notes_config.NOTES_SETTING)
 		create_field(notes_config.NOTE_INTENSITY_SETTING)
@@ -88,13 +88,13 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		# 	text_box.returnPressed.connect(create_save_function(text_box, setting_name))
 		# 	layout_v_h.addWidget(text_box)
 		
-		forms.summon_reset_button()
+		form.summon_reset_button()
 
 		save_button = QtWidgets.QPushButton(self.translate("Save"))
 
 		def save_all():
 			
-			incorrect_fields, error_messages = forms.validate_fields()
+			incorrect_fields, error_messages = form.validate_fields()
 			if incorrect_fields != []:
 				forms.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
 				return
