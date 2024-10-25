@@ -2,7 +2,7 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from PyQt6 import QtWidgets, QtGui, QtCore
 import pytest
-from PyQt6_utils import FormField, Forms, TRANSLATE_CALLABLE
+from forms import FormField, Forms
 
 
 @pytest.fixture
@@ -14,6 +14,21 @@ def forms():
 	forms.create_field("Test Field not empty", "dawik213 something", validate_func=FormField.is_non_empty)
 	forms.create_field("Test Field valid instrument", "piano", validate_func=FormField.is_valid_instrument)
 	return forms
+
+def test_forms_validation_collects_invalid_fields(qtbot, forms):
+	valid_field = forms.fields[0]
+	invalid_field = forms.fields[1]	
+
+	valid_field.text_box.setText("Valid text")
+	invalid_field.text_box.setText("")  # Invalid empty input
+
+	# Collect all invalid fields
+	incorrect_fields, error_messages, _ = forms.validate_fields()
+
+	# Assert the invalid field is detected correctly
+	assert "Test Field positive integer" not in incorrect_fields
+	assert "Test Field positive float" in incorrect_fields
+	assert "Please enter something." in error_messages
 
 def test_non_empty_validation(qtbot, forms):
 	field = forms.fields[2]

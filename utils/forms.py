@@ -126,11 +126,13 @@ class MultipleFormValidator:
 	def __init__(self, validate_field:typing.Callable[[str], IsValidErrorMessage], *fields: FormField):
 		self.validate_field = validate_field
 		self.fields = fields
-		self._is_invalid = False
+		self._is_valid = True
+		for field in fields:
+			field.multiple_validate_field_list.append(self)
 	
 	@property
-	def is_invalid(self):
-		return self._is_invalid
+	def is_valid(self):
+		return self._is_valid
 	
 	def __call__(self) -> IsValidErrorMessage:
 		for field in self.fields: #This validation only works if all individual fields are valid by themselves.
@@ -138,9 +140,9 @@ class MultipleFormValidator:
 				break
 		else:
 			result, error_message = self.validate_field(*[field.text_box.text() for field in self.fields])
-			self._is_invalid = not result
+			self._is_valid = result
 			
-			if self.is_invalid:
+			if not self.is_valid:
 				
 				for field in self.fields:
 					field.set_border_and_tooltip_red(error_message)
@@ -148,20 +150,20 @@ class MultipleFormValidator:
 
 			for field in self.fields:
 				for multipleFormValidator in field.multiple_validate_field_list: #checks if there are any other invalid validators for the field
-					if multipleFormValidator.is_invalid:
+					if not multipleFormValidator.is_valid:
 						break
 				else:
 					field.reset_border_and_tooltip()
 			return True, ""
 		
-		self._is_invalid = False
+		self._is_valid = True
 		for field in self.fields:
 			
 			if not field.validate_field()[0]:
 				continue
 			
 			for multipleFormValidator in field.multiple_validate_field_list: #checks if there are any other invalid validators for the field
-				if multipleFormValidator.is_invalid:
+				if not multipleFormValidator.is_valid:
 					break
 			else:
 				field.reset_border_and_tooltip()
@@ -216,13 +218,10 @@ class Forms:
 		multipleFormValidator = MultipleFormValidator(lambda *fields:validation_func(self.translate, *fields), *fields)
 		self.multiple_validate_field_list.append(multipleFormValidator)
 
-		for field in fields:
-			field.multiple_validate_field_list.append(multipleFormValidator)
-
 	def summon_incorrect_fields_msgbox(self, incorrect_fields:list[str], error_messages:list[str], incorrect_multiple_fields_error_messages:list[str]) -> None:
 		formatted_errors = [f"{field}: {message}" for field, message in zip(incorrect_fields, error_messages)]
 		msg_str = "\n\n".join((self.translate("The following fields are incorrect or incomplete:"), *formatted_errors, *incorrect_multiple_fields_error_messages, self.translate("Correct them and try again.")))
-		get_msg_box(self.translate("Incorrect input"), msg_str, QtWidgets.QMessageBox.Icon.Warning).exec()
+		PyQt6_utils.get_msg_box(self.translate("Incorrect input"), msg_str, QtWidgets.QMessageBox.Icon.Warning).exec()
 	
 	def summon_reset_button(self):
 		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
