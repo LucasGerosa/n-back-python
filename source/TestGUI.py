@@ -298,7 +298,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 		random_radio_button.setChecked(True)
 		layout_v_h.addWidget(random_radio_button)'''
 
-		random_c_major_radio_button = QtWidgets.QRadioButton(self.translate("Random C major scale"))
+		random_c_major_radio_button = QtWidgets.QRadioButton(self.translate("Random C major scale")) #TODO: add more options, such as a dropdown menu with the main scales and a field for defining a custom one.
 		random_c_major_radio_button.setFont(PyQt6_utils.FONT)
 		random_c_major_radio_button.setStyleSheet("font-size: 20px;")
 		random_c_major_radio_button.setChecked(True)

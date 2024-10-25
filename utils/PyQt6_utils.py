@@ -5,8 +5,7 @@ from PyQt6.QtGui import QFont, QIcon, QPixmap, QGuiApplication, QIntValidator, Q
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy, QLineEdit, QMessageBox
 from collections.abc import Iterable
 from PyQt6 import QtCore, QtGui, QtWidgets
-import typing
-import sys; import os
+import typing, sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import general_utils
@@ -15,7 +14,8 @@ from utils import general_utils
 FONT = QFont('Arial', 18)
 BUTTON_SIZE = 80
 TRANSLATE_CALLABLE = typing.Callable[[str], str]
-VALIDATE_CALLABLE = typing.Callable[[TRANSLATE_CALLABLE, str], tuple[bool, str]]
+IS_VALID_ERROR_MESSAGE = tuple[bool, str]
+VALIDATE_CALLABLE = typing.Callable[[TRANSLATE_CALLABLE, str], IS_VALID_ERROR_MESSAGE]
 #OFFSET_X = 8
 #OFFSET_Y = 0
 
@@ -181,7 +181,7 @@ class FormField:
 		self.run_real_time_validation()
 
 	def reset_border_and_tooltip(self):
-		self.text_box.setStyleSheet("")
+		self.text_box.setStyleSheet("border: 1px solid transparent;  border-bottom: 1px solid #aaa;")
 		self.text_box.setToolTip("") 
 	
 	def set_border_and_tooltip_red(self, error_message:str):
@@ -205,20 +205,20 @@ class FormField:
 			validate_field()
 	
 	@staticmethod
-	def is_valid_instrument(translate:TRANSLATE_CALLABLE, text:str) -> tuple[bool, str]:
+	def is_valid_instrument(translate:TRANSLATE_CALLABLE, text:str) -> IS_VALID_ERROR_MESSAGE:
 		if text not in INSTRUMENTS:
 			VALID_INSTRUMENTS_STR = ', '.join(INSTRUMENTS)
 			return False, translate('Please enter a valid instrument ({VALID_INSTRUMENTS_STR}), not "{text}".').format(VALID_INSTRUMENTS_STR=VALID_INSTRUMENTS_STR, text=text) 
 		return True, ""
 	
 	@staticmethod
-	def is_non_empty(translate:TRANSLATE_CALLABLE, text:str) -> tuple[bool, str]:
+	def is_non_empty(translate:TRANSLATE_CALLABLE, text:str) -> IS_VALID_ERROR_MESSAGE:
 		if text == "":
 			return False, translate("Please enter something.")
 		return True, ""
 
 class MultipleFormValidator:
-	def __init__(self, validate_field:typing.Callable[[TRANSLATE_CALLABLE], tuple[bool, str]], *fields: FormField):
+	def __init__(self, validate_field:typing.Callable[[str], IS_VALID_ERROR_MESSAGE], *fields: FormField):
 		self.validate_field = validate_field
 		self.fields = fields
 		self._is_invalid = False
@@ -227,7 +227,7 @@ class MultipleFormValidator:
 	def is_invalid(self):
 		return self._is_invalid
 	
-	def __call__(self) -> bool:
+	def __call__(self) -> IS_VALID_ERROR_MESSAGE:
 		for field in self.fields: #This validation only works if all individual fields are valid by themselves.
 			if not field.validate_field()[0]:
 				break
@@ -272,7 +272,7 @@ class Forms:
 		self.fields = fields
 		self.translate = translate
 		self.layout_v = layout_v
-		self.multiple_validate_field_list = []
+		self.multiple_validate_field_list:list[MultipleFormValidator] = []
 	
 	def summon_validate_all_button(self, validate_all_button:QtWidgets.QPushButton, post_validation_func:typing.Callable = lambda:None) -> None:
 		validate_all_button.clicked.connect(lambda: self.post_validate_all(post_validation_func))
@@ -306,7 +306,7 @@ class Forms:
 				incorrect_multiple_fields_error_messages.append(error_message)
 		return incorrect_fields, error_messages, incorrect_multiple_fields_error_messages
 	
-	def add_validation_multiple_fields(self, validation_func:typing.Callable[[TRANSLATE_CALLABLE], tuple[bool, str]], *fields: FormField):
+	def add_validation_multiple_fields(self, validation_func:typing.Callable[[TRANSLATE_CALLABLE], IS_VALID_ERROR_MESSAGE], *fields: FormField):
 		"""This method will validate multiple fields together in real-time."""
 		multipleFormValidator = MultipleFormValidator(lambda *fields:validation_func(self.translate, *fields), *fields)
 		self.multiple_validate_field_list.append(multipleFormValidator)
@@ -318,6 +318,16 @@ class Forms:
 		formatted_errors = [f"{field}: {message}" for field, message in zip(incorrect_fields, error_messages)]
 		msg_str = "\n\n".join((self.translate("The following fields are incorrect or incomplete:"), *formatted_errors, *incorrect_multiple_fields_error_messages, self.translate("Correct them and try again.")))
 		get_msg_box(self.translate("Incorrect input"), msg_str, QtWidgets.QMessageBox.Icon.Warning).exec()
+	
+	def summon_reset_button(self):
+		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
+		self.layout_v.addWidget(reset_button)
+		def reset():
+			for field in self.fields:
+				field.reset()
+			for field in self.fields:
+				field.run_real_time_validation()
+		reset_button.clicked.connect(reset)
 	
 	def create_player_ID_field(self):
 		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_non_empty)
@@ -333,18 +343,6 @@ class Forms:
 
 	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:VALIDATE_CALLABLE = FormField.is_non_empty):
 		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid, validator=FormField.positive_int_validator)
-	
-	def summon_reset_button(self):
-		reset_button = QtWidgets.QPushButton(self.translate("Reset"))
-		self.layout_v.addWidget(reset_button)
-		def reset():
-			for field in self.fields:
-				field.reset()
-			for field in self.fields:
-				field.run_real_time_validation()
-		reset_button.clicked.connect(reset)
 
 if __name__ == "__main__":
-	field = FormField(QtWidgets.QVBoxLayout(), "Test", "1", FormField.is_positive_digit, lambda x: x)
-	field.text_box.setText("this should not work")
-	print(field.validate_field())
+	pass
