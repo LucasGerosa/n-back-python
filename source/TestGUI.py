@@ -102,7 +102,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 				return True, ""
 			return False, translate("Since just {AVAILABLE_NUMBER_OF_TRIALS} sequences exist for the TDT test for now, number_of_trials must be less than or equal to {AVAILABLE_NUMBER_OF_TRIALS}. Got {text} instead.").format(AVAILABLE_NUMBER_OF_TRIALS=AVAILABLE_NUMBER_OF_TRIALS, text=text)
 
-		form = forms.Forms(layout_v, self.translate)
+		form = forms.FormPresets(layout_v, self.translate)
 		player_ID_field = form.create_player_ID_field()
 		number_of_trials_field = form.create_number_of_trials_field("10", is_number_of_trials_valid)
 		number_of_notes_field = form.create_number_of_notes_field("4", is_number_of_notes_valid)
@@ -277,7 +277,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 				return False, translate("The number of notes needs to be greater than or equal to the initial n-back + number of trials.")
 			return True, ""
 		
-		form = forms.Forms(layout_v, self.translate)
+		form = forms.FormPresets(layout_v, self.translate)
 		player_ID_field = form.create_player_ID_field()
 		number_of_trials_field = form.create_number_of_trials_field("6")
 		number_of_sequences_field = form.create_field(self.translate("Number of sequences"), "10", forms.FormField.is_non_empty, validator=form.get_StrictIntValidator())
