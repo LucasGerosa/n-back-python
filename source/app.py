@@ -15,14 +15,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 
 	def __init__(self):
 		super().__init__()
-		self.back_arrow = QtGui.QIcon("static/back_button.png")
-		self.settings_image = QtGui.QIcon("static/settings.png")
-		self.info_image = QtGui.QIcon("static/information_button.png")
-		self.play_image = QtGui.QIcon("static/play_button.png")
-		self.debug_image = QtGui.QIcon("static/debug.png")
-		self.stop_image = QtGui.QIcon("static/stop_button.jpg")
 
-		self.test_menus = []
 		self.setup_main_menu()
 		self.setup_settings()
 		self.setup_play_menu()
@@ -111,48 +104,9 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 	# 	v_buttons = ()
 	# 	h_buttons = ()
 	# 	layout_h, layout_v, self.debug_menu = self.setup_menu(self.translate("Debug"), h_buttons, v_buttons)
-
-	def setup_tonal_nback_test_menu(self):
-		self.setup_nback_test_menu(1, TonalNbackTestThread, h_buttons=(self.get_info_button_1(),))
-
-	def setup_visuotonal_nback_menu(self):
-		self.setup_nback_test_menu(2, VisuoTonalNbackTestThread)
-
-	def setup_menu(self, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=(), back_button:bool=True):
-		frame = QtWidgets.QFrame(self)
-		layout_h_v = QtWidgets.QHBoxLayout()
-		layout_v_h_v = QtWidgets.QVBoxLayout()
-		layout_v = QtWidgets.QVBoxLayout(frame)
-		if back_button:
-			layout_h_v.addWidget(self.get_back_button())
-
-		for widget in widgets_h:
-			layout_h_v.addWidget(widget)
-		#layout_h_v.addStretch()
-		
-		layout_v_h_v.addWidget(PyQt6_utils.create_frame_title(title))
-		for widget in widgets_v:
-			layout_v_h_v.addWidget(widget)
-		#layout_h_v.addStretch()
-		#layout_v_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-
-		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
-		layout_h_v.addLayout(layout_v_h_v)
-		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
-		layout_v.addLayout(layout_h_v)
-		layout_v.addStretch()
-		#frame.setLayout(layout_h_v)
-		layout_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-		return layout_h_v, layout_v_h_v, frame
 	
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(self.translate('Main menu'), lambda: self.goto_frame(self.main_menu))
-
-	def get_back_button(self):
-		return PyQt6_utils.get_button_with_image(self.back_arrow, self.go_back)
-
-	def get_settings_button(self):
-		return PyQt6_utils.get_button_with_image(self.settings_image, lambda: self.goto_frame(self.settings))
 
 	def get_play_button(self):
 		return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
@@ -165,30 +119,8 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		
 	# 	return PyQt6_utils.get_button_with_image(self.debug_image, debug)
 
-	def get_exit_button(self):
-		return PyQt6_utils.get_txt_button(self.translate('Exit'), self.close)
-
-	def get_stop_button(self, thread:TonalNbackTestThread):
-		button = QtWidgets.QPushButton()
-		button.setIcon(self.stop_image)
-		button.resize(PyQt6_utils.BUTTON_SIZE, PyQt6_utils.BUTTON_SIZE)
-		button.setIconSize(button.size())
-		def stop():
-			thread.stop = True
-			button.deleteLater()
-			#PyQt6_utils.get_msg_box(self.translate("Test stopped"), self.translate("The test was stopped, just wait for the notes to finish playing before playing another test."), QtWidgets.QMessageBox.Icon.Information).exec()
-		button.clicked.connect(stop) 
-		return button
-	
-	def get_info_button_1(self):
-		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(self.translate("Help"), info_text, QtWidgets.QMessageBox.Icon.Information).exec()
-		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame1))
-		return info_button
-
-	def get_info_button_3(self):
-		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(self.translate("Help"), info_text, QtWidgets.QMessageBox.Icon.Information).exec()
-		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame3))
-		return info_button
+	# def get_exit_button(self):
+	# 	return PyQt6_utils.get_txt_button(self.translate('Exit'), self.close)
 
 def main():
 	app = QtWidgets.QApplication([])

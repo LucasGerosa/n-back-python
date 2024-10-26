@@ -8,7 +8,21 @@ from notes import scales
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType
 from fractions import Fraction
 
-class VolumeTestGUI(parent_GUI.parent_GUI):
+class TestGUI(parent_GUI.parent_GUI):
+	
+	def get_stop_button(self, thread:TonalNbackTestThread):
+		button = QtWidgets.QPushButton()
+		button.setIcon(self.stop_image)
+		button.resize(PyQt6_utils.BUTTON_SIZE, PyQt6_utils.BUTTON_SIZE)
+		button.setIconSize(button.size())
+		def stop():
+			thread.stop = True
+			button.deleteLater()
+			#PyQt6_utils.get_msg_box(self.translate("Test stopped"), self.translate("The test was stopped, just wait for the notes to finish playing before playing another test."), QtWidgets.QMessageBox.Icon.Information).exec()
+		button.clicked.connect(stop) 
+		return button
+
+class VolumeTestGUI(TestGUI):
 
 	def setup_volume_test_menu(self):
 		h_buttons = (self.get_settings_button(),)
@@ -78,8 +92,13 @@ def create_question(layout, question_text, testCase, notes_thread, translate):
 
 class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 	
+	def get_TDT_info_button(self):
+		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(self.translate("Help"), info_text, QtWidgets.QMessageBox.Icon.Information).exec()
+		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.info_frame3))
+		return info_button
+	
 	def setup_TDT_menu(self):
-		h_buttons = (self.get_settings_button(), self.get_info_button_3())
+		h_buttons = (self.get_settings_button(), self.get_TDT_info_button())
 		v_buttons = ()
 		test_name = self.translate("Tonal Discrimination Task")
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
@@ -255,9 +274,6 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 			self.notes_thread.wait_condition.wakeOne()
 		
 		yes_button.clicked.connect(yes)
-
-
-class TonalNbackTestGUI(NbackTestGUI):
 	
 	def setup_nback_test_menu(self, test_number:int, Thread:TonalNbackTestThread|VisuoTonalNbackTestThread, h_buttons:tuple[QtWidgets.QPushButton, ...]=()): #For the nback tests 
 		h_buttons = (self.get_settings_button(),) + h_buttons
@@ -428,6 +444,8 @@ class TonalNbackTestGUI(NbackTestGUI):
 		form.summon_validate_all_button(validate_all_button=play_test_button, post_validation_func=play_test)
 		layout_v.addWidget(play_test_button)
 
+class TonalNbackTestGUI(NbackTestGUI):
+
 	def get_tonal_nback_test_button(self):
 		return PyQt6_utils.get_txt_button(self.translate('Tonal nback test'), lambda: self.goto_frame(self.test_menus[0]))
 
@@ -440,10 +458,19 @@ class TonalNbackTestGUI(NbackTestGUI):
 		text_label = QtWidgets.QLabel(text_body)
 		#text_label.setFont(font)
 		v_widgets = (text_label, image)
-		layout_h, layout_v, self.info_frame1 = self.setup_menu(title, widgets_v=v_widgets)
+		layout_h, layout_v, self.tonal_nback_info_frame = self.setup_menu(title, widgets_v=v_widgets)
 
-
+	def get_tonal_nback_info_frame(self):
+		#summon_info_popup = lambda: PyQt6_utils.get_msg_box(self.translate("Help"), info_text, QtWidgets.QMessageBox.Icon.Information).exec()
+		info_button = PyQt6_utils.get_button_with_image(self.info_image, lambda:self.goto_frame(self.tonal_nback_info_frame))
+		return info_button
+	
+	def setup_tonal_nback_test_menu(self):
+		self.setup_nback_test_menu(1, TonalNbackTestThread, h_buttons=(self.get_tonal_nback_info_frame(),))
 class VisuotonalNbackTestGUI(NbackTestGUI):
+
+	def setup_visuotonal_nback_menu(self):
+		self.setup_nback_test_menu(2, VisuoTonalNbackTestThread)
 
 	def setup_visuotonal_nback_test_frame(self):
 		self.test2_frame = QtWidgets.QFrame(self)
