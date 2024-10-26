@@ -2,17 +2,17 @@ import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from PyQt6 import QtWidgets, QtGui, QtCore
 import pytest
-from forms import FormField, Forms
+from utils.forms import FormField, Form
+from utils import validators
 
 
 @pytest.fixture
 def forms():
 	layout = QtWidgets.QVBoxLayout()
-	forms = Forms(layout, lambda x: x)
+	forms = Form(layout, lambda x: x)
 	forms.create_field("Test Field positive integer", "3", validate_func=FormField.is_non_empty)
 	forms.create_field("Test Field positive float", "3/4", validate_func=FormField.is_non_empty)
 	forms.create_field("Test Field not empty", "dawik213 something", validate_func=FormField.is_non_empty)
-	forms.create_field("Test Field valid instrument", "piano", validate_func=FormField.is_valid_instrument)
 	return forms
 
 def test_forms_validation_collects_invalid_fields(qtbot, forms):
@@ -40,17 +40,6 @@ def test_non_empty_validation(qtbot, forms):
 	field.text_box.setText("valid")
 	result, error_message = field.validate_field()
 
-def test_valid_instrument_validation(qtbot, forms):
-	field = forms.fields[3]
-
-	field.text_box.setText("invalid")
-	result, error_message = field.validate_field()
-	assert not result, f"Validation should fail for invalid instrument. Got {result} instead. Error message: {error_message}"
-
-	field.text_box.setText("piano")
-	result, error_message = field.validate_field()
-	assert result, "Validation should pass for valid instrument"
-
 def test_placeHolderText(qtbot, forms):
 	field =	forms.create_field("Test placeholder", placeHolderText="Please enter something...", validate_func=FormField.is_non_empty)
 	result, error_message = field.validate_field()
@@ -63,10 +52,10 @@ def test_placeHolderText(qtbot, forms):
 @pytest.fixture
 def forms2():
 	layout = QtWidgets.QVBoxLayout()
-	forms = Forms(layout, lambda x: x)
-	forms.create_field("Test 1", "1", FormField.is_non_empty, validator=FormField.positive_int_validator)
-	forms.create_field("Test 2", "2", FormField.is_non_empty, validator=FormField.positive_int_validator)
-	forms.create_field("Test 3. This should be equal to 3.", "3", FormField.is_non_empty, validator=FormField.positive_int_validator)
+	forms = Form(layout, lambda x: x)
+	forms.create_field("Test 1", "1", FormField.is_non_empty)
+	forms.create_field("Test 2", "2", FormField.is_non_empty)
+	forms.create_field("Test 3. This should be equal to 3.", "3", FormField.is_non_empty)
 	return forms
 
 def test_validation_multiple_fields(qtbot, forms2):

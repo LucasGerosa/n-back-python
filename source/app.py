@@ -26,7 +26,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		self.setup_main_menu()
 		self.setup_settings()
 		self.setup_play_menu()
-		self.setup_debug_menu()
+		#self.setup_debug_menu()
 
 		self.setup_tonal_nback_test_menu()
 		self.setup_visuotonal_nback_menu()
@@ -54,13 +54,8 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		layout_h, layout_v, self.main_menu = self.setup_menu(self.translate("Main menu"), h_buttons)
 
 	def setup_settings(self) -> None:
-		def create_save_function(text_box, setting_name):
-			def save_function():
-				notes_config.change_setting(setting_name, text_box.text())
 
-			return save_function
-
-		h_buttons = self.get_debug_button(),
+		h_buttons = ()#self.get_debug_button(),
 		v_buttons = self.get_main_menu_button(),
 		layout_h, layout_v, self.settings = self.setup_menu(self.translate("Settings"), widgets_h=h_buttons, widgets_v=v_buttons)
 
@@ -69,7 +64,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
 
-		form = forms.Forms(layout_v, self.translate)
+		form = forms.FormPresets(layout_v, self.translate)
 		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:Optional[QtGui.QValidator]=None) -> None:
 			field = form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
 			field.setting_name = setting #type: ignore
@@ -98,6 +93,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		
 		reset_button = QtWidgets.QPushButton(self.translate("Reset to default"))
 		def reset_settings():
+
 			config = notes_config.reset_settings()
 			for field in form.fields:
 				field.text_box.setText(config[field.setting_name])
@@ -111,10 +107,10 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		v_buttons = self.get_main_menu_button(), self.get_volume_test_button(), self.get_tonal_nback_test_button(), self.get_TDT_button()
 		layout_h, layout_v, self.play_menu = self.setup_menu(self.translate("Choose a test"), h_buttons, v_buttons)
 	
-	def setup_debug_menu(self):
-		v_buttons = ()
-		h_buttons = ()
-		layout_h, layout_v, self.debug_menu = self.setup_menu(self.translate("Debug"), h_buttons, v_buttons)
+	# def setup_debug_menu(self): #The current debug functionality does not work.
+	# 	v_buttons = ()
+	# 	h_buttons = ()
+	# 	layout_h, layout_v, self.debug_menu = self.setup_menu(self.translate("Debug"), h_buttons, v_buttons)
 
 	def setup_tonal_nback_test_menu(self):
 		self.setup_nback_test_menu(1, TonalNbackTestThread, h_buttons=(self.get_info_button_1(),))
@@ -161,13 +157,13 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 	def get_play_button(self):
 		return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
 
-	def get_debug_button(self):
-		def debug():
-			self.goto_frame(self.debug_menu)
+	# def get_debug_button(self):
+	# 	def debug():
+	# 		self.goto_frame(self.debug_menu)
 			
-			NbackTestCase.debug() #FIXME: The current debug functionality should probably be removed
+	# 		NbackTestCase.debug() #FIXME: The current debug functionality should probably be removed
 		
-		return PyQt6_utils.get_button_with_image(self.debug_image, debug)
+	# 	return PyQt6_utils.get_button_with_image(self.debug_image, debug)
 
 	def get_exit_button(self):
 		return PyQt6_utils.get_txt_button(self.translate('Exit'), self.close)

@@ -2,7 +2,7 @@ import pytest
 from PyQt6 import QtWidgets, QtGui
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from forms import FormField, MultipleFormValidator, Forms
+from forms import FormField, MultipleFormValidator, Form
 
 ILLEGAL_TEXT = "illegal"
 ILLEGAL_ERROR_MSG = "This is illegal"

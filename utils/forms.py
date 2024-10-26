@@ -64,9 +64,8 @@ class FormField:
 			self.set_border_and_tooltip_red(error_message)
 		else:
 			self.is_valid = self.get_is_validator_acceptable_state()[0]
-			
-			if self.is_valid and not self.multiple_validate_field_list:
-				self.reset_border_and_tooltip()
+			self.reset_border_and_tooltip() #Intermediate and acceptable states should never show red border or tooltip.
+			if not self.multiple_validate_field_list:
 				return
 		
 		for validate_field in self.multiple_validate_field_list:
@@ -128,8 +127,8 @@ class MultipleFormValidator:
 				field.reset_border_and_tooltip()
 		return True, ""
 
-class Forms:
-
+class Form:
+	'''Container class for FormFields and MultipleFormValidators. This class is used to create forms and validate them. It also provides a method to validate all fields at once and display a message box with the incorrect fields and their respective error messages.'''
 	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:validators.TranslateCallable = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
@@ -195,7 +194,11 @@ class Forms:
 			for field in self.fields:
 				field.run_real_time_validation()
 		reset_button.clicked.connect(reset)
-	
+
+
+class FormPresets(Form):
+	'''This class is used to create specific FormFields for the application without cluttering the main Form class.'''
+
 	def create_player_ID_field(self):
 		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_non_empty)
 	
