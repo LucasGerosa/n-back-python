@@ -17,6 +17,8 @@ AVAILABLE_NOTES_TUPLE = (
 	'B'
 )
 
+DEFAULT_RANGE_SEPARATORS = ('-', '–')
+
 def sort_notes(note_iterable:Iterable[str]) -> list[str]: #sorts an iterable of note names
 	note_name_list = [convert_sharps_to_flats(note_str) for note_str in note_iterable]
 	
@@ -127,7 +129,7 @@ def notes_str_set_between_notes_str(formatted_note_str1:str, formatted_note_str2
 
 	return note_set
 
-def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=('-', '–')) -> list[str]: 
+def get_final_list_notes(notes_string:str, range_separators:tuple[str, ...]=DEFAULT_RANGE_SEPARATORS) -> list[str]: 
 	# Uses regex to get the notes from a notes_string containing single notes and a range of notes separated by the range_separators. Anything else in the notes_string is ignored.
 	# Ex. input: "A1;C2D3-E3 output: ['A1', 'C2', 'D3', 'Eb3', 'E3']
 	NOTE_PATTERN = "[A-Ga-g][b#]*[0-9]+"

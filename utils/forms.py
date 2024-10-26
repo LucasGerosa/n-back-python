@@ -1,78 +1,30 @@
-import typing, sys, os
+import typing, sys, os, re
 from PyQt6 import QtCore, QtGui, QtWidgets
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import PyQt6_utils, general_utils
+from utils import PyQt6_utils, validators, note_str_utils
 
 
-TranslateCallable = typing.Callable[[str], str]
-IsValidErrorMessage = tuple[bool, str]
-SimpleValidateCallable = typing.Callable[[TranslateCallable, str], IsValidErrorMessage]
-
-
-class FractionValidator(QtGui.QDoubleValidator):
-	'''Validation for floats and fractions as defined by fractions.Fraction'''
-	def validate(self, input_str: str, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
-		if not input_str or (input_str == '-' and self.bottom() < 0):
-			return (QtGui.QValidator.State.Intermediate, input_str, pos)
-		# Allow intermediate fractions like "3/"
-		if '/' in input_str:
-			try:
-				numerator, denominator = input_str.split('/')
-				if numerator.isdigit() and denominator == "":
-					return (QtGui.QValidator.State.Intermediate, input_str, pos)
-				if numerator.isdigit() and denominator.isdigit() and int(denominator) != 0:
-					if int(numerator) / int(denominator) > self.bottom():
-						return (QtGui.QValidator.State.Acceptable, input_str, pos)
-			except ValueError:
-				return (QtGui.QValidator.State.Invalid, input_str, pos)
-		
-		# Validate as a float and ensure it adheres to range and decimal restrictions
-		fraction_float = general_utils.is_float_or_fraction(input_str)
-		if fraction_float is not None:
-			if fraction_float > self.bottom() and fraction_float <= self.top():
-				# Ensure valid number of decimals
-				if '.' in input_str:
-					decimal_part = input_str.split('.')[1]
-					if len(decimal_part) > self.decimals():
-						return (QtGui.QValidator.State.Invalid, input_str, pos)
-				return (QtGui.QValidator.State.Acceptable, input_str, pos)
-			else:
-				return (QtGui.QValidator.State.Invalid, input_str, pos)
-
-		return (QtGui.QValidator.State.Invalid, input_str, pos)
-
-class StrictIntValidator(QtGui.QIntValidator):
-	def validate(self, input_str: str, pos: int) -> tuple[QtGui.QValidator.State, str, int]:
-		# Allow intermediate empty state
-		if not input_str:
-			return (QtGui.QValidator.State.Intermediate, input_str, pos)
-		
-		# Check if the input is a valid integer
-		if input_str.isdigit():
-			value = int(input_str)
-			# Ensure the value is within bounds
-			if not (value < self.bottom() or value > self.top()):
-				return (QtGui.QValidator.State.Acceptable, input_str, pos)
-		# If input is neither empty nor a valid integer, return Invalid
-		return (QtGui.QValidator.State.Invalid, input_str, pos)
-
+NOTE_PATTERN = r"[A-Ga-g][b#]?[0-7]" #TODO:only allow validation of notes that are in the available notes list
+SEPARATOR_PATTERN = f"[{''.join(map(re.escape, note_str_utils.DEFAULT_RANGE_SEPARATORS))}]"
+SIMPLE_RANGE_OR_SINGLE_PATTERN = rf"({NOTE_PATTERN})({SEPARATOR_PATTERN}({NOTE_PATTERN}))?|({NOTE_PATTERN})"
+COMPLEX_PATTERN = rf"({SIMPLE_RANGE_OR_SINGLE_PATTERN})(\s?(;\s?)?({SIMPLE_RANGE_OR_SINGLE_PATTERN}))*"
 
 class FormField:
 
-	positive_int_validator = StrictIntValidator(1, 99999)
-	positive_fraction_validator = FractionValidator(1, 99999, 2)
-
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:SimpleValidateCallable=lambda *_: (True, ""), translate:TranslateCallable = lambda txt:txt, placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, label:str, default_txt:str = "", validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), translate:validators.TranslateCallable = lambda txt:txt, placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None):
+		self.translate = translate
 		self.label = QtWidgets.QLabel(label)
 		self.text_box = QtWidgets.QLineEdit()
 		self.text_box.setPlaceholderText(placeHolderText)
 		self.text_box.returnPressed.connect(on_returnPressed)
 		if validator:
 			self.text_box.setValidator(validator)
+
 		self.validate_field = lambda:validate_func(translate, self.text_box.text())
 		self.multiple_validate_field_list:list[MultipleFormValidator] = []
 		self.text_box.textChanged.connect(self.run_real_time_validation)
+		self.run_real_time_validation()
 		self.default_txt = default_txt
 		self.reset()
 
@@ -80,7 +32,6 @@ class FormField:
 		layout_v_h.addWidget(self.label)
 		layout_v_h.addWidget(self.text_box)
 		layout_v.addLayout(layout_v_h)
-
 	
 	def reset(self):
 		self.text_box.setText(self.default_txt)
@@ -93,14 +44,28 @@ class FormField:
 	def set_border_and_tooltip_red(self, error_message:str):
 		self.text_box.setStyleSheet("border: 1px solid red")
 		self.text_box.setToolTip(error_message)
-
+	
+	def get_is_validator_acceptable_state(self) -> validators.IsValidErrorMessage:
+		validator = self.text_box.validator()
+		if validator is None:
+			return True, ""
+		current_text = self.text_box.text()
+		validator_state, _, _ = validator.validate(current_text, len(current_text))
+		if validator_state == QtGui.QValidator.State.Acceptable:
+			return True, ""
+		if hasattr(validator, "error_message"):
+			return False, validator.error_message
+		return False, self.translate("Invalid field")
+		
 	def run_real_time_validation(self):
 		valid, error_message = self.validate_field()
-
 		if not valid:
+			self.is_valid = False
 			self.set_border_and_tooltip_red(error_message)
 		else:
-			if not self.multiple_validate_field_list:
+			self.is_valid = self.get_is_validator_acceptable_state()[0]
+			
+			if self.is_valid and not self.multiple_validate_field_list:
 				self.reset_border_and_tooltip()
 				return
 		
@@ -108,14 +73,7 @@ class FormField:
 			validate_field()
 	
 	@staticmethod
-	def is_valid_instrument(translate:TranslateCallable, text:str) -> IsValidErrorMessage:
-		if text not in INSTRUMENTS:
-			VALID_INSTRUMENTS_STR = ', '.join(INSTRUMENTS)
-			return False, translate('Please enter a valid instrument ({VALID_INSTRUMENTS_STR}), not "{text}".').format(VALID_INSTRUMENTS_STR=VALID_INSTRUMENTS_STR, text=text) 
-		return True, ""
-	
-	@staticmethod
-	def is_non_empty(translate:TranslateCallable, text:str) -> IsValidErrorMessage:
+	def is_non_empty(translate:validators.TranslateCallable, text:str) -> validators.IsValidErrorMessage:
 		if text == "":
 			return False, translate("Please enter something.")
 		return True, ""
@@ -123,7 +81,7 @@ class FormField:
 class MultipleFormValidator:
 	'''This is a class for dealing with multiple fields that need validation that depend on the values of ther fields on top of their individual validation. If any of the involved fields are individually invalid, the validation will not be performed.'''
 
-	def __init__(self, validate_field:typing.Callable[[str], IsValidErrorMessage], *fields: FormField):
+	def __init__(self, validate_field:typing.Callable[[str], validators.IsValidErrorMessage], *fields: FormField):
 		self.validate_field = validate_field
 		self.fields = fields
 		self._is_valid = True
@@ -134,10 +92,11 @@ class MultipleFormValidator:
 	def is_valid(self):
 		return self._is_valid
 	
-	def __call__(self) -> IsValidErrorMessage:
+	def __call__(self) -> validators.IsValidErrorMessage:
 		for field in self.fields: #This validation only works if all individual fields are valid by themselves.
-			if not field.validate_field()[0]:
+			if not field.is_valid:
 				break
+		
 		else:
 			result, error_message = self.validate_field(*[field.text_box.text() for field in self.fields])
 			self._is_valid = result
@@ -159,7 +118,7 @@ class MultipleFormValidator:
 		self._is_valid = True
 		for field in self.fields:
 			
-			if not field.validate_field()[0]:
+			if not field.is_valid:
 				continue
 			
 			for multipleFormValidator in field.multiple_validate_field_list: #checks if there are any other invalid validators for the field
@@ -168,11 +127,10 @@ class MultipleFormValidator:
 			else:
 				field.reset_border_and_tooltip()
 		return True, ""
-	
 
 class Forms:
 
-	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:TranslateCallable = lambda x:x, fields:list[FormField]|None = None):
+	def __init__(self, layout_v: QtWidgets.QVBoxLayout, translate:validators.TranslateCallable = lambda x:x, fields:list[FormField]|None = None):
 		if fields is None:
 			fields = []
 
@@ -192,7 +150,7 @@ class Forms:
 			return
 		post_validation_func()
 
-	def create_field(self, label:str, default_txt:str = "", validate_func:SimpleValidateCallable=lambda *_: (True, ""), placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None) -> FormField:
+	def create_field(self, label:str, default_txt:str = "", validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), placeHolderText:str = "", on_returnPressed:typing.Callable=lambda:None, validator:QtGui.QValidator|None=None) -> FormField:
 		field = FormField(self.layout_v, label, default_txt, validate_func, self.translate, placeHolderText, on_returnPressed, validator)
 		self.fields.append(field)
 		return field
@@ -201,10 +159,15 @@ class Forms:
 		incorrect_fields:list[str] = []
 		error_messages:list[str] = []
 		for field in self.fields:
-			result, error_message = field.validate_field()
-			if not result:
-				incorrect_fields.append(field.label.text())
-				error_messages.append(error_message)
+			if field.is_valid:
+				continue
+			
+			validator_state, error_message = field.get_is_validator_acceptable_state()
+			if validator_state:
+				_, error_message = field.validate_field()
+			
+			incorrect_fields.append(field.label.text())
+			error_messages.append(error_message)
 		
 		incorrect_multiple_fields_error_messages:list[str] = []
 		for validate_field in self.multiple_validate_field_list:
@@ -237,13 +200,26 @@ class Forms:
 		return self.create_field(self.translate("Participant ID"), "123456", FormField.is_non_empty)
 	
 	def create_instrument_field(self):
-		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_valid_instrument)
+		validator = validators.MultipleOptionsValidator("instrument", VALID_INSTRUMENTS, self.translate)
+		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_non_empty, validator=validator)
 	
 	def create_bpm_field(self):
-		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_non_empty, validator=FormField.positive_fraction_validator)
+		validator = validators.FractionValidator(1, 99999, 2)
+		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_non_empty, validator=validator)
 	
-	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:SimpleValidateCallable = FormField.is_non_empty):
-		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid, validator=FormField.positive_int_validator)
+	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:validators.SimpleValidateCallable = FormField.is_non_empty):
+		validator = validators.StrictIntValidator(1, 99999, translate=self.translate)
+		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid, validator=validator)
 
-	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:SimpleValidateCallable = FormField.is_non_empty):
-		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid, validator=FormField.positive_int_validator)
+	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:validators.SimpleValidateCallable = FormField.is_non_empty):
+		validator = validators.StrictIntValidator(1, 99999, translate=self.translate)
+		return self.create_field(self.translate("Number of trials"), number_of_trials, is_number_of_trials_valid, validator=validator)
+	
+	def get_StrictIntValidator(self, bottom:int = 1, top:int = 99999) -> validators.StrictIntValidator:
+		return validators.StrictIntValidator(bottom, top, translate=self.translate)
+	
+	def get_notes_str_validator(self):
+		return validators.RegularExpressionValidator(COMPLEX_PATTERN, translate = self.translate)
+
+if __name__ == '__main__':
+	pass

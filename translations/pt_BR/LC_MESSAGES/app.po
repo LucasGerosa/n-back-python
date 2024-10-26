@@ -318,3 +318,13 @@ msgstr "Por favor, digite um instrumento válido ({VALID_INSTRUMENTS_STR}), não
 
 msgid "Number of sequences"
 msgstr "Quantidade de sequências"
+
+msgid "Please enter a valid {} ({})."
+msgstr "Por favor, digite um(a) {} válido(a) ({})."
+
+msgid "Please enter a number."
+msgstr "Por favor, digite um número."
+
+msgid "Please enter a valid fraction."
+msgstr "Por favor, digite uma fração válida."
+

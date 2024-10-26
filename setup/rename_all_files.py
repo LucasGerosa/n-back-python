@@ -6,7 +6,7 @@ from notes import notes
 
 def lower_first_letter_all_note_files():
 	'''This function only needs to be run for older versions of the program that didn't automatically lower the first letter of note files when downloading. Only needs to be run manually.'''
-	for instrument in INSTRUMENTS:
+	for instrument in VALID_INSTRUMENTS:
 		path = os.path.join(notes.ROOT_DIR, '..', notes.NOTES_FOLDER, instrument, f"*.mp3")
 		file_paths = glob.glob(path)
 		for file_path in file_paths:

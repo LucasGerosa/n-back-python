@@ -1,13 +1,11 @@
 from source import parent_GUI
 from source.testThreads import VolumeTestThread, TonalDiscriminationTaskTestThread, TestThread, VisuoTonalNbackTestThread, TonalNbackTestThread
 from PyQt6 import QtCore, QtWidgets, QtGui
-from utils import PyQt6_utils, forms, general_utils
+from utils import PyQt6_utils, forms, validators
 from utils.defaults import *
 import time
 from notes import scales
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType
-from dataclasses import dataclass
-import typing
 from fractions import Fraction
 
 class VolumeTestGUI(parent_GUI.parent_GUI):
@@ -87,7 +85,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 
-		def is_number_of_notes_valid(translate:forms.TranslateCallable, text:str) -> forms.IsValidErrorMessage:
+		def is_number_of_notes_valid(translate:validators.TranslateCallable, text:str) -> validators.IsValidErrorMessage:
 			result, error_message = forms.FormField.is_non_empty(translate, text)
 			if not result:
 				return False, error_message
@@ -96,7 +94,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			AVAILABLE_TDT_NOTE_QUANTITIES_STR = ', '.join(map(str, AVAILABLE_TDT_NOTE_QUANTITIES))
 			return False, translate("Currently, the only number of notes available is {}.").format(AVAILABLE_TDT_NOTE_QUANTITIES_STR)
 		
-		def is_number_of_trials_valid(translate:forms.TranslateCallable, text:str) -> forms.IsValidErrorMessage:
+		def is_number_of_trials_valid(translate:validators.TranslateCallable, text:str) -> validators.IsValidErrorMessage:
 			result, error_message = forms.FormField.is_non_empty(translate, text)
 			if not result:
 				return False, error_message
@@ -109,7 +107,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		number_of_trials_field = form.create_number_of_trials_field("10", is_number_of_trials_valid)
 		number_of_notes_field = form.create_number_of_notes_field("4", is_number_of_notes_valid)
 		bpm_field = form.create_bpm_field()
-		instrument_field = form.create_instrument_field()
+		instrument_field = form.create_instrument_field() #TODO: add a dropdown menu with the available instruments instead.
 		form.summon_reset_button()
 
 		def play_test() -> None:
@@ -274,7 +272,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 		layout_h, layout_v, test_menu = self.setup_menu(test_name, h_buttons, v_buttons)
 		self.test_menus.append(test_menu)
 		
-		def is_number_of_trials_notes_initial_nback_valid(translate:forms.TranslateCallable, number_of_trials:str, number_of_notes:str, initial_nback:str) -> forms.IsValidErrorMessage:
+		def is_number_of_trials_notes_initial_nback_valid(translate:validators.TranslateCallable, number_of_trials:str, number_of_notes:str, initial_nback:str) -> validators.IsValidErrorMessage:
 			if int(number_of_notes) < int(initial_nback) + int(number_of_trials):
 				return False, translate("The number of notes needs to be greater than or equal to the initial n-back + number of trials.")
 			return True, ""
@@ -282,9 +280,9 @@ class TonalNbackTestGUI(NbackTestGUI):
 		form = forms.Forms(layout_v, self.translate)
 		player_ID_field = form.create_player_ID_field()
 		number_of_trials_field = form.create_number_of_trials_field("6")
-		number_of_sequences_field = form.create_field(self.translate("Number of sequences"), "10", forms.FormField.is_non_empty, validator=forms.FormField.positive_int_validator)
+		number_of_sequences_field = form.create_field(self.translate("Number of sequences"), "10", forms.FormField.is_non_empty, validator=form.get_StrictIntValidator())
 		number_of_notes_field = form.create_number_of_notes_field("10")
-		initial_nback_field = form.create_field(self.translate("Starting n-back"), "1",  forms.FormField.is_non_empty, validator=forms.FormField.positive_int_validator)
+		initial_nback_field = form.create_field(self.translate("Starting n-back"), "1",  forms.FormField.is_non_empty, validator=form.get_StrictIntValidator())
 		bpm_field = form.create_bpm_field()
 		instrument_field = form.create_instrument_field()
 		form.summon_reset_button()

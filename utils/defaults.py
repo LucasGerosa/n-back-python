@@ -1,4 +1,4 @@
-INSTRUMENTS = ('piano', 'guitar') #TODO: make these instruments be translated
+VALID_INSTRUMENTS = ('piano', 'guitar') #TODO: make these instruments be translated
 DEFAULT_INSTRUMENT = 'piano'
 DEFAULT_BPM = 75.0
 DEFAULT_NOTE_VALUE = 1/4

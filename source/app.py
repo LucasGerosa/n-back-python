@@ -1,15 +1,14 @@
 '''This file is the main file that should be run to run the program. It ties together all the elements of the GUI and calls functions that deal with the tests (in testThreads.py and TestCase.py)'''
-import warnings
+import warnings, sys, os
 warnings.filterwarnings("ignore", message="Couldn't find ffmpeg or avconv", category=RuntimeWarning)
 from PyQt6 import QtWidgets, QtCore, QtGui
-import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import PyQt6_utils, forms, notes_config, note_str_utils
+from utils import PyQt6_utils, forms, notes_config, note_str_utils, validators
 from source.testThreads import TonalNbackTestThread, VisuoTonalNbackTestThread, TestThread
 from typing import Dict, Optional, List
 from fractions import Fraction
-import TestGUI
+from source import TestGUI
 
 	
 class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI, TestGUI.VisuotonalNbackTestGUI):
@@ -71,11 +70,16 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
 
 		form = forms.Forms(layout_v, self.translate)
-		def create_field(setting:str, validate_func:forms.SimpleValidateCallable=lambda *_: (True, "")):
-			form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func)
+		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:Optional[QtGui.QValidator]=None) -> None:
+			form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
 		
-		create_field(notes_config.NOTES_SETTING)
-		create_field(notes_config.NOTE_INTENSITY_SETTING)
+		def validate_note_range(translate, note_range:str) -> validators.IsValidErrorMessage:
+			if not note_str_utils.get_final_list_notes(note_range): #TODO: not allow notes that don't exist in the input folder
+				return False, translate("Invalid note range")
+			return True, ""
+		
+		create_field(notes_config.NOTES_SETTING, validate_note_range, validator=form.get_notes_str_validator())
+		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator("intensity", VALID_INTENSITIES, self.translate))
 		create_field(notes_config.NOTE_VALUE_SETTING)
 		create_field(notes_config.LANGUAGE_SETTING) #TODO: add validators
 
@@ -93,12 +97,6 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 		save_button = QtWidgets.QPushButton(self.translate("Save"))
 
 		def save_all():
-			
-			incorrect_fields, error_messages = form.validate_fields()
-			if incorrect_fields != []:
-				forms.summon_incorrect_fields_msgbox(incorrect_fields, error_messages)
-				return
-			
 
 			wrong_inputs = []
 			setting_value_tuple = tuple(setting_dict.values())
@@ -141,10 +139,7 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 
 				
 			PyQt6_utils.get_msg_box(self.translate("Settings saved"), self.translate("Settings have been successfully saved.")).exec()
-
-		save_button.clicked.connect(save_all)
-		layout_v.addWidget(save_button)
-
+		form.summon_validate_all_button(save_button, save_all)
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
