@@ -71,7 +71,8 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 
 		form = forms.Forms(layout_v, self.translate)
 		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:Optional[QtGui.QValidator]=None) -> None:
-			form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
+			field = form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
+			field.setting_name = setting #type: ignore
 		
 		def validate_note_range(translate, note_range:str) -> validators.IsValidErrorMessage:
 			if not note_str_utils.get_final_list_notes(note_range): #TODO: not allow notes that don't exist in the input folder
@@ -79,67 +80,31 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 			return True, ""
 		
 		create_field(notes_config.NOTES_SETTING, validate_note_range, validator=form.get_notes_str_validator())
-		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator("intensity", VALID_INTENSITIES, self.translate))
-		create_field(notes_config.NOTE_VALUE_SETTING)
-		create_field(notes_config.LANGUAGE_SETTING) #TODO: add validators
+		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator(notes_config.NOTE_INTENSITY_SETTING, VALID_INTENSITIES, self.translate)) #TODO: replace with a dropdown menu
+		create_field(notes_config.NOTE_VALUE_SETTING, validator=form.get_FractionValidator(bottom=0.0000000001, top=100))
+		create_field(notes_config.LANGUAGE_SETTING, validator=validators.MultipleOptionsValidator(notes_config.LANGUAGE_SETTING, notes_config.LEGAL_LANGUAGES)) #TODO: replace with a dropdown menu
 
-		# for setting_name in all_settings:
-		# 	setting_value = all_settings.get(setting_name)
-			
-
-
-		# 	text_box.setText(setting_value)
-		# 	text_box.returnPressed.connect(create_save_function(text_box, setting_name))
-		# 	layout_v_h.addWidget(text_box)
-		
 		form.summon_reset_button()
 
 		save_button = QtWidgets.QPushButton(self.translate("Save"))
 
 		def save_all():
 
-			wrong_inputs = []
-			setting_value_tuple = tuple(setting_dict.values())
-
-			note_range = setting_value_tuple[0].text()
-			try:
-				note_str_utils.get_final_list_notes(note_range)
-			except (ValueError, TypeError):
-				wrong_inputs.append(notes_config.NOTES_SETTING)
-
-			note_intensity = setting_value_tuple[1].text()
-			if note_intensity not in VALID_INTENSITIES:
-				wrong_inputs.append(notes_config.NOTE_INTENSITY_SETTING)
-
-			try:
-				Fraction(setting_value_tuple[2].text())
-			except (TypeError, ValueError, ZeroDivisionError):
-				wrong_inputs.append(notes_config.NOTE_VALUE_SETTING)
-
-			language = setting_value_tuple[3].text()
-			if language not in notes_config.LEGAL_LANGUAGES:
-				wrong_inputs.append(notes_config.LANGUAGE_SETTING)
-			
-			if wrong_inputs != []:
-				wrong_inputs = [self.translate(setting_name) for setting_name in wrong_inputs]
-				PyQt6_utils.get_msg_box(self.translate("Settings failed to save"), self.translate("The following settings are incorrect or incomplete:") + "\n\n" + '\n'.join(wrong_inputs)  + "\n\n" + self.translate("Correct them and try again."), QtWidgets.QMessageBox.Icon.Warning).exec()
-				return
-			
-			for setting_name in setting_dict:
-				text_box = setting_dict[setting_name]
-				user_input = text_box.text()
-				if setting_name == "language":
-					language_path = os.path.join(TRANSLATIONS_FOLDER, user_input)
-					if not os.path.isdir(language_path):
-						PyQt6_utils.get_msg_box(self.translate("Settings failed to save"), self.translate("Language doesn't exist; Please enter a valid language."), QtWidgets.QMessageBox.Icon.Warning).exec()
-						return
-				
-						
-				notes_config.change_setting(setting_name, user_input)
-
+			for field in form.fields:
+				notes_config.change_setting(field.setting_name, field.text_box.text())
 				
 			PyQt6_utils.get_msg_box(self.translate("Settings saved"), self.translate("Settings have been successfully saved.")).exec()
 		form.summon_validate_all_button(save_button, save_all)
+		
+		reset_button = QtWidgets.QPushButton(self.translate("Reset to default"))
+		def reset_settings():
+			config = notes_config.reset_settings()
+			for field in form.fields:
+				field.text_box.setText(config[field.setting_name])
+			PyQt6_utils.get_msg_box(self.translate("Settings reset"), self.translate("Settings have been successfully reset.")).exec()
+
+		reset_button.clicked.connect(reset_settings)
+		layout_v.addWidget(reset_button)
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),

@@ -204,7 +204,7 @@ class Forms:
 		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_non_empty, validator=validator)
 	
 	def create_bpm_field(self):
-		validator = validators.FractionValidator(1, 99999, 2)
+		validator = self.get_FractionValidator()
 		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_non_empty, validator=validator)
 	
 	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:validators.SimpleValidateCallable = FormField.is_non_empty):
@@ -220,6 +220,9 @@ class Forms:
 	
 	def get_notes_str_validator(self):
 		return validators.RegularExpressionValidator(COMPLEX_PATTERN, translate = self.translate)
+	
+	def get_FractionValidator(self, bottom:float = 1, top:float = 99999, decimals:int = 2) -> validators.FractionValidator:
+		return validators.FractionValidator(bottom, top, decimals, translate=self.translate)
 
 if __name__ == '__main__':
 	pass

@@ -11,7 +11,7 @@ IsValidErrorMessage = tuple[bool, str]
 SimpleValidateCallable = typing.Callable[[TranslateCallable, str], IsValidErrorMessage]
 
 class FractionValidator(QtGui.QDoubleValidator):
-	def __init__(self, bottom:float, top:float, decimals:int, translate:TranslateCallable = lambda x:x, parent=None):
+	def __init__(self, bottom:float, top:float, decimals:int=1, translate:TranslateCallable = lambda x:x, parent=None):
 		super().__init__(bottom, top, decimals, parent)
 		self.translate = translate
 
@@ -88,7 +88,7 @@ class MultipleOptionsValidator(QtGui.QValidator):
 			return (QtGui.QValidator.State.Acceptable, input_str, pos)
 		
 		for option in self.valid_options:
-			if input_str in option:
+			if input_str == option[:len(input_str)]:
 				self.error_message = self.translate("Please enter a valid {} {}.").format(self.option_name, self.valid_options)
 				return (QtGui.QValidator.State.Intermediate, input_str, pos)
 		
