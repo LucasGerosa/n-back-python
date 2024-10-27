@@ -22,7 +22,10 @@ class grandparent_GUI(QtWidgets.QMainWindow):
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
-		self.states:list[QtWidgets.QWidget] = []
+		self.stacked_widget = QtWidgets.QStackedWidget()
+		self.setCentralWidget(self.stacked_widget)
+		self.past_pages:list[QtWidgets.QWidget] = []
+		
 		translate:TranslateCallable|str = set_language(notes_config.get_all_settings()["language"])
 		if type(translate) == str:
 			PyQt6_utils.get_msg_box(translate, QtWidgets.QMessageBox.Icon.Warning)
@@ -39,11 +42,8 @@ class grandparent_GUI(QtWidgets.QMainWindow):
 				self.showFullScreen()
 	
 	def goto_frame(self, frame:QtWidgets.QFrame):
-		#self.current_frame.hide()
-		#frame.show() # Remove the current central widget without deleting it
-		#self.removed_widgets.append(removed_widget)
-		self.states.append(self.takeCentralWidget())
-		self.setCentralWidget(frame)
+		self.past_pages.append(self.stacked_widget.currentWidget())
+		self.stacked_widget.setCurrentWidget(frame)
 
 class parent_GUI(grandparent_GUI):
 	'''Contains more specific functionality for the basic GUI used by this program.'''
@@ -52,28 +52,33 @@ class parent_GUI(grandparent_GUI):
 		super().__init__()
 		self.get_images()
 		self.removed_widgets:list = []
-		self.test_menus:list = []
 
 	def get_images(self):
-		self.back_arrow = QtGui.QIcon("static/back_button.png")
+		self.back_arrow = QtGui.QIcon("static/back_button.png") #REMOVE later
 		self.settings_image = QtGui.QIcon("static/settings.png")
 		self.info_image = QtGui.QIcon("static/information_button.png")
 		self.play_image = QtGui.QIcon("static/play_button.png")
 		self.debug_image = QtGui.QIcon("static/debug.png")
 		self.stop_image = QtGui.QIcon("static/stop_button.jpg")
 
-	def go_back(self):
-		if not self.states == []:
-			current_frame = self.states.pop()
-			self.removed_widgets.append(self.takeCentralWidget())
-			self.setCentralWidget(current_frame)
-
 	def get_back_button(self):
-		return PyQt6_utils.get_button_with_image(self.back_arrow, self.go_back)
+		
+		def go_back():
+			if not self.past_pages == []:
+				current_frame = self.past_pages.pop()
+				self.stacked_widget.setCurrentWidget(current_frame)
+		
+		return PyQt6_utils.get_button_with_image(self.back_arrow, go_back)
 
 	def get_settings_button(self):
 		return PyQt6_utils.get_button_with_image(self.settings_image, lambda: self.goto_frame(self.settings))
-	
+
+	def get_loading_label(self):
+		loadingLabel = QtWidgets.QLabel(self.translate("Loading")+ '...')
+		loadingLabel.setStyleSheet("font-size: 50px;")
+		loadingLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+		return loadingLabel
+
 	def setup_menu(self, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=(), back_button:bool=True):
 		frame = QtWidgets.QFrame(self)
 
@@ -101,6 +106,7 @@ class parent_GUI(grandparent_GUI):
 		layout_v.addStretch()
 		#layout_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)
 		layout_v_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+		self.stacked_widget.addWidget(frame)
 		return layout_h_v, layout_v_h_v, frame
 
 	# def center_offset_widget(self, width=0, height=0):

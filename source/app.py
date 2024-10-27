@@ -33,41 +33,27 @@ from fractions import Fraction
 from source import TestGUI
 
 	
-class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI, TestGUI.VisuotonalNbackTestGUI):
+class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI):
 	'''Ties in all the tests together and creates the main GUI for the program.'''
 	
 	def __init__(self):
 		super().__init__()
 
-		self.setup_main_menu()
-		self.setup_settings()
+		#self.setup_main_menu()
+		#self.setup_settings()
 		self.setup_play_menu()
 		#self.setup_debug_menu()
 
-		self.setup_tonal_nback_test_menu()
-		self.setup_visuotonal_nback_menu()
+		#self.setup_tonal_nback_test_menu()
+		#self.setup_visuotonal_nback_menu()
 		self.setup_TDT_menu()
-		self.setup_volume_test_menu() #When creating new tests, put them under this line, or the test_menus will be in the wrong order and you will enter the wrong test menu when trying to enter the test menus
+		self.setup_volume_test_menu() 
 
-		self.setup_visuotonal_nback_test_frame()
-		self.setup_tonal_nback_info_frame()
-		self.setup_TDT_info_frame()
+		#self.setup_visuotonal_nback_test_frame()
+		#self.setup_tonal_nback_info_frame()
+		#self.setup_TDT_info_frame()
 
-		self.states.append(self.main_menu)
-		self.setCentralWidget(self.main_menu)
-		#self.main_menu.show()
-		self.notes_thread = None
-
-		# configure the main_menu frame to make the center column expandable
-		'''
-		main_menu_layout = QtWidgets.QHBoxLayout(self.main_menu)
-		main_menu_layout.addStretch()
-		#main_menu_layout.setStretchFactor(main_menu_layout.itemAt(0), 1)
-		main_menu_layout.addStretch()'''
-
-	def setup_main_menu(self):
-		h_buttons = (self.get_settings_button(), self.get_play_button())
-		layout_h, layout_v, self.main_menu = self.setup_menu(self.translate("Main menu"), h_buttons)
+		self.goto_frame(self.play_menu)
 
 	def setup_settings(self) -> None:
 
@@ -120,30 +106,15 @@ class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscr
 	
 	def setup_play_menu(self):
 		h_buttons = self.get_settings_button(),
-		v_buttons = self.get_main_menu_button(), self.get_volume_test_button(), self.get_tonal_nback_test_button(), self.get_TDT_button()
-		layout_h, layout_v, self.play_menu = self.setup_menu(self.translate("Choose a test"), h_buttons, v_buttons)
-	
-	# def setup_debug_menu(self): #The current debug functionality does not work.
-	# 	v_buttons = ()
-	# 	h_buttons = ()
-	# 	layout_h, layout_v, self.debug_menu = self.setup_menu(self.translate("Debug"), h_buttons, v_buttons)
+		v_buttons = self.get_volume_test_button(), self.get_tonal_nback_test_button(), self.get_TDT_button()
+		self.play_menu = TestGUI.MenuPage(self, "Choose a test", h_buttons, v_buttons)
+		self.stacked_widget.addWidget(self.play_menu)
 	
 	def get_main_menu_button(self):
-		return PyQt6_utils.get_txt_button(self.translate('Main menu'), lambda: self.goto_frame(self.main_menu))
+		return PyQt6_utils.get_txt_button(self.translate('Main menu'), lambda: self.goto_frame(self.play_menu))
 
 	def get_play_button(self):
 		return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
-
-	# def get_debug_button(self):
-	# 	def debug():
-	# 		self.goto_frame(self.debug_menu)
-			
-	# 		NbackTestCase.debug() #FIXME: The current debug functionality should probably be removed
-		
-	# 	return PyQt6_utils.get_button_with_image(self.debug_image, debug)
-
-	# def get_exit_button(self):
-	# 	return PyQt6_utils.get_txt_button(self.translate('Exit'), self.close)
 
 def main():
 	app = QtWidgets.QApplication([])

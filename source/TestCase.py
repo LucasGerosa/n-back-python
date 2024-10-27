@@ -1,29 +1,26 @@
-import csv
-import string
+'''This file coordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
+'''
 from enum import Enum
 from typing import List, Tuple
 from xmlrpc.client import Boolean
-import sys; import os
-import random
+import sys, os, random, csv, io
+import numpy as np
+from fractions import Fraction
+from PyQt6 import QtCore, QtGui, QtWidgets
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import general_utils, notes_config, note_str_utils, FileUtils
 from notes import notes, scales
-import numpy as np
-from fractions import Fraction
-from PyQt6 import QtCore, QtGui, QtWidgets
 from utils import PyQt6_utils
-import io
 
-'''This file coordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
-'''
+
 setting_not_exist_msg = "Setting does not exist. The settings.ini file is corrupted or something is wrong with the program."
 
-class AnswerType():
+class AnswerType:
 	SAME = 'same'
 	DIFFERENT = 'different'
 
-class ResultType():
+class ResultType:
 	CORRECT = 'correct'
 	INCORRECT = 'incorrect'
 
@@ -234,21 +231,6 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 
 			f.close()
 
-	@staticmethod #FIXME
-	def debug() -> None:
-		raise NotImplementedError("This function is not implemented yet.")
-		NUMBER_OF_TESTCASES = 1
-		NBACK = 4
-		NUMBER_OF_NOTES = 6
-		for id_num in range(NUMBER_OF_TESTCASES):
-			try:
-				testCase = NbackTestCase(id_num, NBACK, NUMBER_OF_NOTES, bpm = DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT)
-				testCase.execute()
-			except Exception:
-				import traceback
-				print(traceback.format_exc())
-
-
 class VolumeTestCase(TestCase):
 	def __init__(self, config_notes_str:None|tuple[list, str, float]=None, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		super().__init__(0, numberOfNotes, scale)
@@ -274,20 +256,23 @@ class TonalDiscriminationTaskTestCase:
 		return self._answer
 
 	def get_random_sequence(self, notesQuantity:int):
-		if notesQuantity == 4:
-			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES4
-			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES4_MISMATCH
-		elif notesQuantity == 6:
-			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES6
-			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES6_MISMATCH
-		elif notesQuantity == 8:
-			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES8
-			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES8_MISMATCH
-		elif notesQuantity == 10:
-			sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
-			sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH
-		else:
-			raise NotImplementedError(f"Invalid notes quantity: {notesQuantity}. The only quantities currently available are 4, 6, 8 and 10.")
+		match notesQuantity:
+			case 4:
+				sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES4
+				sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES4_MISMATCH
+			case 6:
+				sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES6
+				sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES6_MISMATCH
+			case 8:
+				sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES8
+				sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES8_MISMATCH
+			case 10:
+				sample_sequences = TONAL_DISCRIMINATION_TASK_SEQUENCES10
+				sample_sequences_mismatch = TONAL_DISCRIMINATION_TASK_SEQUENCES10_MISMATCH
+			case _:
+				raise NotImplementedError(
+					f"Invalid notes quantity: {notesQuantity}. The only quantities currently available are 4, 6, 8, and 10."
+        )
 		
 		#sequence_index = random.randint(0, len(sample_sequences) - 1)
 
