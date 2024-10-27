@@ -1,3 +1,5 @@
+'''Contains the GUI for the main tests for the application.'''
+
 from source import parent_GUI
 from source.testThreads import VolumeTestThread, TonalDiscriminationTaskTestThread, TestThread, VisuoTonalNbackTestThread, TonalNbackTestThread
 from PyQt6 import QtCore, QtWidgets, QtGui
@@ -7,6 +9,7 @@ import time
 from notes import scales
 from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType
 from fractions import Fraction
+
 
 class TestGUI(parent_GUI.parent_GUI):
 	
@@ -31,7 +34,7 @@ class VolumeTestGUI(TestGUI):
 		layout_h, layout_v, test_menu = self.setup_menu(self.translate("Volume test"), widgets_h=h_buttons, widgets_v=v_buttons)
 		self.test_menus.append(test_menu)
 		play_test_button = QtWidgets.QPushButton(self.translate("Play"))
-		play_test_button.setFont(PyQt6_utils.FONT)
+		play_test_button.setFont(QtGui.QFont(PyQt6_utils.FONT, PyQt6_utils.STANDARD_FONT_SIZE))
 		def play_test():
 			layout_h, layout_v, test = self.setup_menu(back_button=False)
 			self.states.append(self.takeCentralWidget())
@@ -212,7 +215,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 			#layout_h.insertWidget(2, stop_button)
 
 		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
-		play_test_button.setFont(PyQt6_utils.FONT)
+		play_test_button.setFont(QtGui.QFont(PyQt6_utils.FONT, PyQt6_utils.STANDARD_FONT_SIZE))
 		form.summon_validate_all_button(validate_all_button=play_test_button, post_validation_func=play_test)
 
 	def get_TDT_button(self):
@@ -234,6 +237,7 @@ class TonalDiscriminationTaskGUI(parent_GUI.parent_GUI):
 		create_question(layout, self.translate("Are both the sequences the same?"), testCase, self.notes_thread, self.translate)
 
 class NbackTestGUI(parent_GUI.parent_GUI):
+	
 	@QtCore.pyqtSlot(QtWidgets.QVBoxLayout, NbackTestCase)
 	def create_questions(self, layout, testCase:NbackTestCase):
 		if not isinstance(self.notes_thread, TestThread):
@@ -279,9 +283,9 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 		h_buttons = (self.get_settings_button(),) + h_buttons
 		v_buttons = ()
 		if test_number == 1:
-			test_name = self.translate("Teste nback tonal")
+			test_name = self.translate("Tonal n-back test")
 		elif test_number == 2:
-			test_name = self.translate("Visuotonal nback test")
+			test_name = self.translate("Visuotonal n-back test")
 		else:
 			raise ValueError("test_number should be 1 or 2")
 		
@@ -313,7 +317,7 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 		layout_v_h.addWidget(random_radio_button)'''
 
 		random_c_major_radio_button = QtWidgets.QRadioButton(self.translate("Random C major scale")) #TODO: add more options, such as a dropdown menu with the main scales and a field for defining a custom one.
-		random_c_major_radio_button.setFont(PyQt6_utils.FONT)
+		random_c_major_radio_button.setFont(QtGui.QFont(PyQt6_utils.FONT, PyQt6_utils.STANDARD_FONT_SIZE))
 		random_c_major_radio_button.setStyleSheet("font-size: 20px;")
 		random_c_major_radio_button.setChecked(True)
 		layout_v_h.addWidget(random_c_major_radio_button)
@@ -325,8 +329,8 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 		layout_v_h.addWidget(tonal_c_major_radio_button) '''
 
 
-		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name)
-		play_test_button.setFont(PyQt6_utils.FONT)
+		play_test_button = QtWidgets.QPushButton(self.translate("Play") + ' ' + test_name.lower())
+		play_test_button.setFont(QtGui.QFont(PyQt6_utils.FONT, PyQt6_utils.STANDARD_FONT_SIZE))
 		#button_size = play_test_button.sizeHint()
 
 		def play_test() -> None:
@@ -447,10 +451,10 @@ class NbackTestGUI(parent_GUI.parent_GUI):
 class TonalNbackTestGUI(NbackTestGUI):
 
 	def get_tonal_nback_test_button(self):
-		return PyQt6_utils.get_txt_button(self.translate('Tonal nback test'), lambda: self.goto_frame(self.test_menus[0]))
+		return PyQt6_utils.get_txt_button(self.translate('Tonal n-back test'), lambda: self.goto_frame(self.test_menus[0]))
 
 	def setup_tonal_nback_info_frame(self):
-		title = self.translate("Tonal nback test")
+		title = self.translate("Tonal n-back test")
 		#font = QFont("Arial", 12)
 		text_body = self.translate("In this test, you will hear a sequence of notes.\nAfter the notes are played, you will be asked if the last note in the\nsequence is the same as another specific note in the sequence.")
 		image = QtWidgets.QLabel()
@@ -467,6 +471,7 @@ class TonalNbackTestGUI(NbackTestGUI):
 	
 	def setup_tonal_nback_test_menu(self):
 		self.setup_nback_test_menu(1, TonalNbackTestThread, h_buttons=(self.get_tonal_nback_info_frame(),))
+		
 class VisuotonalNbackTestGUI(NbackTestGUI):
 
 	def setup_visuotonal_nback_menu(self):
@@ -492,4 +497,4 @@ class VisuotonalNbackTestGUI(NbackTestGUI):
 		layout_grid.addWidget(spacer2_v, 1, 2)
 
 	def get_visuotonal_nback_button(self):
-		return PyQt6_utils.get_txt_button(self.translate('Visuotonal nback test'), lambda: self.goto_frame(self.test_menus[1]))
+		return PyQt6_utils.get_txt_button(self.translate('Visuotonal n-back test'), lambda: self.goto_frame(self.test_menus[1]))

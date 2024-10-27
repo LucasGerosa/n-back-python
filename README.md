@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project is designed to do musical tests involving cognition by using musical notes. Currently, the main tests being supported are the tonal n-back test and tonal discrimination task used by Ding et al. (2018).
+This project is designed to do musical tests involving cognition by using musical notes. Currently, the main tests being supported are the tonal n-back test and tonal discrimination task used by Ding et al. (2018). Theck the LICENSE file for information on copyright.
 
 ## Usage
 
@@ -41,7 +41,7 @@ This folder contains the abstraction for music. Including representation of note
 
 Contains files with some generally useful functions used by many files. Files from this folder are generally not specific to this project and could be used for other projects.
 
-### `/tests/`
+### `tests/`
 
 In the above folders, there will be a `tests` folder containing unit test files for the main files. Run `pytest` at the project directory to run all the unit tests.
 
@@ -75,4 +75,4 @@ Check the [issues](https://github.com/LucasGerosa/n-back-python/issues) on githu
 ## Audio files
 Thanks to the University of Iowa for providing the audio files. The files are available at https://theremin.music.uiowa.edu/
 
-The program can work with custom audio files. Just make sure to put them in the input folder under the correct instrument folder.
+The program can work with custom audio files. Just make sure to put them in the input folder under the correct instrument folder, and make sure they're named correctly.

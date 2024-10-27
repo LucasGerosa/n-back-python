@@ -12,19 +12,23 @@ def set_language(language_code):
 		return translation.gettext
 
 	except FileNotFoundError:
-		print(f'Could not find translation catalog for language code {language_code}; defaulting to English.')
-		return lambda x: x
+		return f'Could not find translation catalog for language code {language_code}; defaulting to English.'
 
 class grandparent_GUI(QtWidgets.QMainWindow):
-
+	'''Most basic PyQt6 window with the most essential functionality that would be used in almost any application..'''
 	def __init__(self) -> None:
 		super().__init__()
 		self.primary_screen = QtGui.QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
 		self.showMaximized()
-		self.states:list = []
-		self.translate:TranslateCallable = set_language(notes_config.get_all_settings()["language"])
+		self.states:list[QtWidgets.QWidget] = []
+		translate:TranslateCallable|str = set_language(notes_config.get_all_settings()["language"])
+		if type(translate) == str:
+			PyQt6_utils.get_msg_box(translate, QtWidgets.QMessageBox.Icon.Warning)
+			self.translate = lambda x: x
+		else:
+			self.translate:TranslateCallable = translate #type: ignore
 
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key.Key_F11:
@@ -42,6 +46,7 @@ class grandparent_GUI(QtWidgets.QMainWindow):
 		self.setCentralWidget(frame)
 
 class parent_GUI(grandparent_GUI):
+	'''Contains more specific functionality for the basic GUI used by this program.'''
 
 	def __init__(self) -> None:
 		super().__init__()
@@ -71,29 +76,31 @@ class parent_GUI(grandparent_GUI):
 	
 	def setup_menu(self, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=(), back_button:bool=True):
 		frame = QtWidgets.QFrame(self)
+
+		layout_v = QtWidgets.QVBoxLayout(frame)
+		layout_h_v0 = QtWidgets.QHBoxLayout()
+		layout_h_v0.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
 		layout_h_v = QtWidgets.QHBoxLayout()
 		layout_v_h_v = QtWidgets.QVBoxLayout()
-		layout_v = QtWidgets.QVBoxLayout(frame)
+		layout_v_h_v.setContentsMargins(50, 20, 50, 0)
 		if back_button:
-			layout_h_v.addWidget(self.get_back_button())
+			layout_h_v0.addWidget(self.get_back_button())
 
 		for widget in widgets_h:
-			layout_h_v.addWidget(widget)
-		#layout_h_v.addStretch()
-		
-		layout_v_h_v.addWidget(PyQt6_utils.create_frame_title(title))
+			layout_h_v0.addWidget(widget)
+		layout_v.addLayout(layout_h_v0)
+
+		layout_h_v1 = QtWidgets.QHBoxLayout()
+		layout_h_v1.addWidget(PyQt6_utils.create_frame_title(title), alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+		layout_v.addLayout(layout_h_v1)
 		for widget in widgets_v:
 			layout_v_h_v.addWidget(widget)
-		#layout_h_v.addStretch()
-		#layout_v_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-
-		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
+		
 		layout_h_v.addLayout(layout_v_h_v)
-		#layout_h_v.addItem(QSpacerItem(300, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum))
 		layout_v.addLayout(layout_h_v)
 		layout_v.addStretch()
-		#frame.setLayout(layout_h_v)
-		layout_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+		#layout_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)
+		layout_v_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
 		return layout_h_v, layout_v_h_v, frame
 
 	# def center_offset_widget(self, width=0, height=0):

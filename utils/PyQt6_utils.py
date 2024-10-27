@@ -3,12 +3,13 @@
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import QLabel, QPushButton, QHBoxLayout, QMessageBox
 from PyQt6 import QtWidgets
-import sys, os
+import sys, os, typing
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 
 
-FONT = QFont('Arial', 18)
+FONT = 'Arial'
+STANDARD_FONT_SIZE = 20
 BUTTON_SIZE = 80
 
 #OFFSET_X = 8
@@ -20,10 +21,10 @@ BUTTON_SIZE = 80
 # 	y:int = height // 2
 # 	return x, y
 
-def get_txt_button(txt, command):
+def get_txt_button(txt:str, command:typing.Callable, font_size:int=STANDARD_FONT_SIZE):
 	button = QPushButton(txt)
-	button.setFont(FONT)
-	button_size = button.sizeHint()
+	button.setFont(QFont(FONT, font_size))
+	#button_size = button.sizeHint()
 	#self.center_widget_x(button, 100, button_size.width(), button_size.height())
 	button.clicked.connect(command)
 	return button
@@ -47,14 +48,14 @@ def get_button_with_image(icon:QIcon, command):
 	#button.setGeometry(button_size * order + type(self).OFFSET_X, type(self).OFFSET_Y, button_size, button_size)
 	button.resize(BUTTON_SIZE, BUTTON_SIZE)
 	button.setIconSize(button.size())
+	button.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
 	button.clicked.connect(command)
 	return button
 
 
 def create_frame_title(title:str):
 	label = QLabel(title)
-
-	label.setFont(FONT)
+	label.setFont(QFont(FONT, 30))
 	#self.center_widget_x(label, 0, 400, 80)
 	return label
 

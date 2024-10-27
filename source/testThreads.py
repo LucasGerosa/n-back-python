@@ -1,3 +1,7 @@
+'''
+This file coordinates the different threads of the audio and GUI. It serves as a middle man between the GUI and the tests in the TestCase file.
+'''
+
 from PyQt6 import QtCore
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -10,9 +14,6 @@ from notes import scales
 
 DEFAULT_SCALE = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
 
-'''
-This file coordinates the different threads of the audio and GUI. It serves as a middle man between the GUI and the tests in the TestCase file.
-'''
 class VolumeTestThread(QtCore.QThread):
 	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
@@ -39,11 +40,12 @@ class VolumeTestThread(QtCore.QThread):
 				testCase = VolumeTestCase(None, 20, self.bpm, self.instrument, DEFAULT_SCALE)
 				self.start_execution.emit()
 				for note in testCase.note_group.notes:
-					print(note.full_name)
-					note.play()
 					if self.stop:
 						print("Thread was interrupted. Stopping now.\n")
 						return
+					print(note.full_name)
+					note.play()
+
 			if self.stop:
 				print("Thread was interrupted. Stopping now.\n")
 				return

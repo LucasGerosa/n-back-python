@@ -152,8 +152,8 @@ msgstr "As seguintes configurações estão incorretas ou incompletas:"
 msgid "Language doesn't exist; Please enter a valid language."
 msgstr "Linguagem não existe; Por favor, digite uma linguagem válida."
 
-msgid "The quantity of notes + 1 needs to be greater than nback"
-msgstr "A quantidade de notas + 1 precisa ser maior que a de nback"
+msgid "The number of notes + 1 needs to be greater than n-back"
+msgstr "A quantidade de notas + 1 precisa ser maior que a de n-back"
 
 msgid "Are both the sequences the same?"
 msgstr "As duas sequências são iguais?"
@@ -182,11 +182,11 @@ msgstr "Escala de C maior aleatória"
 msgid "Tonal C major scale"
 msgstr "Escala tonal de C maior"
 
-msgid "Tonal nback test"
-msgstr "Teste nback tonal"
+msgid "Tonal n-back test"
+msgstr "Teste n-back tonal"
 
-msgid "Visuotonal nback test"
-msgstr "Teste nback visuotonal"
+msgid "Visuotonal n-back test"
+msgstr "Teste n-back visuotonal"
 
 msgid "Tonal discrimination task"
 msgstr "Teste de discriminação tonal"
