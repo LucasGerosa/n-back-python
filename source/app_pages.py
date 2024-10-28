@@ -1,10 +1,10 @@
 '''Contains the GUI for the main tests for the application.'''
 
 import time, sys, os, typing
-from source import parent_GUI
+from source.parent_GUI import parent_GUI
 from source.testThreads import VolumeTestThread, TonalDiscriminationTaskTestThread, TestThread, VisuoTonalNbackTestThread, TonalNbackTestThread
 from PyQt6 import QtCore, QtWidgets, QtGui
-from utils import PyQt6_utils, forms, validators
+from utils import PyQt6_utils, forms, validators, note_str_utils, notes_config
 from utils.defaults import *
 from notes import scales
 from source.TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType, TestCase
@@ -13,19 +13,18 @@ from source.abstract_pages import Page, MenuPage, TestMenuPage, NbackTestMenuPag
 
 
 class SettingsMenuPage(MenuPage):
-	def __init__(self, parent:parent_GUI.parent_GUI):
-		h_buttons = ()#self.get_debug_button(),
-		v_buttons = self.get_main_menu_button(),
-		super().__init__(parent, "Settings", h_buttons, v_buttons)
+	def __init__(self, parent:parent_GUI):
+		super().__init__(parent, "Settings")
 
-		layout_v_h = QtWidgets.QHBoxLayout()
-		layout_v.addLayout(layout_v_h)
-		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
-		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
+		layout_v_h2_v_h = QtWidgets.QHBoxLayout()
+		layout_v_h2_v_h.setContentsMargins(0, 20, 0, 20)
+		self.layout_v_h2_v.addLayout(layout_v_h2_v_h)
+		layout_v_h2_v_h.addWidget(QtWidgets.QLabel(self.app.translate("Setting Name:")))
+		layout_v_h2_v_h.addWidget(QtWidgets.QLabel(self.app.translate("Setting value:")))
 
-		form = forms.FormPresets(layout_v, self.translate)
-		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:Optional[QtGui.QValidator]=None) -> None:
-			field = form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
+		form = forms.FormPresets(self.layout_v_h2_v, self.app.translate)
+		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:typing.Optional[QtGui.QValidator]=None) -> None:
+			field = form.create_field(self.app.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
 			field.setting_name = setting #type: ignore
 		
 		def validate_note_range(translate, note_range:str) -> validators.IsValidErrorMessage:
@@ -34,32 +33,33 @@ class SettingsMenuPage(MenuPage):
 			return True, ""
 		
 		create_field(notes_config.NOTES_SETTING, validate_note_range, validator=form.get_notes_str_validator())
-		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator(notes_config.NOTE_INTENSITY_SETTING, VALID_INTENSITIES, self.translate)) #TODO: replace with a dropdown menu
+		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator(notes_config.NOTE_INTENSITY_SETTING, VALID_INTENSITIES, self.app.translate)) #TODO: replace with a dropdown menu
 		create_field(notes_config.NOTE_VALUE_SETTING, validator=form.get_FractionValidator(bottom=0.0000000001, top=100))
 		create_field(notes_config.LANGUAGE_SETTING, validator=validators.MultipleOptionsValidator(notes_config.LANGUAGE_SETTING, notes_config.LEGAL_LANGUAGES)) #TODO: replace with a dropdown menu
 
 		form.summon_reset_button()
 
-		save_button = QtWidgets.QPushButton(self.translate("Save"))
+		save_button = QtWidgets.QPushButton(self.app.translate("Save"))
 
 		def save_all():
 
 			for field in form.fields:
 				notes_config.change_setting(field.setting_name, field.text_box.text())
 				
-			PyQt6_utils.get_msg_box(self.translate("Settings saved"), self.translate("Settings have been successfully saved.")).exec()
+			PyQt6_utils.get_msg_box(self.app.translate("Settings saved"), self.app.translate("Settings have been successfully saved.")).exec()
 		form.summon_validate_all_button(save_button, save_all)
 		
-		reset_button = QtWidgets.QPushButton(self.translate("Reset to default"))
+		reset_button = QtWidgets.QPushButton(self.app.translate("Reset to default"))
 		def reset_settings():
 
 			config = notes_config.reset_settings()
 			for field in form.fields:
 				field.text_box.setText(config[field.setting_name])
-			PyQt6_utils.get_msg_box(self.translate("Settings reset"), self.translate("Settings have been successfully reset.")).exec()
+			PyQt6_utils.get_msg_box(self.app.translate("Settings reset"), self.app.translate("Settings have been successfully reset.")).exec()
 
 		reset_button.clicked.connect(reset_settings)
-		layout_v.addWidget(reset_button)
+		self.layout_v_h2_v.addWidget(reset_button)
+		self.layout_v_h2_v.addWidget(self.get_main_menu_button())
 
 	def get_main_menu_button(self):
 		return PyQt6_utils.get_txt_button(self.app.translate('Main menu'), lambda: self.app.goto_frame(self.app.tests_menu))
@@ -95,7 +95,7 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 	def __init__(self, parent):
 		test_name = "Tonal Discrimination Task"
 		super().__init__(parent, test_name)
-		self.set_info_page(test_name, "In this test, you will hear a sequence of notes. \nThen, there will be a 1-second pause, and you will hear another sequence of notes. \nYou will be asked if the second sequence is the same as the first one.", "static/TDT_example.png", (500, 500))
+		self.set_info_page(test_name, "In this test, you will hear a sequence of notes. Then, there will be a 1-second pause, and you will hear another sequence of notes. You will be asked if the second sequence is the same as the first one.", "static/TDT_example.png", (500, 500))
 	
 	def post_init_func(self) -> PlayTestThreadFunc:
 		
@@ -157,7 +157,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 	def __init__(self, parent):
 		test_name = "Tonal n-back test"
 		super().__init__(parent, test_name)
-		self.set_info_page(test_name, "In this test, you will hear a sequence of notes.\nAfter the notes are played, you will be asked if the last note in the\nsequence is the same as another specific note in the sequence.", "static/nback_example.png", (1000, 1000))
+		self.set_info_page(test_name, "In this test, you will hear a sequence of notes. After the notes are played, you will be asked if the last note in the sequence is the same as another specific note in the sequence.", "static/nback_example.png", (1000, 1000))
 
 	def post_init_func(self):
 
@@ -290,6 +290,9 @@ class VisuoTonalNbackTestMenuPage(NbackTestMenuPage): #FIXME
 
 class VisuotonalNbackTestGUI: #FIXME: deprecated
 
+	def __init__(self):
+		raise NotImplementedError
+	
 	def setup_visuotonal_nback_test_frame(self):
 		self.test2_frame = QtWidgets.QFrame(self)
 		layout_grid = QtWidgets.QGridLayout()

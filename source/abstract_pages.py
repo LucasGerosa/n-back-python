@@ -6,6 +6,7 @@ from utils import PyQt6_utils
 from source.TestCase import TestCase, TonalDiscriminationTaskTestCase, AnswerType
 from source.testThreads import TestThread
 
+
 class Page(QtWidgets.QFrame):
 	
 	def __init__(self, parent:parent_GUI, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=()):
@@ -112,7 +113,8 @@ class NonSettingsMenuPage(MenuPage):
 		self.layout_v_h0.addWidget(self.get_settings_button())
 
 	def get_settings_button(self):
-		return PyQt6_utils.get_button_with_image(self.app.settings_image, lambda: self.app.goto_frame(self.app.settings))
+		return PyQt6_utils.get_button_with_image(self.app.settings_image, lambda: self.app.goto_frame(self.app.settings_menu))
+	
 class TestMenuPage(NonSettingsMenuPage):
 	
 	def __init__(self, parent:parent_GUI, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=()):
@@ -163,11 +165,29 @@ class TestMenuPage(NonSettingsMenuPage):
 		return button
 	
 	def set_info_page(self, title:str, text_body:str, img_path:str, dimensions:tuple[int, int]):
-		text_body = self.app.translate(text_body)
-		image = QtWidgets.QLabel()
-		image.setPixmap(QtGui.QPixmap(img_path).scaled(*dimensions, QtCore.Qt.AspectRatioMode.KeepAspectRatio))
-		text_label = QtWidgets.QLabel(text_body)
-		self.info_page = NonSettingsMenuPage(self.app, title, widgets_v=(text_label, image))
+		#image = QtWidgets.QLabel()
+		#image.setPixmap(QtGui.QPixmap(img_path))#.scaled(*dimensions, QtCore.Qt.AspectRatioMode.KeepAspectRatio))
+		image = PyQt6_utils.ScalableImageLabel(img_path)
+		image.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+		#image.setContentsMargins(20, 20, 20, 20)
+		text_body_label = PyQt6_utils.TextLabelWithLineSpacing(self.app.translate(text_body))
+		
+		scroll_area = QtWidgets.QScrollArea()
+		scroll_area.setWidgetResizable(True)  # Allows the scroll area to resize with the window
+
+		scroll_widget = QtWidgets.QWidget()
+		layout = QtWidgets.QVBoxLayout(scroll_widget)
+		layout.addWidget(text_body_label)
+		layout.addWidget(image)
+		scroll_area.setStyleSheet("""
+			QScrollArea {
+				border: 0px;
+			}
+		""")
+		scroll_area.setWidget(scroll_widget)
+		
+		self.info_page = NonSettingsMenuPage(self.app, title)
+		self.info_page.layout_v.addWidget(scroll_area)
 		self.app.stacked_widget.addWidget(self.info_page)
 		info_button = PyQt6_utils.get_button_with_image(self.app.info_image, lambda:self.app.goto_frame(self.info_page))
 		self.layout_v_h0.addWidget(info_button)

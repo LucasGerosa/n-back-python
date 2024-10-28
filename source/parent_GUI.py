@@ -51,7 +51,6 @@ class parent_GUI(grandparent_GUI):
 	def __init__(self) -> None:
 		super().__init__()
 		self.get_images()
-		self.removed_widgets:list = []
 
 	def get_images(self):
 		self.back_arrow = QtGui.QIcon("static/back_button.png") #REMOVE later

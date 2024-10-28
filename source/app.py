@@ -38,17 +38,17 @@ class MyGUI(parent_GUI):
 	def __init__(self):
 		super().__init__()
 
-		#self.setup_settings()
 		self.setup_tests_menu()
 
-		#self.setting_menu = SettingsMenuPage(self)
+		self.settings_menu = SettingsMenuPage(self)
+		self.stacked_widget.addWidget(self.settings_menu)
 
 		self.volume_test_menu = VolumeTestMenuPage(self)
 		self.stacked_widget.addWidget(self.volume_test_menu)
 
 		self.tonal_nback_test_menu_frame = TonalNbackTestMenuPage(self)
 		self.stacked_widget.addWidget(self.tonal_nback_test_menu_frame)
-
+	
 		self.tdt_test_menu = TonalDiscriminationTaskMenuPage(self)
 		self.stacked_widget.addWidget(self.tdt_test_menu)
 
