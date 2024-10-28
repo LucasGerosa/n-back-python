@@ -26,95 +26,51 @@ warnings.filterwarnings("ignore", message="Couldn't find ffmpeg or avconv", cate
 from PyQt6 import QtWidgets, QtCore, QtGui
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
-from utils import PyQt6_utils, forms, notes_config, note_str_utils, validators
-from source.testThreads import TonalNbackTestThread, VisuoTonalNbackTestThread, TestThread
-from typing import Dict, Optional, List
-from fractions import Fraction
-from source import TestGUI
+from utils import PyQt6_utils
+from source.parent_GUI import parent_GUI
+from source.app_pages import TonalDiscriminationTaskMenuPage, TonalNbackTestMenuPage, SettingsMenuPage, VolumeTestMenuPage
+from source.abstract_pages import NonSettingsMenuPage, MenuPage
 
 	
-class MyGUI(TestGUI.VolumeTestGUI, TestGUI.TonalNbackTestGUI, TestGUI.TonalDiscriminationTaskGUI):
+class MyGUI(parent_GUI):
 	'''Ties in all the tests together and creates the main GUI for the program.'''
 	
 	def __init__(self):
 		super().__init__()
 
-		#self.setup_main_menu()
 		#self.setup_settings()
-		self.setup_play_menu()
-		#self.setup_debug_menu()
+		self.setup_tests_menu()
 
-		#self.setup_tonal_nback_test_menu()
-		#self.setup_visuotonal_nback_menu()
-		self.setup_TDT_menu()
-		self.setup_volume_test_menu() 
+		#self.setting_menu = SettingsMenuPage(self)
 
-		#self.setup_visuotonal_nback_test_frame()
-		#self.setup_tonal_nback_info_frame()
-		#self.setup_TDT_info_frame()
+		self.volume_test_menu = VolumeTestMenuPage(self)
+		self.stacked_widget.addWidget(self.volume_test_menu)
 
-		self.goto_frame(self.play_menu)
+		self.tonal_nback_test_menu_frame = TonalNbackTestMenuPage(self)
+		self.stacked_widget.addWidget(self.tonal_nback_test_menu_frame)
 
-	def setup_settings(self) -> None:
+		self.tdt_test_menu = TonalDiscriminationTaskMenuPage(self)
+		self.stacked_widget.addWidget(self.tdt_test_menu)
 
-		h_buttons = ()#self.get_debug_button(),
-		v_buttons = self.get_main_menu_button(),
-		layout_h, layout_v, self.settings = self.setup_menu(self.translate("Settings"), widgets_h=h_buttons, widgets_v=v_buttons)
-
-		layout_v_h = QtWidgets.QHBoxLayout()
-		layout_v.addLayout(layout_v_h)
-		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting Name:")))
-		layout_v_h.addWidget(QtWidgets.QLabel(self.translate("Setting value:")))
-
-		form = forms.FormPresets(layout_v, self.translate)
-		def create_field(setting:str, validate_func:validators.SimpleValidateCallable=lambda *_: (True, ""), validator:Optional[QtGui.QValidator]=None) -> None:
-			field = form.create_field(self.translate(setting).capitalize(), notes_config.get_setting(setting), validate_func, validator=validator)
-			field.setting_name = setting #type: ignore
-		
-		def validate_note_range(translate, note_range:str) -> validators.IsValidErrorMessage:
-			if not note_str_utils.get_final_list_notes(note_range): #TODO: not allow notes that don't exist in the input folder
-				return False, translate("Invalid note range")
-			return True, ""
-		
-		create_field(notes_config.NOTES_SETTING, validate_note_range, validator=form.get_notes_str_validator())
-		create_field(notes_config.NOTE_INTENSITY_SETTING, validator=validators.MultipleOptionsValidator(notes_config.NOTE_INTENSITY_SETTING, VALID_INTENSITIES, self.translate)) #TODO: replace with a dropdown menu
-		create_field(notes_config.NOTE_VALUE_SETTING, validator=form.get_FractionValidator(bottom=0.0000000001, top=100))
-		create_field(notes_config.LANGUAGE_SETTING, validator=validators.MultipleOptionsValidator(notes_config.LANGUAGE_SETTING, notes_config.LEGAL_LANGUAGES)) #TODO: replace with a dropdown menu
-
-		form.summon_reset_button()
-
-		save_button = QtWidgets.QPushButton(self.translate("Save"))
-
-		def save_all():
-
-			for field in form.fields:
-				notes_config.change_setting(field.setting_name, field.text_box.text())
-				
-			PyQt6_utils.get_msg_box(self.translate("Settings saved"), self.translate("Settings have been successfully saved.")).exec()
-		form.summon_validate_all_button(save_button, save_all)
-		
-		reset_button = QtWidgets.QPushButton(self.translate("Reset to default"))
-		def reset_settings():
-
-			config = notes_config.reset_settings()
-			for field in form.fields:
-				field.text_box.setText(config[field.setting_name])
-			PyQt6_utils.get_msg_box(self.translate("Settings reset"), self.translate("Settings have been successfully reset.")).exec()
-
-		reset_button.clicked.connect(reset_settings)
-		layout_v.addWidget(reset_button)
+		self.goto_frame(self.tests_menu)
+		self.showMaximized()
 	
-	def setup_play_menu(self):
-		h_buttons = self.get_settings_button(),
-		v_buttons = self.get_volume_test_button(), self.get_tonal_nback_test_button(), self.get_TDT_button()
-		self.play_menu = TestGUI.MenuPage(self, "Choose a test", h_buttons, v_buttons)
-		self.stacked_widget.addWidget(self.play_menu)
-	
-	def get_main_menu_button(self):
-		return PyQt6_utils.get_txt_button(self.translate('Main menu'), lambda: self.goto_frame(self.play_menu))
+	def setup_tests_menu(self):
+		def get_volume_test_button():
+			return PyQt6_utils.get_txt_button(self.translate('Volume test'), lambda: self.goto_frame(self.volume_test_menu))
+		
+		def get_tonal_nback_test_button():
+			return PyQt6_utils.get_txt_button(self.translate('Tonal n-back test'), lambda: self.goto_frame(self.tonal_nback_test_menu_frame))
+		
+		def get_TDT_button():
+			return PyQt6_utils.get_txt_button(self.translate('Tonal discrimination task'), lambda: self.goto_frame(self.tdt_test_menu))
 
-	def get_play_button(self):
-		return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.play_menu))
+		v_buttons = get_volume_test_button(), get_tonal_nback_test_button(), get_TDT_button()
+		self.tests_menu = NonSettingsMenuPage(self, "Choose a test", widgets_v = v_buttons)
+		self.stacked_widget.addWidget(self.tests_menu)
+
+	# def get_play_button(self):
+	# 	return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.tests_menu))
 
 def main():
 	app = QtWidgets.QApplication([])

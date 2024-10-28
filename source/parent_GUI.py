@@ -21,7 +21,7 @@ class grandparent_GUI(QtWidgets.QMainWindow):
 		self.primary_screen = QtGui.QGuiApplication.primaryScreen()
 		self.setWindowTitle(PROJECT_NAME)
 		self.setGeometry(0, 0, 1200, 600)
-		self.showMaximized()
+		
 		self.stacked_widget = QtWidgets.QStackedWidget()
 		self.setCentralWidget(self.stacked_widget)
 		self.past_pages:list[QtWidgets.QWidget] = []
@@ -61,53 +61,13 @@ class parent_GUI(grandparent_GUI):
 		self.debug_image = QtGui.QIcon("static/debug.png")
 		self.stop_image = QtGui.QIcon("static/stop_button.jpg")
 
-	def get_back_button(self):
-		
-		def go_back():
-			if not self.past_pages == []:
-				current_frame = self.past_pages.pop()
-				self.stacked_widget.setCurrentWidget(current_frame)
-		
-		return PyQt6_utils.get_button_with_image(self.back_arrow, go_back)
-
-	def get_settings_button(self):
-		return PyQt6_utils.get_button_with_image(self.settings_image, lambda: self.goto_frame(self.settings))
-
 	def get_loading_label(self):
 		loadingLabel = QtWidgets.QLabel(self.translate("Loading")+ '...')
 		loadingLabel.setStyleSheet("font-size: 50px;")
 		loadingLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 		return loadingLabel
+	
 
-	def setup_menu(self, title:str="", widgets_h:tuple[QtWidgets.QWidget, ...]=(), widgets_v:tuple[QtWidgets.QWidget, ...]=(), back_button:bool=True):
-		frame = QtWidgets.QFrame(self)
-
-		layout_v = QtWidgets.QVBoxLayout(frame)
-		layout_h_v0 = QtWidgets.QHBoxLayout()
-		layout_h_v0.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-		layout_h_v = QtWidgets.QHBoxLayout()
-		layout_v_h_v = QtWidgets.QVBoxLayout()
-		layout_v_h_v.setContentsMargins(50, 20, 50, 0)
-		if back_button:
-			layout_h_v0.addWidget(self.get_back_button())
-
-		for widget in widgets_h:
-			layout_h_v0.addWidget(widget)
-		layout_v.addLayout(layout_h_v0)
-
-		layout_h_v1 = QtWidgets.QHBoxLayout()
-		layout_h_v1.addWidget(PyQt6_utils.create_frame_title(title), alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
-		layout_v.addLayout(layout_h_v1)
-		for widget in widgets_v:
-			layout_v_h_v.addWidget(widget)
-		
-		layout_h_v.addLayout(layout_v_h_v)
-		layout_v.addLayout(layout_h_v)
-		layout_v.addStretch()
-		#layout_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify)
-		layout_v_h_v.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
-		self.stacked_widget.addWidget(frame)
-		return layout_h_v, layout_v_h_v, frame
 
 	# def center_offset_widget(self, width=0, height=0):
 	# 	x,y = PyQt6_utils.get_center(width, height)
