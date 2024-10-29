@@ -305,3 +305,6 @@ msgstr "Por favor, digite uma fração válida."
 
 msgid "Reset to default"
 msgstr "Resetar para o padrão"
+
+msgid "Ready to continue?"
+msgstr "Pronto para continuar?"

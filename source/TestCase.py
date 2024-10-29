@@ -1,7 +1,7 @@
 '''This file coordinates the logic of each test, as well as validating and saving user responses. When creating new tests, this file should be the first to be modified.
 '''
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from xmlrpc.client import Boolean
 import sys, os, random, csv, io
 import numpy as np
@@ -185,12 +185,15 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		return self.result
 	
 	@staticmethod
-	def saveResults(testCaseList_list:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
+	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float]) -> None: #TODO: make it not overwrite the file with the same name
 		def write_content_to_csv(writer, testCaseList_list:List[List[NbackTestCase]]):
-			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'Correct answer', 'User answer', 'result', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
-
+			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'Correct answer', 'User answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)' 'Different trial warning delay (seconds)', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
+			# Note: the Response delay is the time it takes for the participant to answer the yes or no question about the n-back. 
+			# The continue test delay is the time it takes for the participant to press ok after reading "Ready for the next sequence?".
+			# The different trial warning delay is the time it takes for the participant to press ok after reading that the trial will have a different n-back. It's impossible to have it be less than 1s because the button is invisible for 1s.
 			total_quantity_right_answers = 0
 			total_quantity_wrong_answers = 0
+			i = 0
 			for testCaseList in testCaseList_list:
 				quantity_right_answers = 0
 				quantity_wrong_answers = 0
@@ -208,8 +211,10 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 					else:
 						raise ValueError()
 				
-					writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result])
-				writer.writerow(['', '', '', '', '', '', '', quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
+					writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result, t.answer_delay, t.continue_test_delay])
+				writer.writerow(['', '', '', '', '', '', '', '', different_trial_warning_delay_list[i], quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
+			
+			i += 1
 
 		try:
 			f = FileUtils.createfile(playerName, "nback")
@@ -290,7 +295,6 @@ class TonalDiscriminationTaskTestCase:
 		print(f"Result: {self.result}\n\n")
 	
 	def validateAnswer(self, answer:AnswerType) -> None:
-
 		if self.is_sequence_mismatch:
 			if answer == AnswerType.SAME:
 				self._result = ResultType.INCORRECT
@@ -311,7 +315,7 @@ class TonalDiscriminationTaskTestCase:
 	@staticmethod
 	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
 		def write_content_to_csv(writer, testCaseList):
-			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
+			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
 			testCase_quantity_right_answers = 0
 			testCase_quantity_wrong_answers = 0
 			id_num = 0
@@ -320,7 +324,7 @@ class TonalDiscriminationTaskTestCase:
 					testCase_quantity_right_answers += 1
 				elif t.result == ResultType.INCORRECT:
 					testCase_quantity_wrong_answers += 1
-				writer.writerow([id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
+				writer.writerow([id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, t.answer_delay, t.continue_test_delay, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
 				id_num += 1
 		
 		def create_csv_file(f, testCaseList):

@@ -9,7 +9,7 @@ from utils.defaults import *
 from notes import scales
 from source.TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType, TestCase
 from fractions import Fraction
-from source.abstract_pages import Page, MenuPage, TestMenuPage, NbackTestMenuPage, PlayTestThreadFunc
+from source.abstract_pages import TestPage, MenuPage, TestMenuPage, NbackTestMenuPage, PlayTestThreadFunc
 
 
 class SettingsMenuPage(MenuPage):
@@ -81,7 +81,7 @@ class VolumeTestMenuPage(TestMenuPage):
 
 	def post_init_func(self) -> PlayTestThreadFunc:
 		
-		def play_test_thread(test_page:Page) -> None:
+		def play_test_thread(test_page:TestPage) -> None:
 			
 			test_page.notes_thread = VolumeTestThread()
 			test_page.notes_thread.start_execution.connect(lambda: test_page.loading_label.deleteLater())
@@ -123,7 +123,7 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 		bpm_field = form.create_bpm_field()
 		instrument_field = form.create_instrument_field() #TODO: add a dropdown menu with the available instruments instead.
 		form.summon_reset_button()
-		def play_test_thread(test_page:Page) -> None:
+		def play_test_thread(test_page:TestPage) -> None:
 			
 			def ask_continue_test_between_note_groups():
 				# answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, self.app.translate("Ready for the next sequence?"), self.app.translate("Yes"))
@@ -146,7 +146,7 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 				test_page.create_question(self.app.translate("Are both the sequences the same?"), testCase)
 
 			test_page.notes_thread = TonalDiscriminationTaskTestThread(player_name, number_of_trials, number_of_notes, bpm, instrument)
-			test_page.notes_thread.start_execution.connect(test_page.ask_continue_test)
+			test_page.notes_thread.start_execution.connect(lambda testCase: test_page.ask_continue_test(testCase, "Ready for the next trial?"))
 			test_page.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
 			test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
 
@@ -179,7 +179,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 			if True or random_c_major_radio_button.isChecked(): #TODO add more options; this radio button is just to show that the test uses the C major scale.
 				scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
 			
-			@QtCore.pyqtSlot(QtWidgets.QVBoxLayout, NbackTestCase)
+			@QtCore.pyqtSlot(NbackTestCase)
 			def create_questions(testCase:NbackTestCase):
 
 				match testCase.nBack:
@@ -193,7 +193,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 						question_text = self.app.translate("Is the last played note the same as the {}th note before the last?").format(testCase.nBack)
 				test_page.create_question(question_text, testCase)
 
-			@QtCore.pyqtSlot(QtWidgets.QVBoxLayout, int)
+			@QtCore.pyqtSlot(int)
 			def warn_user_different_trial(nback:int):
 				match nback:
 					case 1:
@@ -212,8 +212,12 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				question.update()
 				QtCore.QTimer.singleShot(1000, lambda: test_page.layout_v_h2_v.addWidget(yes_button))
+				timer = QtCore.QElapsedTimer()
+				timer.start()
 
 				def yes():
+					elapsed_seconds = TestPage.get_elapsed_seconds(timer)
+					test_page.notes_thread.different_trial_warning_delay_list.append(elapsed_seconds)
 					question.deleteLater()
 					yes_button.deleteLater()
 					test_page.notes_thread.wait_condition.wakeOne()
@@ -221,7 +225,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 				yes_button.clicked.connect(yes)
 
 			test_page.notes_thread = TonalNbackTestThread(number_of_trials, player_name, number_of_sequences, initial_nback, number_of_notes, bpm, instrument, scale=scale)
-			test_page.notes_thread.start_execution.connect(test_page.ask_continue_test)
+			test_page.notes_thread.start_execution.connect(lambda testCase: test_page.ask_continue_test(testCase, "Ready for the next sequence?"))
 			test_page.notes_thread.started_trial_signal.connect(lambda nback: warn_user_different_trial(nback))
 			test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
 		

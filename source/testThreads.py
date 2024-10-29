@@ -5,7 +5,7 @@ This file coordinates the different threads of the audio and GUI. It serves as a
 from PyQt6 import QtCore
 import sys; import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase
+from TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, VolumeTestCase, TestCase
 import utils.general_utils as general_utils
 from utils.defaults import *
 import math
@@ -55,10 +55,7 @@ class VolumeTestThread(QtCore.QThread):
 	
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
-	done_testCase = QtCore.pyqtSignal(NbackTestCase)
-	start_execution = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
-	started_trial_signal = QtCore.pyqtSignal(int)
 	
 	def __init__(self, playerName:str, test_case_n:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		assert test_case_n > 0, f"test_case_n must be greater than 0. Got {test_case_n} instead."
@@ -95,6 +92,10 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
+	done_testCase = QtCore.pyqtSignal(NbackTestCase)
+	start_execution = QtCore.pyqtSignal(NbackTestCase)
+	started_trial_signal = QtCore.pyqtSignal(int)
+	
 	def __init__(self, trials:int, playerName:str, test_case_n:int, initial_nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, semitones:int=1):
 		assert initial_nBack > 0, f"initial_nBack must be greater than 0. Got {initial_nBack} instead."
 		assert initial_nBack + trials <= notesQuantity, f"initial_nBack + trials must be less than or equal to notesQuantity. Got initial_nBack = {initial_nBack}, trials = {trials}, notesQuantity = {notesQuantity}."
@@ -107,6 +108,7 @@ class NbackTestThread(TestThread):
 			return
 		self.semitones = semitones
 		self.scale = scale
+		self.different_trial_warning_delay_list:list[float] = []
 
 class TonalNbackTestThread(NbackTestThread):
 	def executeLoop(self):
@@ -140,7 +142,7 @@ class TonalNbackTestThread(NbackTestThread):
 						print("Last note is equal.")
 					testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
 					testCaseList.append(testCase)
-					self.start_execution.emit()
+					self.start_execution.emit(testCase)
 					self.wait_for_signal()
 					
 					for note in testCase.note_group.notes:
@@ -163,7 +165,7 @@ class TonalNbackTestThread(NbackTestThread):
 			if self.stop:
 				print("Thread was interrupted. Stopping now.\n")
 				return
-			NbackTestCase.saveResults(testCaseList_list, self.playerName)
+			NbackTestCase.saveResults(testCaseList_list, self.playerName, self.different_trial_warning_delay_list)
 
 			return testCaseList
 		except KeyboardInterrupt:
@@ -187,7 +189,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 				self.pre_start_execution.emit()
 				testCase = NbackTestCase(self.trials, self.id, self.initial_nBack + self.id, self.notesQuantity, self.bpm, self.instrument, self.scale)
 				testCaseList.append(testCase)
-				self.start_execution.emit()
+				self.start_execution.emit(testCase)
 				self.wait_for_signal()
 				self.test_started_signal.emit()
 				
@@ -227,6 +229,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 
 class TonalDiscriminationTaskTestThread(TestThread):
 	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
+	start_execution = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
 	
 	def __init__(self, playerName:str, number_of_trials:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
@@ -244,7 +247,7 @@ class TonalDiscriminationTaskTestThread(TestThread):
 				self.pre_start_execution.emit()
 				testCase = TonalDiscriminationTaskTestCase(self.notesQuantity, self.bpm, self.instrument, self.id)
 				testCaseList.append(testCase)
-				self.start_execution.emit()
+				self.start_execution.emit(testCase)
 				self.wait_for_signal()
 				
 				for note in testCase.note_group1.notes:
