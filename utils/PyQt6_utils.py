@@ -52,6 +52,11 @@ def get_button_with_image(icon:QtGui.QIcon, command):
 	button.clicked.connect(command)
 	return button
 
+def get_label_with_image(pixel_map:QtGui.QPixmap):
+	label = QLabel()
+	label.setPixmap(pixel_map)
+	return label
+
 
 def create_frame_title(title:str):
 	label = QLabel(title)
@@ -98,17 +103,8 @@ def create_question(layout, question_str:str, *answer_str):
 
 	return answers, question, layout_v_h, destroy_all
 
-class ScalableLabel(QLabel):
-	
-	def __init__(self):
-		super().__init__(None)
-		self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
 
-	def resizeEvent(self, event):
-		super().resizeEvent(event)
-		self.update_pixmap()
-
-class TextLabelWithLineSpacing(ScalableLabel):
+class TextLabelWithLineSpacing(QLabel):
 	def __init__(self, text, font = QtGui.QFont(FONT, 13), line_spacing=1.5):
 		super().__init__()
 
@@ -118,6 +114,7 @@ class TextLabelWithLineSpacing(ScalableLabel):
 		self.document = QtGui.QTextDocument()
 		self.document.setPlainText(self.text)
 		self.document.setDefaultFont(font)
+		self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
 
 		# Configure text wrapping
 		text_option = QtGui.QTextOption()
@@ -135,6 +132,11 @@ class TextLabelWithLineSpacing(ScalableLabel):
 		self.update_pixmap()
 		self.setMinimumSize(int(self.document.idealWidth()), int(self.document.size().height()))
 
+	def resizeEvent(self, event):
+		super().resizeEvent(event)
+		self.update_pixmap()
+
+
 	def update_pixmap(self):
 		"""Render the document as a pixmap with the current width."""
 		# Set wrapping width to the current widget width
@@ -151,16 +153,6 @@ class TextLabelWithLineSpacing(ScalableLabel):
 		# Set the rendered document as a pixmap on the label
 		self.setPixmap(QtGui.QPixmap.fromImage(image))
 
-class ScalableImageLabel(ScalableLabel):
-	def __init__(self, image_path):
-		super().__init__()
-		self.image_path = image_path
-		self.pixmap = QtGui.QPixmap(image_path)
-		self.update_pixmap()
-
-	def update_pixmap(self):
-		scaled_pixmap = self.pixmap.scaled(self.size(), QtCore.Qt.AspectRatioMode.KeepAspectRatio, QtCore.Qt.TransformationMode.SmoothTransformation)
-		self.setPixmap(scaled_pixmap)
 
 
 if __name__ == "__main__":

@@ -167,7 +167,7 @@ class TestMenuPage(NonSettingsMenuPage):
 	def set_info_page(self, title:str, text_body:str, img_path:str, dimensions:tuple[int, int]):
 		#image = QtWidgets.QLabel()
 		#image.setPixmap(QtGui.QPixmap(img_path))#.scaled(*dimensions, QtCore.Qt.AspectRatioMode.KeepAspectRatio))
-		image = PyQt6_utils.ScalableImageLabel(img_path)
+		image = PyQt6_utils.get_label_with_image(QtGui.QPixmap(img_path).scaled(1200, 1000, QtCore.Qt.AspectRatioMode.KeepAspectRatio))
 		image.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
 		#image.setContentsMargins(20, 20, 20, 20)
 		text_body_label = PyQt6_utils.TextLabelWithLineSpacing(self.app.translate(text_body))
