@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import List, Tuple, Optional
 from xmlrpc.client import Boolean
-import sys, os, random, csv, io
+import sys, os, random, csv, io, stat
 import numpy as np
 from fractions import Fraction
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -46,6 +46,48 @@ def get_settings(instrument=DEFAULT_INSTRUMENT, extension=notes.DEFAULT_NOTE_EXT
 	return note_str_list, intensity, note_value
 
 class TestCase:
+	
+	@classmethod
+	def create_csv_file(cls, f, testCaseList, *write_content_to_csv_args) -> None:
+		with f:
+			# create the csv writer
+			f.write('sep=,\n')
+			writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			cls.write_content_to_csv(writer, testCaseList, *write_content_to_csv_args)
+		file_path = f.name
+		f.close()
+		os.chmod(file_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+
+	@classmethod
+	def try_create_file(cls, playerName:str, test_name:str, testCaseList:list, *write_content_to_csv_args):
+
+		def print_csv(testCaseList):
+			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
+			buffer = io.StringIO()
+			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			cls.write_content_to_csv(writer, testCaseList, *write_content_to_csv_args)
+			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
+			buffer.close()
+
+		try:
+			f, file_name = FileUtils.createfile(playerName, test_name)
+		
+		except PermissionError:
+			if os.name == 'nt':
+				home_dir = os.path.expanduser('~')
+				documents_path = os.path.join(home_dir, 'Documents')
+				file_path = os.path.join(documents_path, file_name)
+				try:
+					f = FileUtils.createfile(playerName, test_name, file_path)
+				except PermissionError:
+					print_csv(testCaseList)
+					return
+				cls.create_csv_file(f, testCaseList, *write_content_to_csv_args)
+				return
+			print_csv(testCaseList)
+			return
+		cls.create_csv_file(f, testCaseList, *write_content_to_csv_args)
+class RandomTestCase(TestCase):
 	
 	def __init__(self, id_num:int, numberOfNotes:int, scale:None|scales.Scale = None) -> None:
 		self._id_num: int = id_num
@@ -94,9 +136,9 @@ class TestCase:
 	
 	def print_notes(self):
 		for note in self.note_group:
-			print(note.name)
+			print(note.full_name)
 
-class NbackTestCase(TestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
+class NbackTestCase(RandomTestCase): #FIXME the save function does not try to create a file in the documents folder if it fails to create it in the current folder
 
 	def __init__(self, config_notes_str:None|tuple[list, str, float], id_num:int, nBack:int, numberOfNotes:int, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale = None, isLastNoteDifferent:bool = True, semitones:int=1, extension=notes.DEFAULT_NOTE_EXTENSION) -> None: #TODO: I don't think id_num is a necessary parameter.
 		assert nBack > 0, f"N-back should be > 0. Got {nBack} instead."
@@ -185,58 +227,41 @@ class NbackTestCase(TestCase): #FIXME the save function does not try to create a
 		return self.result
 	
 	@staticmethod
-	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float]) -> None: #TODO: make it not overwrite the file with the same name
-		def write_content_to_csv(writer, testCaseList_list:List[List[NbackTestCase]]):
-			writer.writerow(['id', 'numberOfNotes', 'notesExecuted', 'nBack', 'Correct answer', 'User answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)' 'Different trial warning delay (seconds)', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
-			# Note: the Response delay is the time it takes for the participant to answer the yes or no question about the n-back. 
-			# The continue test delay is the time it takes for the participant to press ok after reading "Ready for the next sequence?".
-			# The different trial warning delay is the time it takes for the participant to press ok after reading that the trial will have a different n-back. It's impossible to have it be less than 1s because the button is invisible for 1s.
-			total_quantity_right_answers = 0
-			total_quantity_wrong_answers = 0
-			i = 0
-			for testCaseList in testCaseList_list:
-				quantity_right_answers = 0
-				quantity_wrong_answers = 0
-				for t in testCaseList:
-					if t.result == ResultType.CORRECT:
-						
-						quantity_right_answers += 1
-						total_quantity_right_answers += 1
+	def write_content_to_csv(writer, testCaseList_list:List[List[RandomTestCase]], different_trial_warning_delay_list):
+		writer.writerow(['id', 'Number of notes', 'Notes executed', 'N-Back', 'Correct answer', 'User answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)', 'Different trial warning delay (seconds)', 'Quantity of correct answers', 'Quantity of incorrect answers', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
+		# Note: the Response delay is the time it takes for the participant to answer the yes or no question about the n-back. 
+		# The continue test delay is the time it takes for the participant to press ok after reading "Ready for the next sequence?".
+		# The different trial warning delay is the time it takes for the participant to press ok after reading that the trial will have a different n-back. It's impossible to have it be less than 1s because the button is invisible for 1s.
+		total_quantity_right_answers = 0
+		total_quantity_wrong_answers = 0
+		i = 0
+		for testCaseList in testCaseList_list:
+			quantity_right_answers = 0
+			quantity_wrong_answers = 0
+			for t in testCaseList:
+				if t.result == ResultType.CORRECT:
+					
+					quantity_right_answers += 1
+					total_quantity_right_answers += 1
 
-					
-					elif t.result == ResultType.INCORRECT:
-						quantity_wrong_answers += 1
-						total_quantity_wrong_answers += 1
-					
-					else:
-						raise ValueError()
 				
-					writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result, t.answer_delay, t.continue_test_delay])
-				writer.writerow(['', '', '', '', '', '', '', '', different_trial_warning_delay_list[i], quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
+				elif t.result == ResultType.INCORRECT:
+					quantity_wrong_answers += 1
+					total_quantity_wrong_answers += 1
+				
+				else:
+					raise ValueError()
 			
-			i += 1
-
-		try:
-			f = FileUtils.createfile(playerName, "nback")
+				writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.full_name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result, t.answer_delay, t.continue_test_delay])
+			writer.writerow(['', '', '', '', '', '', '', '', '', different_trial_warning_delay_list[i], quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
 		
-		except PermissionError:
-			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
-			buffer = io.StringIO()
-			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			write_content_to_csv(writer, testCaseList_list)
-			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
-			buffer.close()
+		i += 1
 
-		else:
-			with f:
-				# create the csv writer
-				f.write('sep=,\n')
-				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				write_content_to_csv(writer, testCaseList_list)
-
-			f.close()
-
-class VolumeTestCase(TestCase):
+	@staticmethod
+	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float]) -> None: #TODO: make it not overwrite the file with the same name
+		NbackTestCase.try_create_file(playerName, "nback", testCaseList_list, different_trial_warning_delay_list)
+		
+class VolumeTestCase(RandomTestCase):
 	def __init__(self, config_notes_str:None|tuple[list, str, float]=None, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		super().__init__(0, numberOfNotes, scale)
 		self._set_note_group(config_notes_str, bpm, instrument, extension)
@@ -245,7 +270,7 @@ class VolumeTestCase(TestCase):
 		random_notes_str, intensity, note_value = self.get_random_notes_str(instrument, config_notes_str, extension)[:3]
 		self._note_group = notes.Note_group(random_notes_str, intensity, bpm, instrument, note_value, extension=extension)
 	
-class TonalDiscriminationTaskTestCase:
+class TonalDiscriminationTaskTestCase(TestCase):
 	def __init__(self, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, sequence_id:int=0, intensity=DEFAULT_INTENSITY, note_value=DEFAULT_NOTE_VALUE, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
 		self.sequence_id = sequence_id
 		sequence, sequence_mismatch = self.get_random_sequence(notesQuantity)
@@ -285,6 +310,10 @@ class TonalDiscriminationTaskTestCase:
 		sequence_mismatch = sample_sequences_mismatch[self.sequence_id]
 		self.is_sequence_mismatch = sequence != sequence_mismatch
 		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
+		if self.is_sequence_mismatch:
+			self.mismatch_note = (set(sequence_mismatch) - set(sequence)).pop()
+		else:
+			self.mismatch_note = '-'
 		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):
@@ -313,57 +342,23 @@ class TonalDiscriminationTaskTestCase:
 		self._answer = answer
 	
 	@staticmethod
-	def saveResults(testCaseList:list, playerName:str) -> None: #TODO: make it not overwrite the file with the same name
-		def write_content_to_csv(writer, testCaseList):
-			writer.writerow(['id', '1st sequence', '2nd sequence','answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
-			testCase_quantity_right_answers = 0
-			testCase_quantity_wrong_answers = 0
-			id_num = 0
-			for t in testCaseList:
-				if t.result == ResultType.CORRECT:
-					testCase_quantity_right_answers += 1
-				elif t.result == ResultType.INCORRECT:
-					testCase_quantity_wrong_answers += 1
-				writer.writerow([id_num, ' '.join(note.name for note in t.note_group1), ' '.join(note.name for note in t.note_group2), t.answer, t.result, t.answer_delay, t.continue_test_delay, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
-				id_num += 1
+	def write_content_to_csv(writer, testCaseList):
+		writer.writerow(['id', '1st sequence', '2nd sequence', 'Mismatch note', 'User answer', 'result', 'Response delay (seconds)', 'Continue test delay (seconds)', 'Total quantity of correct answers', 'Total quantity of incorrect answers', 'Total quantity of answers'])
+		testCase_quantity_right_answers = 0
+		testCase_quantity_wrong_answers = 0
+		id_num = 0
+		for t in testCaseList:
+			if t.result == ResultType.CORRECT:
+				testCase_quantity_right_answers += 1
+			elif t.result == ResultType.INCORRECT:
+				testCase_quantity_wrong_answers += 1
+			writer.writerow([id_num, ' '.join(note.full_name for note in t.note_group1), ' '.join(note.full_name for note in t.note_group2), t.mismatch_note, t.answer, t.result, t.answer_delay, t.continue_test_delay, testCase_quantity_right_answers, testCase_quantity_wrong_answers, testCase_quantity_right_answers + testCase_quantity_wrong_answers])
+			id_num += 1
+	
+	@staticmethod
+	def saveResults(testCaseList:list, playerName:str) -> None:
+		TonalDiscriminationTaskTestCase.try_create_file(playerName, "tonal_discrimination_task", testCaseList)
 		
-		def create_csv_file(f, testCaseList):
-			with f:
-				# create the csv writer
-				f.write('sep=,\n')
-				writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				write_content_to_csv(writer, testCaseList)
-
-			f.close()
-		
-		def print_csv(testCaseList):
-			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
-			buffer = io.StringIO()
-			writer = csv.writer(buffer, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			write_content_to_csv(writer, testCaseList)
-			print("Here's the content that would have been written to the file:\n", buffer.getvalue())
-			buffer.close()
-
-		try:
-			f = FileUtils.createfile(playerName, "tonal_discrimination_task")
-		
-		except PermissionError:
-			if os.name == 'nt':
-				home_dir = os.path.expanduser('~')
-				documents_path = os.path.join(home_dir, 'Documents')
-				file_path = os.path.join(documents_path, 'myfile.txt')
-				try:
-					f = FileUtils.createfile(playerName, "tonal_discrimination_task", file_path)
-				except PermissionError:
-					print_csv(testCaseList)
-				else:
-					create_csv_file(f, testCaseList)
-					return
-			print_csv(testCaseList)
-
-		else:
-			create_csv_file(f, testCaseList)
-
 
 if __name__ == "__main__":
 	t = VolumeTestCase()

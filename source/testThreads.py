@@ -56,6 +56,8 @@ class VolumeTestThread(QtCore.QThread):
 class TestThread(QtCore.QThread):
 	finished = QtCore.pyqtSignal()
 	pre_start_execution = QtCore.pyqtSignal()
+	done_testCase = QtCore.pyqtSignal(TestCase)
+	start_execution = QtCore.pyqtSignal(TestCase)
 	
 	def __init__(self, playerName:str, test_case_n:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):
 		assert test_case_n > 0, f"test_case_n must be greater than 0. Got {test_case_n} instead."
@@ -92,8 +94,6 @@ class TestThread(QtCore.QThread):
 		pass
 
 class NbackTestThread(TestThread):
-	done_testCase = QtCore.pyqtSignal(NbackTestCase)
-	start_execution = QtCore.pyqtSignal(NbackTestCase)
 	started_trial_signal = QtCore.pyqtSignal(int)
 	
 	def __init__(self, trials:int, playerName:str, test_case_n:int, initial_nBack:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, semitones:int=1):
@@ -228,8 +228,6 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 			print("Ctrl+c was pressed. Stopping now.")
 
 class TonalDiscriminationTaskTestThread(TestThread):
-	done_testCase = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
-	start_execution = QtCore.pyqtSignal(TonalDiscriminationTaskTestCase)
 	between_note_groups = QtCore.pyqtSignal()
 	
 	def __init__(self, playerName:str, number_of_trials:int, notesQuantity:int, bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT):

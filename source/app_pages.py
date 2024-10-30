@@ -7,7 +7,7 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from utils import PyQt6_utils, forms, validators, note_str_utils, notes_config
 from utils.defaults import *
 from notes import scales
-from source.TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType, TestCase
+from source.TestCase import NbackTestCase, TonalDiscriminationTaskTestCase, AnswerType, RandomTestCase
 from fractions import Fraction
 from source.abstract_pages import TestPage, MenuPage, TestMenuPage, NbackTestMenuPage, PlayTestThreadFunc
 

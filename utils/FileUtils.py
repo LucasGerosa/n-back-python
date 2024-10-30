@@ -27,30 +27,6 @@ def getFolder() -> str:
 def retrieveFilename() -> str:
 	return input("Give filename: ")
 
-# def readFromFile(bpm:float=DEFAULT_BPM, instrument:str=DEFAULT_INSTRUMENT) -> Parameter:
-# 	while True:
-# 		try:
-# 			filename = retrieveFilename()
-# 			f = open(getFolder() + filename, 'r')
-# 			testCases = int(f.readline())
-
-# 			p = Parameter()
-# 			p.testCaseList = []
-# 			from TestCase import TestCase
-# 			for i in range(testCases):
-# 				t = TestCase(i, int(f.readline()), int(f.readline()), bpm=bpm, instrument=instrument)
-# 				print(t)
-# 				p.testCaseList.append(t)
-
-# 			return p
-# 		except (TypeError, FileNotFoundError) as err:
-# 			print(f"Error happened when retriving filename, try again. Error: {err}")
-
-
-if __name__ == "__main__":
-	# readFromFile()
-	pass
-
 def createfile(playerName, test = RESULT_FILENAME, outputDir = OUTPUT_DIR):
 	createOutputDirectoryIfNotExist()
 	createPlayerDirectoryIfNotExist(playerName)
@@ -66,4 +42,4 @@ def createfile(playerName, test = RESULT_FILENAME, outputDir = OUTPUT_DIR):
 		filename = f'{base_filename[:-4]}{counter}{base_filename[-4:]}'  # Insert counter before file extension
 		counter += 1
 
-	return open(filename, "w", newline='')
+	return open(filename, "w", newline=''), filename

@@ -29,7 +29,7 @@ from utils.defaults import *
 from utils import PyQt6_utils
 from source.parent_GUI import parent_GUI
 from source.app_pages import TonalDiscriminationTaskMenuPage, TonalNbackTestMenuPage, SettingsMenuPage, VolumeTestMenuPage
-from source.abstract_pages import NonSettingsMenuPage, MenuPage
+from source.abstract_pages import NonSettingsMenuPage
 
 	
 class MyGUI(parent_GUI):

@@ -47,7 +47,7 @@ class TestPage(Page):
 		print("Elapsed_seconds:", elapsed_seconds)
 		return elapsed_seconds
 
-	def create_question(self, question_text:str, testCase:TestCase|TonalDiscriminationTaskTestCase) -> None:
+	def create_question(self, question_text:str, testCase:TestCase) -> None:
 			answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(self.layout_v_h2_v, question_text, self.app.translate("Yes"), self.app.translate("No"))
 			yes_button, no_button = answers
 			yes_button.setStyleSheet("background-color: green; font-size: 50px;")
@@ -93,7 +93,7 @@ class TestPage(Page):
 		timer.timeout.connect(update_countdown)
 		timer.start(1000)
 
-	def ask_continue_test(self, testCase:TestCase|TonalDiscriminationTaskTestCase, question_text:str):
+	def ask_continue_test(self, testCase:TestCase, question_text:str):
 		self.loading_label.deleteLater()
 		answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(self.layout_v_h2_v, self.app.translate(question_text), self.app.translate("Yes"))
 		timer = QtCore.QElapsedTimer()
