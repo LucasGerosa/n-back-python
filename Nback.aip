@@ -31,370 +31,368 @@
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="AppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="APPDAT~1|AppDataFolder" IsPseudoRoot="1"/>
     <ROW Directory="InternetExplorer_Dir" Directory_Parent="Microsoft_Dir" DefaultDir="INTERN~1|Internet Explorer"/>
-    <ROW Directory="LC_MESSAGES_1_Dir" Directory_Parent="pt_BR_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
-    <ROW Directory="LC_MESSAGES_Dir" Directory_Parent="en_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
+    <ROW Directory="LC_MESSAGES_2_Dir" Directory_Parent="en_1_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
+    <ROW Directory="LC_MESSAGES_3_Dir" Directory_Parent="pt_BR_1_Dir" DefaultDir="LC_MES~1|LC_MESSAGES"/>
     <ROW Directory="Microsoft_Dir" Directory_Parent="AppDataFolder" DefaultDir="MICROS~1|Microsoft"/>
-    <ROW Directory="PyQt6_Dir" Directory_Parent="app_Dir" DefaultDir="PyQt6"/>
-    <ROW Directory="Qt6_Dir" Directory_Parent="PyQt6_Dir" DefaultDir="Qt6"/>
+    <ROW Directory="PyQt6_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="PyQt6"/>
+    <ROW Directory="Qt6_1_Dir" Directory_Parent="PyQt6_1_Dir" DefaultDir="Qt6"/>
     <ROW Directory="QuickLaunch_Dir" Directory_Parent="InternetExplorer_Dir" DefaultDir="QUICKL~1|Quick Launch"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="app_Dir" Directory_Parent="APPDIR" DefaultDir="app"/>
-    <ROW Directory="bin_1_Dir" Directory_Parent="Qt6_Dir" DefaultDir="bin"/>
-    <ROW Directory="bin_Dir" Directory_Parent="ffmpeg_Dir" DefaultDir="bin"/>
-    <ROW Directory="certifi_Dir" Directory_Parent="app_Dir" DefaultDir="certifi"/>
-    <ROW Directory="core_Dir" Directory_Parent="numpy_Dir" DefaultDir="core"/>
-    <ROW Directory="en_Dir" Directory_Parent="translations_1_Dir" DefaultDir="en"/>
-    <ROW Directory="ffmpeg_Dir" Directory_Parent="app_Dir" DefaultDir="ffmpeg"/>
-    <ROW Directory="fft_Dir" Directory_Parent="numpy_Dir" DefaultDir="fft"/>
-    <ROW Directory="generic_Dir" Directory_Parent="plugins_Dir" DefaultDir="generic"/>
-    <ROW Directory="iconengines_Dir" Directory_Parent="plugins_Dir" DefaultDir="ICONEN~1|iconengines"/>
-    <ROW Directory="imageformats_Dir" Directory_Parent="plugins_Dir" DefaultDir="IMAGEF~1|imageformats"/>
-    <ROW Directory="input_Dir" Directory_Parent="app_Dir" DefaultDir="input"/>
-    <ROW Directory="libs_Dir" Directory_Parent="numpy_Dir" DefaultDir="LIBS~1|.libs"/>
-    <ROW Directory="linalg_Dir" Directory_Parent="numpy_Dir" DefaultDir="linalg"/>
-    <ROW Directory="numpy_Dir" Directory_Parent="app_Dir" DefaultDir="numpy"/>
+    <ROW Directory="app_1_Dir" Directory_Parent="nback_Dir" DefaultDir="app"/>
+    <ROW Directory="bin_2_Dir" Directory_Parent="ffmpeg_1_Dir" DefaultDir="bin"/>
+    <ROW Directory="bin_3_Dir" Directory_Parent="Qt6_1_Dir" DefaultDir="bin"/>
+    <ROW Directory="certifi_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="certifi"/>
+    <ROW Directory="core_1_Dir" Directory_Parent="numpy_1_Dir" DefaultDir="core"/>
+    <ROW Directory="en_1_Dir" Directory_Parent="translations_3_Dir" DefaultDir="en"/>
+    <ROW Directory="ffmpeg_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="ffmpeg"/>
+    <ROW Directory="fft_1_Dir" Directory_Parent="numpy_1_Dir" DefaultDir="fft"/>
+    <ROW Directory="generic_1_Dir" Directory_Parent="plugins_1_Dir" DefaultDir="generic"/>
+    <ROW Directory="iconengines_1_Dir" Directory_Parent="plugins_1_Dir" DefaultDir="ICONEN~1|iconengines"/>
+    <ROW Directory="imageformats_1_Dir" Directory_Parent="plugins_1_Dir" DefaultDir="IMAGEF~1|imageformats"/>
+    <ROW Directory="input_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="input"/>
+    <ROW Directory="libs_1_Dir" Directory_Parent="numpy_1_Dir" DefaultDir="LIBS~1|.libs"/>
+    <ROW Directory="linalg_1_Dir" Directory_Parent="numpy_1_Dir" DefaultDir="linalg"/>
+    <ROW Directory="nback_Dir" Directory_Parent="APPDIR" DefaultDir="nback"/>
+    <ROW Directory="numpy_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="numpy"/>
     <ROW Directory="output_Dir" Directory_Parent="APPDIR" DefaultDir="output"/>
-    <ROW Directory="piano_Dir" Directory_Parent="input_Dir" DefaultDir="piano"/>
-    <ROW Directory="platforms_Dir" Directory_Parent="plugins_Dir" DefaultDir="PLATFO~1|platforms"/>
-    <ROW Directory="plugins_Dir" Directory_Parent="Qt6_Dir" DefaultDir="plugins"/>
-    <ROW Directory="pt_BR_Dir" Directory_Parent="translations_1_Dir" DefaultDir="pt_BR"/>
-    <ROW Directory="random_Dir" Directory_Parent="numpy_Dir" DefaultDir="random"/>
-    <ROW Directory="simpleaudio_Dir" Directory_Parent="app_Dir" DefaultDir="SIMPLE~1|simpleaudio"/>
-    <ROW Directory="static_Dir" Directory_Parent="app_Dir" DefaultDir="static"/>
-    <ROW Directory="styles_Dir" Directory_Parent="plugins_Dir" DefaultDir="styles"/>
-    <ROW Directory="translations_1_Dir" Directory_Parent="app_Dir" DefaultDir="TRANSL~1|translations"/>
-    <ROW Directory="translations_Dir" Directory_Parent="Qt6_Dir" DefaultDir="TRANSL~1|translations"/>
+    <ROW Directory="piano_1_Dir" Directory_Parent="input_1_Dir" DefaultDir="piano"/>
+    <ROW Directory="platforms_1_Dir" Directory_Parent="plugins_1_Dir" DefaultDir="PLATFO~1|platforms"/>
+    <ROW Directory="plugins_1_Dir" Directory_Parent="Qt6_1_Dir" DefaultDir="plugins"/>
+    <ROW Directory="pt_BR_1_Dir" Directory_Parent="translations_3_Dir" DefaultDir="pt_BR"/>
+    <ROW Directory="random_1_Dir" Directory_Parent="numpy_1_Dir" DefaultDir="random"/>
+    <ROW Directory="simpleaudio_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="SIMPLE~1|simpleaudio"/>
+    <ROW Directory="static_1_Dir" Directory_Parent="app_1_Dir" DefaultDir="static"/>
+    <ROW Directory="styles_1_Dir" Directory_Parent="plugins_1_Dir" DefaultDir="styles"/>
+    <ROW Directory="translations_2_Dir" Directory_Parent="Qt6_1_Dir" DefaultDir="TRANSL~1|translations"/>
+    <ROW Directory="translations_3_Dir" Directory_Parent="app_1_Dir" DefaultDir="TRANSL~1|translations"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="APPDIR" ComponentId="{C4CCA2F9-EDF4-42ED-94DB-8DCA54537261}" Directory_="APPDIR" Attributes="0"/>
-    <ROW Component="MSVCP140.dll" ComponentId="{F05F30EF-0D22-416E-A102-755CBA225338}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140.dll"/>
-    <ROW Component="MSVCP140_1.dll" ComponentId="{EF4CA885-1A48-4A12-BAD8-7A048630504A}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_1.dll"/>
-    <ROW Component="MSVCP140_2.dll" ComponentId="{E2D4220E-1CB0-453D-B6B4-274E4D6895BC}" Directory_="bin_1_Dir" Attributes="256" KeyPath="MSVCP140_2.dll"/>
-    <ROW Component="Piano.mf.A1.mp3" ComponentId="{58343C86-2D31-4D2D-9A09-9E4E487E4E61}" Directory_="piano_Dir" Attributes="0" KeyPath="Piano.mf.A1.mp3" Type="0"/>
+    <ROW Component="MSVCP140.dll_1" ComponentId="{1D3C7BA1-AF47-4AC2-B725-391DDD2827C3}" Directory_="bin_3_Dir" Attributes="256" KeyPath="MSVCP140.dll_1"/>
+    <ROW Component="MSVCP140_1.dll_1" ComponentId="{7C446790-678A-4C9E-8901-C5C09487A40E}" Directory_="bin_3_Dir" Attributes="256" KeyPath="MSVCP140_1.dll_1"/>
+    <ROW Component="MSVCP140_2.dll_1" ComponentId="{88FD21B0-546B-4DE4-8D85-DD3D1316A103}" Directory_="bin_3_Dir" Attributes="256" KeyPath="MSVCP140_2.dll_1"/>
     <ROW Component="ProductInformation" ComponentId="{568C0761-C16D-4089-A46A-1389E7131A6B}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="Qt6Core.dll" ComponentId="{B808B10B-5D11-4BBB-846E-63D3958CAE18}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Core.dll"/>
-    <ROW Component="Qt6Gui.dll" ComponentId="{7BA48806-EC74-4211-909F-12723D66978E}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Gui.dll"/>
-    <ROW Component="Qt6Network.dll" ComponentId="{C4FC2A77-BBCB-4843-A08D-AF1EC1FF9F2B}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Network.dll"/>
-    <ROW Component="Qt6Pdf.dll" ComponentId="{FFF5467D-F82C-402B-BEC9-3C7EAF712CF6}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Pdf.dll"/>
-    <ROW Component="Qt6Svg.dll" ComponentId="{E3803087-55B5-4370-A7F0-062E07FA1ABC}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Svg.dll"/>
-    <ROW Component="Qt6Widgets.dll" ComponentId="{291124D3-D457-4FB9-BBE4-810E7A1A7259}" Directory_="bin_1_Dir" Attributes="256" KeyPath="Qt6Widgets.dll"/>
-    <ROW Component="QtCore.pyd" ComponentId="{B021E129-F530-429A-B6E6-7A8CCFC29BE6}" Directory_="PyQt6_Dir" Attributes="256" KeyPath="QtCore.pyd" Type="0"/>
+    <ROW Component="Qt6Core.dll_1" ComponentId="{FD80BAAF-5B14-43FD-860C-E12047D3159D}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Core.dll_1"/>
+    <ROW Component="Qt6Gui.dll_1" ComponentId="{AA7125F3-A596-4C82-B8F8-BF4EC2A192A4}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Gui.dll_1"/>
+    <ROW Component="Qt6Network.dll_1" ComponentId="{A70B7CB3-D97C-4B94-AF2A-8429DF2DE042}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Network.dll_1"/>
+    <ROW Component="Qt6Pdf.dll_1" ComponentId="{8B4C8C93-F22A-41FD-923D-67C64697797B}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Pdf.dll_1"/>
+    <ROW Component="Qt6Svg.dll_1" ComponentId="{21EC8AE2-0D84-40FB-BB0B-DB7F3E635133}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Svg.dll_1"/>
+    <ROW Component="Qt6Widgets.dll_1" ComponentId="{4A58A314-D8A5-4009-BE98-7FEB68D63538}" Directory_="bin_3_Dir" Attributes="256" KeyPath="Qt6Widgets.dll_1"/>
+    <ROW Component="QtCore.pyd_1" ComponentId="{C643D009-43F5-48A8-A75F-9A4C511FA360}" Directory_="PyQt6_1_Dir" Attributes="256" KeyPath="QtCore.pyd_1" Type="0"/>
     <ROW Component="QuickLaunch" ComponentId="{021DF26B-82BA-43C9-86BC-4773AF69E830}" Directory_="QuickLaunch_Dir" Attributes="0"/>
-    <ROW Component="VCRUNTIME140.dll" ComponentId="{332B0639-49E0-41D9-8F1F-BC8D8114344F}" Directory_="bin_1_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll"/>
-    <ROW Component="VCRUNTIME140.dll_1" ComponentId="{C3F64B5C-9094-4625-AB49-71983B2AE5B1}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll_1"/>
-    <ROW Component="VCRUNTIME140_1.dll" ComponentId="{3333FCD0-954A-4968-B2F8-86F27505BDA7}" Directory_="bin_1_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll"/>
-    <ROW Component="VCRUNTIME140_1.dll_1" ComponentId="{9237257C-3103-4532-A4D4-0646EE47ACB1}" Directory_="app_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll_1"/>
-    <ROW Component="_multiarray_tests.cp310win_amd64.pyd" ComponentId="{252C123A-F91A-4F0B-A3A9-37D18EB2B7CF}" Directory_="core_Dir" Attributes="256" KeyPath="_multiarray_tests.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="_pocketfft_internal.cp310win_amd64.pyd" ComponentId="{DC17451B-8ED2-478E-8C46-EA65EE48B7CC}" Directory_="fft_Dir" Attributes="256" KeyPath="_pocketfft_internal.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="_simpleaudio.cp310win_amd64.pyd" ComponentId="{61F25E95-4177-4F68-B76D-EC5A1DC5F4DE}" Directory_="simpleaudio_Dir" Attributes="256" KeyPath="_simpleaudio.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="app.exe" ComponentId="{E9B283FE-C2F4-4595-ADD8-332C835DCFDC}" Directory_="app_Dir" Attributes="256" KeyPath="app.exe"/>
-    <ROW Component="app.mo" ComponentId="{B8346FDA-A199-4DB4-AD16-44EC81895D7D}" Directory_="LC_MESSAGES_Dir" Attributes="0" KeyPath="app.mo" Type="0"/>
-    <ROW Component="app.mo_1" ComponentId="{CCB46007-0E76-46BD-B94A-D5DCE9AB42BC}" Directory_="LC_MESSAGES_1_Dir" Attributes="0" KeyPath="app.mo_1" Type="0"/>
-    <ROW Component="back_button.png" ComponentId="{CC336A53-EC3D-4726-A1DE-1ED4AF3AA528}" Directory_="static_Dir" Attributes="0" KeyPath="back_button.png" Type="0"/>
-    <ROW Component="base_library.zip" ComponentId="{EC1A8A42-2C02-445D-9CA2-F420C9D2AB30}" Directory_="app_Dir" Attributes="0" KeyPath="base_library.zip" Type="0"/>
-    <ROW Component="bit_generator.cp310win_amd64.pyd" ComponentId="{43DE5B41-40C9-4691-A735-EC3D5E17860F}" Directory_="random_Dir" Attributes="256" KeyPath="bit_generator.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="cacert.pem" ComponentId="{F13C207D-7C2E-4DC9-A068-B912F35C688B}" Directory_="certifi_Dir" Attributes="0" KeyPath="cacert.pem" Type="0"/>
-    <ROW Component="ffmpeg.exe" ComponentId="{21F6CC3B-B14A-40F0-A4F5-D24E82C48EFA}" Directory_="bin_Dir" Attributes="256" KeyPath="ffmpeg.exe"/>
-    <ROW Component="ffprobe.exe" ComponentId="{E1525291-668E-44D6-A212-19CA84A0690D}" Directory_="bin_Dir" Attributes="256" KeyPath="ffprobe.exe"/>
-    <ROW Component="lapack_lite.cp310win_amd64.pyd" ComponentId="{07B98810-1FFF-4939-840E-0EA5CB1AAAAD}" Directory_="linalg_Dir" Attributes="256" KeyPath="lapack_lite.cp310win_amd64.pyd" Type="0"/>
-    <ROW Component="libcrypto1_1.dll" ComponentId="{C2FEC486-2BC8-445A-8161-56BF4C2FF6B7}" Directory_="app_Dir" Attributes="256" KeyPath="libcrypto1_1.dll"/>
-    <ROW Component="libffi7.dll" ComponentId="{D2772B00-0856-4F52-AA8F-90D922DCC44B}" Directory_="app_Dir" Attributes="256" KeyPath="libffi7.dll"/>
-    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll" ComponentId="{A525EDA6-1B30-42EB-A9D7-B1BD763BDD07}" Directory_="app_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll"/>
-    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll_1" ComponentId="{E151579F-E887-42FB-BAC6-674ED4C0FE8F}" Directory_="libs_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll_1"/>
-    <ROW Component="libssl1_1.dll" ComponentId="{9C5AC8D4-C78E-487C-9BCA-0D0CA9048D62}" Directory_="app_Dir" Attributes="256" KeyPath="libssl1_1.dll"/>
-    <ROW Component="opengl32sw.dll" ComponentId="{2B22F49A-9B80-460E-B187-CB3D62AEDBF1}" Directory_="bin_1_Dir" Attributes="256" KeyPath="opengl32sw.dll"/>
+    <ROW Component="VCRUNTIME140.dll_2" ComponentId="{97737EA4-771D-40D2-987B-8EF09CBCE477}" Directory_="bin_3_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll_2"/>
+    <ROW Component="VCRUNTIME140.dll_3" ComponentId="{8EF27EB5-95A2-428A-B593-337EEA6F138F}" Directory_="app_1_Dir" Attributes="256" KeyPath="VCRUNTIME140.dll_3"/>
+    <ROW Component="VCRUNTIME140_1.dll_2" ComponentId="{6E359F17-117E-4879-9AF8-81369596FF78}" Directory_="bin_3_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll_2"/>
+    <ROW Component="VCRUNTIME140_1.dll_3" ComponentId="{AAD2EABB-A184-4E22-95AC-31AB1A7A3283}" Directory_="app_1_Dir" Attributes="256" KeyPath="VCRUNTIME140_1.dll_3"/>
+    <ROW Component="_multiarray_tests.cp310win_amd64.pyd_1" ComponentId="{5F9A5690-06DA-4183-8AE3-46BB63C206D5}" Directory_="core_1_Dir" Attributes="256" KeyPath="_multiarray_tests.cp310win_amd64.pyd_1" Type="0"/>
+    <ROW Component="_pocketfft_internal.cp310win_amd64.pyd_1" ComponentId="{A7C9E4A3-D394-4360-93EE-6BCF7991EC30}" Directory_="fft_1_Dir" Attributes="256" KeyPath="_pocketfft_internal.cp310win_amd64.pyd_1" Type="0"/>
+    <ROW Component="_simpleaudio.cp310win_amd64.pyd_1" ComponentId="{050CD818-793B-4A16-B4F8-F4DF5AC4CF6E}" Directory_="simpleaudio_1_Dir" Attributes="256" KeyPath="_simpleaudio.cp310win_amd64.pyd_1" Type="0"/>
+    <ROW Component="app.exe_1" ComponentId="{692F1754-0A6E-4B71-ACCD-D7402258778E}" Directory_="app_1_Dir" Attributes="256" KeyPath="app.exe_1"/>
+    <ROW Component="app.mo_2" ComponentId="{F006B9D6-45E7-488B-865C-BF6D8AA2A8C8}" Directory_="LC_MESSAGES_2_Dir" Attributes="0" KeyPath="app.mo_2" Type="0"/>
+    <ROW Component="app.mo_3" ComponentId="{9C18478B-CBD8-4A83-AEC6-36CB3E303BC6}" Directory_="LC_MESSAGES_3_Dir" Attributes="0" KeyPath="app.mo_3" Type="0"/>
+    <ROW Component="back_button.png_1" ComponentId="{1A2E6691-DA62-4884-91A8-229F998AFCFB}" Directory_="static_1_Dir" Attributes="0" KeyPath="back_button.png_1" Type="0"/>
+    <ROW Component="base_library.zip_1" ComponentId="{81E3B0EC-EC42-414D-A73E-1343AB0AB151}" Directory_="app_1_Dir" Attributes="0" KeyPath="base_library.zip_1" Type="0"/>
+    <ROW Component="bit_generator.cp310win_amd64.pyd_1" ComponentId="{725FD93C-2FAC-45EE-8322-0A181EC6DFA4}" Directory_="random_1_Dir" Attributes="256" KeyPath="bit_generator.cp310win_amd64.pyd_1" Type="0"/>
+    <ROW Component="cacert.pem_1" ComponentId="{CAD43285-804F-42B4-B33B-4201E4EC79EA}" Directory_="certifi_1_Dir" Attributes="0" KeyPath="cacert.pem_1" Type="0"/>
+    <ROW Component="ffmpeg.exe_1" ComponentId="{59E2D567-5D6E-4329-B01B-93A17D79415C}" Directory_="bin_2_Dir" Attributes="256" KeyPath="ffmpeg.exe_1"/>
+    <ROW Component="ffprobe.exe_1" ComponentId="{5D3ADD49-A9C6-4691-8650-FBE845B434B0}" Directory_="bin_2_Dir" Attributes="256" KeyPath="ffprobe.exe_1"/>
+    <ROW Component="lapack_lite.cp310win_amd64.pyd_1" ComponentId="{5BB5A0DD-3C44-4C4B-8267-B1F634A3F287}" Directory_="linalg_1_Dir" Attributes="256" KeyPath="lapack_lite.cp310win_amd64.pyd_1" Type="0"/>
+    <ROW Component="libcrypto1_1.dll_1" ComponentId="{2C1C99E9-7E21-493F-B158-6A3E4186D429}" Directory_="app_1_Dir" Attributes="256" KeyPath="libcrypto1_1.dll_1"/>
+    <ROW Component="libffi7.dll_1" ComponentId="{9D79EE50-FB90-4A09-9C6A-1B1AD2EBFA3E}" Directory_="app_1_Dir" Attributes="256" KeyPath="libffi7.dll_1"/>
+    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll_2" ComponentId="{A191D827-462F-42A3-9B53-226FCB234E5B}" Directory_="app_1_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll_2"/>
+    <ROW Component="libopenblas64__v0.3.21gcc_10_3_0.dll_3" ComponentId="{7CE6F67F-685C-4B26-9640-0493F51DCE6E}" Directory_="libs_1_Dir" Attributes="256" KeyPath="libopenblas64__v0.3.21gcc_10_3_0.dll_3"/>
+    <ROW Component="libssl1_1.dll_1" ComponentId="{37DE1B12-009E-4029-BF84-BB643060F346}" Directory_="app_1_Dir" Attributes="256" KeyPath="libssl1_1.dll_1"/>
+    <ROW Component="opengl32sw.dll_1" ComponentId="{35EA8736-25D3-4C23-8D77-17B8E6CA2F06}" Directory_="bin_3_Dir" Attributes="256" KeyPath="opengl32sw.dll_1"/>
     <ROW Component="output" ComponentId="{7DA451A7-E478-4A43-A538-4838C0C2AB29}" Directory_="output_Dir" Attributes="0"/>
-    <ROW Component="python3.dll" ComponentId="{49A0E598-C561-49B1-86E5-14A1BD95BFD6}" Directory_="app_Dir" Attributes="256" KeyPath="python3.dll"/>
-    <ROW Component="python310.dll" ComponentId="{D8092C0D-0386-4E1F-A6E0-536770F4C71E}" Directory_="app_Dir" Attributes="256" KeyPath="python310.dll"/>
-    <ROW Component="qgif.dll" ComponentId="{7AAA05A3-4CE3-4B15-B710-80DC082A7541}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qgif.dll"/>
-    <ROW Component="qicns.dll" ComponentId="{26667794-5C4B-406C-B107-897653E52206}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qicns.dll"/>
-    <ROW Component="qico.dll" ComponentId="{EDF6FEB7-9E5B-4330-BE63-8885AB8E349F}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qico.dll"/>
-    <ROW Component="qjpeg.dll" ComponentId="{409EBAAC-7807-4CC5-B008-A92703215095}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qjpeg.dll"/>
-    <ROW Component="qminimal.dll" ComponentId="{32795EDA-7964-4F92-B524-5AF5D8CD227B}" Directory_="platforms_Dir" Attributes="256" KeyPath="qminimal.dll"/>
-    <ROW Component="qmodernwindowsstyle.dll" ComponentId="{8AAB6283-1B66-437B-BBB0-21A7A0B19234}" Directory_="styles_Dir" Attributes="256" KeyPath="qmodernwindowsstyle.dll"/>
-    <ROW Component="qoffscreen.dll" ComponentId="{E997D0CB-0D7D-457A-BE59-D9DF84C471AF}" Directory_="platforms_Dir" Attributes="256" KeyPath="qoffscreen.dll"/>
-    <ROW Component="qpdf.dll" ComponentId="{509F5CE1-58C8-4E9E-AEB8-08E684EB8462}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qpdf.dll"/>
-    <ROW Component="qsvg.dll" ComponentId="{571EA08E-C827-48BD-B1C1-F274B5ADBE35}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qsvg.dll"/>
-    <ROW Component="qsvgicon.dll" ComponentId="{88B8D1D3-3635-4DC7-A792-DFC5C1B008BA}" Directory_="iconengines_Dir" Attributes="256" KeyPath="qsvgicon.dll"/>
-    <ROW Component="qtbase_ar.qm" ComponentId="{252E9D09-66AC-4B95-A3B7-485219664C4E}" Directory_="translations_Dir" Attributes="0" KeyPath="qtbase_ar.qm" Type="0"/>
-    <ROW Component="qtga.dll" ComponentId="{D04B83CC-A333-4C57-B1D8-FAF20EB99AE1}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtga.dll"/>
-    <ROW Component="qtiff.dll" ComponentId="{1AD975B8-3E81-4728-8C7A-60B13EDD9D5F}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qtiff.dll"/>
-    <ROW Component="qtuiotouchplugin.dll" ComponentId="{71223B32-C0FF-4271-BF33-A168625AA670}" Directory_="generic_Dir" Attributes="256" KeyPath="qtuiotouchplugin.dll"/>
-    <ROW Component="qwbmp.dll" ComponentId="{54BF307C-E4DF-4A6C-8AAE-71A753590EA2}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwbmp.dll"/>
-    <ROW Component="qwebp.dll" ComponentId="{2A5EE26B-682A-435C-8027-ECC79E0BFBE4}" Directory_="imageformats_Dir" Attributes="256" KeyPath="qwebp.dll"/>
-    <ROW Component="qwindows.dll" ComponentId="{05024BB3-848A-48C7-A5C0-2862A9FD637D}" Directory_="platforms_Dir" Attributes="256" KeyPath="qwindows.dll"/>
+    <ROW Component="piano.mf.A1.mp3" ComponentId="{E24A3D92-5375-4ECB-8BBB-52720D9E872E}" Directory_="piano_1_Dir" Attributes="0" KeyPath="piano.mf.A1.mp3_1" Type="0"/>
+    <ROW Component="python3.dll_1" ComponentId="{C59D71E5-6712-41B2-9E48-40E6A34CEAD8}" Directory_="app_1_Dir" Attributes="256" KeyPath="python3.dll_1"/>
+    <ROW Component="python310.dll_1" ComponentId="{8A4609EA-920E-4C21-AFEA-3A2E3B899D7E}" Directory_="app_1_Dir" Attributes="256" KeyPath="python310.dll_1"/>
+    <ROW Component="qgif.dll_1" ComponentId="{6AC77827-19CA-4560-A9D9-97350507F7A6}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qgif.dll_1"/>
+    <ROW Component="qicns.dll_1" ComponentId="{B6DC0141-6CB9-4EE0-9BCE-40D346D0701C}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qicns.dll_1"/>
+    <ROW Component="qico.dll_1" ComponentId="{DC30FB62-213D-4D34-AC73-30ADC3933167}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qico.dll_1"/>
+    <ROW Component="qjpeg.dll_1" ComponentId="{B773436F-05DD-4007-9152-001EBD3447B7}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qjpeg.dll_1"/>
+    <ROW Component="qminimal.dll_1" ComponentId="{ACF5544D-BFF2-47FF-8C3C-C155B1DF4FAF}" Directory_="platforms_1_Dir" Attributes="256" KeyPath="qminimal.dll_1"/>
+    <ROW Component="qoffscreen.dll_1" ComponentId="{61D4E155-7FCD-4198-B793-3C5115B2A4D5}" Directory_="platforms_1_Dir" Attributes="256" KeyPath="qoffscreen.dll_1"/>
+    <ROW Component="qpdf.dll_1" ComponentId="{376D19CA-2CDB-4782-B28A-50C7AED80B8C}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qpdf.dll_1"/>
+    <ROW Component="qsvg.dll_1" ComponentId="{78A0D87F-2D73-401E-B46D-A71D3F884738}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qsvg.dll_1"/>
+    <ROW Component="qsvgicon.dll_1" ComponentId="{13362275-88ED-4805-A1A5-B8E638661A8F}" Directory_="iconengines_1_Dir" Attributes="256" KeyPath="qsvgicon.dll_1"/>
+    <ROW Component="qtbase_ar.qm_1" ComponentId="{F23ABD84-A5C9-4C9B-BE22-1D295C612346}" Directory_="translations_2_Dir" Attributes="0" KeyPath="qtbase_ar.qm_1" Type="0"/>
+    <ROW Component="qtga.dll_1" ComponentId="{77203755-7F39-45CC-B1E6-ACEF4E70FC3F}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qtga.dll_1"/>
+    <ROW Component="qtiff.dll_1" ComponentId="{04306DF4-2252-49FA-BE80-1B0797C26C5A}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qtiff.dll_1"/>
+    <ROW Component="qtuiotouchplugin.dll_1" ComponentId="{F5EBB08A-E488-4107-BEBE-FB2417A99438}" Directory_="generic_1_Dir" Attributes="256" KeyPath="qtuiotouchplugin.dll_1"/>
+    <ROW Component="qwbmp.dll_1" ComponentId="{E7A127C9-D4DE-4DDD-B32D-21FC7F3D3BB6}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qwbmp.dll_1"/>
+    <ROW Component="qwebp.dll_1" ComponentId="{C7E1A2F5-6C9A-4AC6-B914-220D93A5CAF8}" Directory_="imageformats_1_Dir" Attributes="256" KeyPath="qwebp.dll_1"/>
+    <ROW Component="qwindows.dll_1" ComponentId="{508209AD-45D6-40AC-8B67-DAD3F2794909}" Directory_="platforms_1_Dir" Attributes="256" KeyPath="qwindows.dll_1"/>
+    <ROW Component="qwindowsvistastyle.dll" ComponentId="{A07C70A4-874A-4B49-A2C5-44E24CF68901}" Directory_="styles_1_Dir" Attributes="256" KeyPath="qwindowsvistastyle.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="app.exe" Component_="app.exe" FileName="app.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\app.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="base_library.zip" Component_="base_library.zip" FileName="BASE_L~1.ZIP|base_library.zip" Attributes="0" SourcePath="..\..\Downloads\nback\app\base_library.zip" SelfReg="false"/>
-    <ROW File="cacert.pem" Component_="cacert.pem" FileName="cacert.pem" Attributes="0" SourcePath="..\..\Downloads\nback\app\certifi\cacert.pem" SelfReg="false"/>
-    <ROW File="py.typed" Component_="cacert.pem" FileName="PY~1.TYP|py.typed" Attributes="0" SourcePath="..\..\Downloads\nback\app\certifi\py.typed" SelfReg="false"/>
-    <ROW File="ffmpeg.exe" Component_="ffmpeg.exe" FileName="ffmpeg.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\ffmpeg\bin\ffmpeg.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ffprobe.exe" Component_="ffprobe.exe" FileName="ffprobe.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\ffmpeg\bin\ffprobe.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="Piano.mf.A1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~1.MP3|Piano.mf.A1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~2.MP3|Piano.mf.A2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~3.MP3|Piano.mf.A3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~4.MP3|Piano.mf.A4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~5.MP3|Piano.mf.A5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~6.MP3|Piano.mf.A6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.A7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~7.MP3|Piano.mf.A7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.A7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~8.MP3|Piano.mf.Ab1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANOM~9.MP3|Piano.mf.Ab2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~10.MP3|Piano.mf.Ab3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~11.MP3|Piano.mf.Ab4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~12.MP3|Piano.mf.Ab5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~13.MP3|Piano.mf.Ab6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Ab7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~14.MP3|Piano.mf.Ab7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Ab7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B0.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~15.MP3|Piano.mf.B0.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B0.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~16.MP3|Piano.mf.B1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~17.MP3|Piano.mf.B2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~18.MP3|Piano.mf.B3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~19.MP3|Piano.mf.B4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~20.MP3|Piano.mf.B5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~21.MP3|Piano.mf.B6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.B7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~22.MP3|Piano.mf.B7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.B7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~23.MP3|Piano.mf.Bb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~24.MP3|Piano.mf.Bb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~25.MP3|Piano.mf.Bb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~26.MP3|Piano.mf.Bb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~27.MP3|Piano.mf.Bb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~28.MP3|Piano.mf.Bb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Bb7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~29.MP3|Piano.mf.Bb7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Bb7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~30.MP3|Piano.mf.C1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~31.MP3|Piano.mf.C2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~32.MP3|Piano.mf.C3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~33.MP3|Piano.mf.C4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~34.MP3|Piano.mf.C5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~35.MP3|Piano.mf.C6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~36.MP3|Piano.mf.C7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.C8.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~37.MP3|Piano.mf.C8.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.C8.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~38.MP3|Piano.mf.D1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~39.MP3|Piano.mf.D2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~40.MP3|Piano.mf.D3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~41.MP3|Piano.mf.D4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~42.MP3|Piano.mf.D5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~43.MP3|Piano.mf.D6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.D7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~44.MP3|Piano.mf.D7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.D7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~45.MP3|Piano.mf.Db1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~46.MP3|Piano.mf.Db2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~47.MP3|Piano.mf.Db3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~48.MP3|Piano.mf.Db4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~49.MP3|Piano.mf.Db5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~50.MP3|Piano.mf.Db6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Db7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~51.MP3|Piano.mf.Db7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Db7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~52.MP3|Piano.mf.E1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~53.MP3|Piano.mf.E2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~54.MP3|Piano.mf.E3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~55.MP3|Piano.mf.E4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~56.MP3|Piano.mf.E5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~57.MP3|Piano.mf.E6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.E7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~58.MP3|Piano.mf.E7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.E7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~59.MP3|Piano.mf.Eb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~60.MP3|Piano.mf.Eb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~61.MP3|Piano.mf.Eb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~62.MP3|Piano.mf.Eb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~63.MP3|Piano.mf.Eb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~64.MP3|Piano.mf.Eb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Eb7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~65.MP3|Piano.mf.Eb7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Eb7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~66.MP3|Piano.mf.F1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~67.MP3|Piano.mf.F2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~68.MP3|Piano.mf.F3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~69.MP3|Piano.mf.F4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~70.MP3|Piano.mf.F5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~71.MP3|Piano.mf.F6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.F7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~72.MP3|Piano.mf.F7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.F7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~73.MP3|Piano.mf.G1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~74.MP3|Piano.mf.G2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~75.MP3|Piano.mf.G3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~76.MP3|Piano.mf.G4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~77.MP3|Piano.mf.G5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~78.MP3|Piano.mf.G6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G6.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.G7.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~79.MP3|Piano.mf.G7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.G7.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb1.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~80.MP3|Piano.mf.Gb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb1.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb2.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~81.MP3|Piano.mf.Gb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb2.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb3.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~82.MP3|Piano.mf.Gb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb3.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb4.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~83.MP3|Piano.mf.Gb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb4.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb5.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~84.MP3|Piano.mf.Gb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb5.mp3" SelfReg="false"/>
-    <ROW File="Piano.mf.Gb6.mp3" Component_="Piano.mf.A1.mp3" FileName="PIANO~85.MP3|Piano.mf.Gb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\Piano.mf.Gb6.mp3" SelfReg="false"/>
-    <ROW File="libcrypto1_1.dll" Component_="libcrypto1_1.dll" FileName="LIBCRY~1.DLL|libcrypto-1_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libcrypto-1_1.dll" SelfReg="false"/>
-    <ROW File="libffi7.dll" Component_="libffi7.dll" FileName="libffi-7.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libffi-7.dll" SelfReg="false"/>
-    <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
-    <ROW File="libssl1_1.dll" Component_="libssl1_1.dll" FileName="LIBSSL~1.DLL|libssl-1_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libssl-1_1.dll" SelfReg="false"/>
-    <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll_1" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_1" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\.libs\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
-    <ROW File="_multiarray_tests.cp310win_amd64.pyd" Component_="_multiarray_tests.cp310win_amd64.pyd" FileName="_MULTI~1.PYD|_multiarray_tests.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_tests.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_multiarray_umath.cp310win_amd64.pyd" Component_="_multiarray_tests.cp310win_amd64.pyd" FileName="_MULTI~2.PYD|_multiarray_umath.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_umath.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_pocketfft_internal.cp310win_amd64.pyd" Component_="_pocketfft_internal.cp310win_amd64.pyd" FileName="_POCKE~1.PYD|_pocketfft_internal.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\fft\_pocketfft_internal.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="lapack_lite.cp310win_amd64.pyd" Component_="lapack_lite.cp310win_amd64.pyd" FileName="LAPACK~1.PYD|lapack_lite.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\linalg\lapack_lite.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_umath_linalg.cp310win_amd64.pyd" Component_="lapack_lite.cp310win_amd64.pyd" FileName="_UMATH~1.PYD|_umath_linalg.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\linalg\_umath_linalg.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="bit_generator.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="BIT_GE~1.PYD|bit_generator.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\bit_generator.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="mtrand.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="MTRAND~1.PYD|mtrand.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\mtrand.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_bounded_integers.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_BOUND~1.PYD|_bounded_integers.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_bounded_integers.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_common.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_COMMO~1.PYD|_common.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_common.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_generator.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_GENER~1.PYD|_generator.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_generator.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_mt19937.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_MT199~1.PYD|_mt19937.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_mt19937.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_pcg64.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_PCG64~1.PYD|_pcg64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_pcg64.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_philox.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_PHILO~1.PYD|_philox.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_philox.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="_sfc64.cp310win_amd64.pyd" Component_="bit_generator.cp310win_amd64.pyd" FileName="_SFC64~1.PYD|_sfc64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_sfc64.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="pyexpat.pyd" Component_="base_library.zip" FileName="pyexpat.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\pyexpat.pyd" SelfReg="false"/>
-    <ROW File="MSVCP140.dll" Component_="MSVCP140.dll" FileName="MSVCP140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140.dll" SelfReg="false"/>
-    <ROW File="MSVCP140_1.dll" Component_="MSVCP140_1.dll" FileName="MSVCP1~1.DLL|MSVCP140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140_1.dll" SelfReg="false"/>
-    <ROW File="MSVCP140_2.dll" Component_="MSVCP140_2.dll" FileName="MSVCP1~2.DLL|MSVCP140_2.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140_2.dll" SelfReg="false"/>
-    <ROW File="opengl32sw.dll" Component_="opengl32sw.dll" FileName="OPENGL~1.DLL|opengl32sw.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\opengl32sw.dll" SelfReg="false"/>
-    <ROW File="Qt6Core.dll" Component_="Qt6Core.dll" FileName="Qt6Core.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Core.dll" SelfReg="false"/>
-    <ROW File="Qt6Gui.dll" Component_="Qt6Gui.dll" FileName="Qt6Gui.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Gui.dll" SelfReg="false"/>
-    <ROW File="Qt6Network.dll" Component_="Qt6Network.dll" FileName="QT6NET~1.DLL|Qt6Network.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Network.dll" SelfReg="false"/>
-    <ROW File="Qt6Pdf.dll" Component_="Qt6Pdf.dll" FileName="Qt6Pdf.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Pdf.dll" SelfReg="false"/>
-    <ROW File="Qt6Svg.dll" Component_="Qt6Svg.dll" FileName="Qt6Svg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Svg.dll" SelfReg="false"/>
-    <ROW File="Qt6Widgets.dll" Component_="Qt6Widgets.dll" FileName="QT6WID~1.DLL|Qt6Widgets.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Widgets.dll" SelfReg="false"/>
-    <ROW File="VCRUNTIME140.dll" Component_="VCRUNTIME140.dll" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140.dll" SelfReg="false"/>
-    <ROW File="VCRUNTIME140_1.dll" Component_="VCRUNTIME140_1.dll" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140_1.dll" SelfReg="false"/>
-    <ROW File="qtuiotouchplugin.dll" Component_="qtuiotouchplugin.dll" FileName="QTUIOT~1.DLL|qtuiotouchplugin.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\generic\qtuiotouchplugin.dll" SelfReg="false"/>
-    <ROW File="qsvgicon.dll" Component_="qsvgicon.dll" FileName="qsvgicon.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\iconengines\qsvgicon.dll" SelfReg="false"/>
-    <ROW File="qgif.dll" Component_="qgif.dll" FileName="qgif.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qgif.dll" SelfReg="false"/>
-    <ROW File="qicns.dll" Component_="qicns.dll" FileName="qicns.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qicns.dll" SelfReg="false"/>
-    <ROW File="qico.dll" Component_="qico.dll" FileName="qico.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qico.dll" SelfReg="false"/>
-    <ROW File="qjpeg.dll" Component_="qjpeg.dll" FileName="qjpeg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qjpeg.dll" SelfReg="false"/>
-    <ROW File="qpdf.dll" Component_="qpdf.dll" FileName="qpdf.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qpdf.dll" SelfReg="false"/>
-    <ROW File="qsvg.dll" Component_="qsvg.dll" FileName="qsvg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qsvg.dll" SelfReg="false"/>
-    <ROW File="qtga.dll" Component_="qtga.dll" FileName="qtga.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qtga.dll" SelfReg="false"/>
-    <ROW File="qtiff.dll" Component_="qtiff.dll" FileName="qtiff.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qtiff.dll" SelfReg="false"/>
-    <ROW File="qwbmp.dll" Component_="qwbmp.dll" FileName="qwbmp.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qwbmp.dll" SelfReg="false"/>
-    <ROW File="qwebp.dll" Component_="qwebp.dll" FileName="qwebp.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qwebp.dll" SelfReg="false"/>
-    <ROW File="qminimal.dll" Component_="qminimal.dll" FileName="qminimal.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qminimal.dll" SelfReg="false"/>
-    <ROW File="qoffscreen.dll" Component_="qoffscreen.dll" FileName="QOFFSC~1.DLL|qoffscreen.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qoffscreen.dll" SelfReg="false"/>
-    <ROW File="qwindows.dll" Component_="qwindows.dll" FileName="qwindows.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qwindows.dll" SelfReg="false"/>
-    <ROW File="qmodernwindowsstyle.dll" Component_="qmodernwindowsstyle.dll" FileName="QMODER~1.DLL|qmodernwindowsstyle.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\styles\qmodernwindowsstyle.dll" SelfReg="false"/>
-    <ROW File="qtbase_ar.qm" Component_="qtbase_ar.qm" FileName="QTBASE~1.QM|qtbase_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ar.qm" SelfReg="false"/>
-    <ROW File="qtbase_bg.qm" Component_="qtbase_ar.qm" FileName="QTBASE~2.QM|qtbase_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_bg.qm" SelfReg="false"/>
-    <ROW File="qtbase_ca.qm" Component_="qtbase_ar.qm" FileName="QTBASE~3.QM|qtbase_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ca.qm" SelfReg="false"/>
-    <ROW File="qtbase_cs.qm" Component_="qtbase_ar.qm" FileName="QTBASE~4.QM|qtbase_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_cs.qm" SelfReg="false"/>
-    <ROW File="qtbase_da.qm" Component_="qtbase_ar.qm" FileName="QTBASE~5.QM|qtbase_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_da.qm" SelfReg="false"/>
-    <ROW File="qtbase_de.qm" Component_="qtbase_ar.qm" FileName="QTBASE~6.QM|qtbase_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_de.qm" SelfReg="false"/>
-    <ROW File="qtbase_en.qm" Component_="qtbase_ar.qm" FileName="QTBASE~7.QM|qtbase_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_en.qm" SelfReg="false"/>
-    <ROW File="qtbase_es.qm" Component_="qtbase_ar.qm" FileName="QTBASE~8.QM|qtbase_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_es.qm" SelfReg="false"/>
-    <ROW File="qtbase_fa.qm" Component_="qtbase_ar.qm" FileName="QTBASE~9.QM|qtbase_fa.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fa.qm" SelfReg="false"/>
-    <ROW File="qtbase_fi.qm" Component_="qtbase_ar.qm" FileName="QTBAS~10.QM|qtbase_fi.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fi.qm" SelfReg="false"/>
-    <ROW File="qtbase_fr.qm" Component_="qtbase_ar.qm" FileName="QTBAS~11.QM|qtbase_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fr.qm" SelfReg="false"/>
-    <ROW File="qtbase_gd.qm" Component_="qtbase_ar.qm" FileName="QTBAS~12.QM|qtbase_gd.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_gd.qm" SelfReg="false"/>
-    <ROW File="qtbase_he.qm" Component_="qtbase_ar.qm" FileName="QTBAS~13.QM|qtbase_he.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_he.qm" SelfReg="false"/>
-    <ROW File="qtbase_hr.qm" Component_="qtbase_ar.qm" FileName="QTBAS~14.QM|qtbase_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_hr.qm" SelfReg="false"/>
-    <ROW File="qtbase_hu.qm" Component_="qtbase_ar.qm" FileName="QTBAS~15.QM|qtbase_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_hu.qm" SelfReg="false"/>
-    <ROW File="qtbase_it.qm" Component_="qtbase_ar.qm" FileName="QTBAS~16.QM|qtbase_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_it.qm" SelfReg="false"/>
-    <ROW File="qtbase_ja.qm" Component_="qtbase_ar.qm" FileName="QTBAS~17.QM|qtbase_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ja.qm" SelfReg="false"/>
-    <ROW File="qtbase_ka.qm" Component_="qtbase_ar.qm" FileName="QTBAS~18.QM|qtbase_ka.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ka.qm" SelfReg="false"/>
-    <ROW File="qtbase_ko.qm" Component_="qtbase_ar.qm" FileName="QTBAS~19.QM|qtbase_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ko.qm" SelfReg="false"/>
-    <ROW File="qtbase_lv.qm" Component_="qtbase_ar.qm" FileName="QTBAS~20.QM|qtbase_lv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_lv.qm" SelfReg="false"/>
-    <ROW File="qtbase_nl.qm" Component_="qtbase_ar.qm" FileName="QTBAS~21.QM|qtbase_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_nl.qm" SelfReg="false"/>
-    <ROW File="qtbase_nn.qm" Component_="qtbase_ar.qm" FileName="QTBAS~22.QM|qtbase_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_nn.qm" SelfReg="false"/>
-    <ROW File="qtbase_pl.qm" Component_="qtbase_ar.qm" FileName="QTBAS~23.QM|qtbase_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_pl.qm" SelfReg="false"/>
-    <ROW File="qtbase_pt_BR.qm" Component_="qtbase_ar.qm" FileName="QTBAS~24.QM|qtbase_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_pt_BR.qm" SelfReg="false"/>
-    <ROW File="qtbase_ru.qm" Component_="qtbase_ar.qm" FileName="QTBAS~25.QM|qtbase_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ru.qm" SelfReg="false"/>
-    <ROW File="qtbase_sk.qm" Component_="qtbase_ar.qm" FileName="QTBAS~26.QM|qtbase_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_sk.qm" SelfReg="false"/>
-    <ROW File="qtbase_tr.qm" Component_="qtbase_ar.qm" FileName="QTBAS~27.QM|qtbase_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_tr.qm" SelfReg="false"/>
-    <ROW File="qtbase_uk.qm" Component_="qtbase_ar.qm" FileName="QTBAS~28.QM|qtbase_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_uk.qm" SelfReg="false"/>
-    <ROW File="qtbase_zh_CN.qm" Component_="qtbase_ar.qm" FileName="QTBAS~29.QM|qtbase_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_CN.qm" SelfReg="false"/>
-    <ROW File="qtbase_zh_TW.qm" Component_="qtbase_ar.qm" FileName="QTBAS~30.QM|qtbase_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_TW.qm" SelfReg="false"/>
-    <ROW File="qt_ar.qm" Component_="qtbase_ar.qm" FileName="qt_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ar.qm" SelfReg="false"/>
-    <ROW File="qt_bg.qm" Component_="qtbase_ar.qm" FileName="qt_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_bg.qm" SelfReg="false"/>
-    <ROW File="qt_ca.qm" Component_="qtbase_ar.qm" FileName="qt_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ca.qm" SelfReg="false"/>
-    <ROW File="qt_cs.qm" Component_="qtbase_ar.qm" FileName="qt_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_cs.qm" SelfReg="false"/>
-    <ROW File="qt_da.qm" Component_="qtbase_ar.qm" FileName="qt_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_da.qm" SelfReg="false"/>
-    <ROW File="qt_de.qm" Component_="qtbase_ar.qm" FileName="qt_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_de.qm" SelfReg="false"/>
-    <ROW File="qt_en.qm" Component_="qtbase_ar.qm" FileName="qt_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_en.qm" SelfReg="false"/>
-    <ROW File="qt_es.qm" Component_="qtbase_ar.qm" FileName="qt_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_es.qm" SelfReg="false"/>
-    <ROW File="qt_fa.qm" Component_="qtbase_ar.qm" FileName="qt_fa.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fa.qm" SelfReg="false"/>
-    <ROW File="qt_fi.qm" Component_="qtbase_ar.qm" FileName="qt_fi.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fi.qm" SelfReg="false"/>
-    <ROW File="qt_fr.qm" Component_="qtbase_ar.qm" FileName="qt_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fr.qm" SelfReg="false"/>
-    <ROW File="qt_gd.qm" Component_="qtbase_ar.qm" FileName="qt_gd.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gd.qm" SelfReg="false"/>
-    <ROW File="qt_gl.qm" Component_="qtbase_ar.qm" FileName="qt_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gl.qm" SelfReg="false"/>
-    <ROW File="qt_he.qm" Component_="qtbase_ar.qm" FileName="qt_he.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_he.qm" SelfReg="false"/>
-    <ROW File="qt_help_ar.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~1.QM|qt_help_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ar.qm" SelfReg="false"/>
-    <ROW File="qt_help_bg.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~2.QM|qt_help_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_bg.qm" SelfReg="false"/>
-    <ROW File="qt_help_ca.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~3.QM|qt_help_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ca.qm" SelfReg="false"/>
-    <ROW File="qt_help_cs.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~4.QM|qt_help_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_cs.qm" SelfReg="false"/>
-    <ROW File="qt_help_da.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~5.QM|qt_help_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_da.qm" SelfReg="false"/>
-    <ROW File="qt_help_de.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~6.QM|qt_help_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_de.qm" SelfReg="false"/>
-    <ROW File="qt_help_en.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~7.QM|qt_help_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_en.qm" SelfReg="false"/>
-    <ROW File="qt_help_es.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~8.QM|qt_help_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_es.qm" SelfReg="false"/>
-    <ROW File="qt_help_fr.qm" Component_="qtbase_ar.qm" FileName="QT_HEL~9.QM|qt_help_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_fr.qm" SelfReg="false"/>
-    <ROW File="qt_help_gl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~10.QM|qt_help_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_gl.qm" SelfReg="false"/>
-    <ROW File="qt_help_hr.qm" Component_="qtbase_ar.qm" FileName="QT_HE~11.QM|qt_help_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hr.qm" SelfReg="false"/>
-    <ROW File="qt_help_hu.qm" Component_="qtbase_ar.qm" FileName="QT_HE~12.QM|qt_help_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hu.qm" SelfReg="false"/>
-    <ROW File="qt_help_it.qm" Component_="qtbase_ar.qm" FileName="QT_HE~13.QM|qt_help_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_it.qm" SelfReg="false"/>
-    <ROW File="qt_help_ja.qm" Component_="qtbase_ar.qm" FileName="QT_HE~14.QM|qt_help_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ja.qm" SelfReg="false"/>
-    <ROW File="qt_help_ka.qm" Component_="qtbase_ar.qm" FileName="QT_HE~15.QM|qt_help_ka.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ka.qm" SelfReg="false"/>
-    <ROW File="qt_help_ko.qm" Component_="qtbase_ar.qm" FileName="QT_HE~16.QM|qt_help_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ko.qm" SelfReg="false"/>
-    <ROW File="qt_help_nl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~17.QM|qt_help_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nl.qm" SelfReg="false"/>
-    <ROW File="qt_help_nn.qm" Component_="qtbase_ar.qm" FileName="QT_HE~18.QM|qt_help_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nn.qm" SelfReg="false"/>
-    <ROW File="qt_help_pl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~19.QM|qt_help_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pl.qm" SelfReg="false"/>
-    <ROW File="qt_help_pt_BR.qm" Component_="qtbase_ar.qm" FileName="QT_HE~20.QM|qt_help_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pt_BR.qm" SelfReg="false"/>
-    <ROW File="qt_help_ru.qm" Component_="qtbase_ar.qm" FileName="QT_HE~21.QM|qt_help_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ru.qm" SelfReg="false"/>
-    <ROW File="qt_help_sk.qm" Component_="qtbase_ar.qm" FileName="QT_HE~22.QM|qt_help_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sk.qm" SelfReg="false"/>
-    <ROW File="qt_help_sl.qm" Component_="qtbase_ar.qm" FileName="QT_HE~23.QM|qt_help_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sl.qm" SelfReg="false"/>
-    <ROW File="qt_help_tr.qm" Component_="qtbase_ar.qm" FileName="QT_HE~24.QM|qt_help_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_tr.qm" SelfReg="false"/>
-    <ROW File="qt_help_uk.qm" Component_="qtbase_ar.qm" FileName="QT_HE~25.QM|qt_help_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_uk.qm" SelfReg="false"/>
-    <ROW File="qt_help_zh_CN.qm" Component_="qtbase_ar.qm" FileName="QT_HE~26.QM|qt_help_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_CN.qm" SelfReg="false"/>
-    <ROW File="qt_help_zh_TW.qm" Component_="qtbase_ar.qm" FileName="QT_HE~27.QM|qt_help_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_TW.qm" SelfReg="false"/>
-    <ROW File="qt_hr.qm" Component_="qtbase_ar.qm" FileName="qt_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hr.qm" SelfReg="false"/>
-    <ROW File="qt_hu.qm" Component_="qtbase_ar.qm" FileName="qt_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hu.qm" SelfReg="false"/>
-    <ROW File="qt_it.qm" Component_="qtbase_ar.qm" FileName="qt_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_it.qm" SelfReg="false"/>
-    <ROW File="qt_ja.qm" Component_="qtbase_ar.qm" FileName="qt_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ja.qm" SelfReg="false"/>
-    <ROW File="qt_ka.qm" Component_="qtbase_ar.qm" FileName="qt_ka.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ka.qm" SelfReg="false"/>
-    <ROW File="qt_ko.qm" Component_="qtbase_ar.qm" FileName="qt_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ko.qm" SelfReg="false"/>
-    <ROW File="qt_lt.qm" Component_="qtbase_ar.qm" FileName="qt_lt.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lt.qm" SelfReg="false"/>
-    <ROW File="qt_lv.qm" Component_="qtbase_ar.qm" FileName="qt_lv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lv.qm" SelfReg="false"/>
-    <ROW File="qt_nl.qm" Component_="qtbase_ar.qm" FileName="qt_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nl.qm" SelfReg="false"/>
-    <ROW File="qt_nn.qm" Component_="qtbase_ar.qm" FileName="qt_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nn.qm" SelfReg="false"/>
-    <ROW File="qt_pl.qm" Component_="qtbase_ar.qm" FileName="qt_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pl.qm" SelfReg="false"/>
-    <ROW File="qt_pt_BR.qm" Component_="qtbase_ar.qm" FileName="qt_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_BR.qm" SelfReg="false"/>
-    <ROW File="qt_pt_PT.qm" Component_="qtbase_ar.qm" FileName="qt_pt_PT.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_PT.qm" SelfReg="false"/>
-    <ROW File="qt_ru.qm" Component_="qtbase_ar.qm" FileName="qt_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ru.qm" SelfReg="false"/>
-    <ROW File="qt_sk.qm" Component_="qtbase_ar.qm" FileName="qt_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sk.qm" SelfReg="false"/>
-    <ROW File="qt_sl.qm" Component_="qtbase_ar.qm" FileName="qt_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sl.qm" SelfReg="false"/>
-    <ROW File="qt_sv.qm" Component_="qtbase_ar.qm" FileName="qt_sv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sv.qm" SelfReg="false"/>
-    <ROW File="qt_tr.qm" Component_="qtbase_ar.qm" FileName="qt_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_tr.qm" SelfReg="false"/>
-    <ROW File="qt_uk.qm" Component_="qtbase_ar.qm" FileName="qt_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_uk.qm" SelfReg="false"/>
-    <ROW File="qt_zh_CN.qm" Component_="qtbase_ar.qm" FileName="qt_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_CN.qm" SelfReg="false"/>
-    <ROW File="qt_zh_TW.qm" Component_="qtbase_ar.qm" FileName="qt_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_TW.qm" SelfReg="false"/>
-    <ROW File="QtCore.pyd" Component_="QtCore.pyd" FileName="QtCore.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtCore.pyd" SelfReg="false"/>
-    <ROW File="QtGui.pyd" Component_="QtCore.pyd" FileName="QtGui.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtGui.pyd" SelfReg="false"/>
-    <ROW File="QtWidgets.pyd" Component_="QtCore.pyd" FileName="QTWIDG~1.PYD|QtWidgets.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtWidgets.pyd" SelfReg="false"/>
-    <ROW File="sip.cp310win_amd64.pyd" Component_="QtCore.pyd" FileName="SIPCP3~1.PYD|sip.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\sip.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="python3.dll" Component_="python3.dll" FileName="python3.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\python3.dll" SelfReg="false"/>
-    <ROW File="python310.dll" Component_="python310.dll" FileName="PYTHON~1.DLL|python310.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\python310.dll" SelfReg="false"/>
-    <ROW File="select.pyd" Component_="base_library.zip" FileName="select.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\select.pyd" SelfReg="false"/>
-    <ROW File="settings.ini" Component_="base_library.zip" FileName="settings.ini" Attributes="0" SourcePath="..\..\Downloads\nback\app\settings.ini" SelfReg="false"/>
-    <ROW File="_simpleaudio.cp310win_amd64.pyd" Component_="_simpleaudio.cp310win_amd64.pyd" FileName="_SIMPL~1.PYD|_simpleaudio.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\simpleaudio\_simpleaudio.cp310-win_amd64.pyd" SelfReg="false"/>
-    <ROW File="back_button.png" Component_="back_button.png" FileName="BACK_B~1.PNG|back_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\back_button.png" SelfReg="false"/>
-    <ROW File="debug.png" Component_="back_button.png" FileName="debug.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\debug.png" SelfReg="false"/>
-    <ROW File="information_button.png" Component_="back_button.png" FileName="INFORM~1.PNG|information_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\information_button.png" SelfReg="false"/>
-    <ROW File="nback_example.png" Component_="back_button.png" FileName="NBACK_~1.PNG|nback_example.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\nback_example.png" SelfReg="false"/>
-    <ROW File="play_button.png" Component_="back_button.png" FileName="PLAY_B~1.PNG|play_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\play_button.png" SelfReg="false"/>
-    <ROW File="settings.png" Component_="back_button.png" FileName="settings.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\settings.png" SelfReg="false"/>
-    <ROW File="stop_button.jpg" Component_="back_button.png" FileName="STOP_B~1.JPG|stop_button.jpg" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\stop_button.jpg" SelfReg="false"/>
-    <ROW File="TDT_example.png" Component_="back_button.png" FileName="TDT_EX~1.PNG|TDT_example.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\TDT_example.png" SelfReg="false"/>
-    <ROW File="app.mo" Component_="app.mo" FileName="app.mo" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\en\LC_MESSAGES\app.mo" SelfReg="false"/>
-    <ROW File="app.po" Component_="app.mo" FileName="app.po" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\en\LC_MESSAGES\app.po" SelfReg="false"/>
-    <ROW File="app.mo_1" Component_="app.mo_1" FileName="app.mo" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.mo" SelfReg="false"/>
-    <ROW File="app.po_1" Component_="app.mo_1" FileName="app.po" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.po" SelfReg="false"/>
-    <ROW File="unicodedata.pyd" Component_="base_library.zip" FileName="UNICOD~1.PYD|unicodedata.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\unicodedata.pyd" SelfReg="false"/>
-    <ROW File="VCRUNTIME140.dll_1" Component_="VCRUNTIME140.dll_1" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140.dll" SelfReg="false"/>
-    <ROW File="VCRUNTIME140_1.dll_1" Component_="VCRUNTIME140_1.dll_1" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140_1.dll" SelfReg="false"/>
-    <ROW File="_asyncio.pyd" Component_="base_library.zip" FileName="_asyncio.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_asyncio.pyd" SelfReg="false"/>
-    <ROW File="_bz2.pyd" Component_="base_library.zip" FileName="_bz2.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_bz2.pyd" SelfReg="false"/>
-    <ROW File="_ctypes.pyd" Component_="base_library.zip" FileName="_ctypes.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_ctypes.pyd" SelfReg="false"/>
-    <ROW File="_decimal.pyd" Component_="base_library.zip" FileName="_decimal.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_decimal.pyd" SelfReg="false"/>
-    <ROW File="_hashlib.pyd" Component_="base_library.zip" FileName="_hashlib.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_hashlib.pyd" SelfReg="false"/>
-    <ROW File="_lzma.pyd" Component_="base_library.zip" FileName="_lzma.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_lzma.pyd" SelfReg="false"/>
-    <ROW File="_multiprocessing.pyd" Component_="base_library.zip" FileName="_MULTI~1.PYD|_multiprocessing.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_multiprocessing.pyd" SelfReg="false"/>
-    <ROW File="_overlapped.pyd" Component_="base_library.zip" FileName="_OVERL~1.PYD|_overlapped.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_overlapped.pyd" SelfReg="false"/>
-    <ROW File="_queue.pyd" Component_="base_library.zip" FileName="_queue.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_queue.pyd" SelfReg="false"/>
-    <ROW File="_socket.pyd" Component_="base_library.zip" FileName="_socket.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_socket.pyd" SelfReg="false"/>
-    <ROW File="_ssl.pyd" Component_="base_library.zip" FileName="_ssl.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_ssl.pyd" SelfReg="false"/>
+    <ROW File="app.exe_1" Component_="app.exe_1" FileName="app.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\app.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="base_library.zip_1" Component_="base_library.zip_1" FileName="BASE_L~1.ZIP|base_library.zip" Attributes="0" SourcePath="..\..\Downloads\nback\app\base_library.zip" SelfReg="false"/>
+    <ROW File="cacert.pem_1" Component_="cacert.pem_1" FileName="cacert.pem" Attributes="0" SourcePath="..\..\Downloads\nback\app\certifi\cacert.pem" SelfReg="false"/>
+    <ROW File="py.typed_1" Component_="cacert.pem_1" FileName="PY~1.TYP|py.typed" Attributes="0" SourcePath="..\..\Downloads\nback\app\certifi\py.typed" SelfReg="false"/>
+    <ROW File="ffmpeg.exe_1" Component_="ffmpeg.exe_1" FileName="ffmpeg.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\ffmpeg\bin\ffmpeg.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="ffprobe.exe_1" Component_="ffprobe.exe_1" FileName="ffprobe.exe" Attributes="0" SourcePath="..\..\Downloads\nback\app\ffmpeg\bin\ffprobe.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="piano.mf.A1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~1.MP3|piano.mf.A1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~2.MP3|piano.mf.A2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~3.MP3|piano.mf.A3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~4.MP3|piano.mf.A4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~5.MP3|piano.mf.A5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~6.MP3|piano.mf.A6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.A7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~7.MP3|piano.mf.A7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.A7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~8.MP3|piano.mf.Ab1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANOM~9.MP3|piano.mf.Ab2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~10.MP3|piano.mf.Ab3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~11.MP3|piano.mf.Ab4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~12.MP3|piano.mf.Ab5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~13.MP3|piano.mf.Ab6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Ab7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~14.MP3|piano.mf.Ab7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Ab7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B0.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~15.MP3|piano.mf.B0.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B0.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~16.MP3|piano.mf.B1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~17.MP3|piano.mf.B2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~18.MP3|piano.mf.B3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~19.MP3|piano.mf.B4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~20.MP3|piano.mf.B5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~21.MP3|piano.mf.B6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.B7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~22.MP3|piano.mf.B7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.B7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~23.MP3|piano.mf.Bb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~24.MP3|piano.mf.Bb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~25.MP3|piano.mf.Bb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~26.MP3|piano.mf.Bb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~27.MP3|piano.mf.Bb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~28.MP3|piano.mf.Bb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Bb7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~29.MP3|piano.mf.Bb7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Bb7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~30.MP3|piano.mf.C1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~31.MP3|piano.mf.C2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~32.MP3|piano.mf.C3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~33.MP3|piano.mf.C4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~34.MP3|piano.mf.C5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~35.MP3|piano.mf.C6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~36.MP3|piano.mf.C7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.C8.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~37.MP3|piano.mf.C8.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.C8.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~38.MP3|piano.mf.D1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~39.MP3|piano.mf.D2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~40.MP3|piano.mf.D3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~41.MP3|piano.mf.D4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~42.MP3|piano.mf.D5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~43.MP3|piano.mf.D6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.D7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~44.MP3|piano.mf.D7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.D7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~45.MP3|piano.mf.Db1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~46.MP3|piano.mf.Db2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~47.MP3|piano.mf.Db3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~48.MP3|piano.mf.Db4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~49.MP3|piano.mf.Db5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~50.MP3|piano.mf.Db6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Db7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~51.MP3|piano.mf.Db7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Db7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~52.MP3|piano.mf.E1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~53.MP3|piano.mf.E2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~54.MP3|piano.mf.E3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~55.MP3|piano.mf.E4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~56.MP3|piano.mf.E5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~57.MP3|piano.mf.E6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.E7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~58.MP3|piano.mf.E7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.E7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~59.MP3|piano.mf.Eb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~60.MP3|piano.mf.Eb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~61.MP3|piano.mf.Eb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~62.MP3|piano.mf.Eb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~63.MP3|piano.mf.Eb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~64.MP3|piano.mf.Eb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Eb7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~65.MP3|piano.mf.Eb7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Eb7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~66.MP3|piano.mf.F1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~67.MP3|piano.mf.F2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~68.MP3|piano.mf.F3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~69.MP3|piano.mf.F4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~70.MP3|piano.mf.F5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~71.MP3|piano.mf.F6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.F7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~72.MP3|piano.mf.F7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.F7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~73.MP3|piano.mf.G1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~74.MP3|piano.mf.G2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~75.MP3|piano.mf.G3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~76.MP3|piano.mf.G4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~77.MP3|piano.mf.G5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~78.MP3|piano.mf.G6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G6.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.G7.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~79.MP3|piano.mf.G7.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.G7.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb1.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~80.MP3|piano.mf.Gb1.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb1.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb2.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~81.MP3|piano.mf.Gb2.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb2.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb3.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~82.MP3|piano.mf.Gb3.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb3.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb4.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~83.MP3|piano.mf.Gb4.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb4.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb5.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~84.MP3|piano.mf.Gb5.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb5.mp3" SelfReg="false"/>
+    <ROW File="piano.mf.Gb6.mp3_1" Component_="piano.mf.A1.mp3" FileName="PIANO~85.MP3|piano.mf.Gb6.mp3" Attributes="0" SourcePath="..\..\Downloads\nback\app\input\piano\piano.mf.Gb6.mp3" SelfReg="false"/>
+    <ROW File="libcrypto1_1.dll_1" Component_="libcrypto1_1.dll_1" FileName="LIBCRY~1.DLL|libcrypto-1_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libcrypto-1_1.dll" SelfReg="false"/>
+    <ROW File="libffi7.dll_1" Component_="libffi7.dll_1" FileName="libffi-7.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libffi-7.dll" SelfReg="false"/>
+    <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll_2" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_2" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
+    <ROW File="libssl1_1.dll_1" Component_="libssl1_1.dll_1" FileName="LIBSSL~1.DLL|libssl-1_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\libssl-1_1.dll" SelfReg="false"/>
+    <ROW File="libopenblas64__v0.3.21gcc_10_3_0.dll_3" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_3" FileName="LIBOPE~1.DLL|libopenblas64__v0.3.21-gcc_10_3_0.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\.libs\libopenblas64__v0.3.21-gcc_10_3_0.dll" SelfReg="false"/>
+    <ROW File="_multiarray_tests.cp310win_amd64.pyd_1" Component_="_multiarray_tests.cp310win_amd64.pyd_1" FileName="_MULTI~1.PYD|_multiarray_tests.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_tests.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_multiarray_umath.cp310win_amd64.pyd_1" Component_="_multiarray_tests.cp310win_amd64.pyd_1" FileName="_MULTI~2.PYD|_multiarray_umath.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\core\_multiarray_umath.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_pocketfft_internal.cp310win_amd64.pyd_1" Component_="_pocketfft_internal.cp310win_amd64.pyd_1" FileName="_POCKE~1.PYD|_pocketfft_internal.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\fft\_pocketfft_internal.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="lapack_lite.cp310win_amd64.pyd_1" Component_="lapack_lite.cp310win_amd64.pyd_1" FileName="LAPACK~1.PYD|lapack_lite.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\linalg\lapack_lite.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_umath_linalg.cp310win_amd64.pyd_1" Component_="lapack_lite.cp310win_amd64.pyd_1" FileName="_UMATH~1.PYD|_umath_linalg.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\linalg\_umath_linalg.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="bit_generator.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="BIT_GE~1.PYD|bit_generator.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\bit_generator.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="mtrand.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="MTRAND~1.PYD|mtrand.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\mtrand.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_bounded_integers.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_BOUND~1.PYD|_bounded_integers.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_bounded_integers.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_common.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_COMMO~1.PYD|_common.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_common.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_generator.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_GENER~1.PYD|_generator.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_generator.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_mt19937.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_MT199~1.PYD|_mt19937.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_mt19937.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_pcg64.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_PCG64~1.PYD|_pcg64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_pcg64.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_philox.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_PHILO~1.PYD|_philox.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_philox.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="_sfc64.cp310win_amd64.pyd_1" Component_="bit_generator.cp310win_amd64.pyd_1" FileName="_SFC64~1.PYD|_sfc64.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\numpy\random\_sfc64.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="pyexpat.pyd_1" Component_="base_library.zip_1" FileName="pyexpat.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\pyexpat.pyd" SelfReg="false"/>
+    <ROW File="MSVCP140.dll_1" Component_="MSVCP140.dll_1" FileName="MSVCP140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140.dll" SelfReg="false"/>
+    <ROW File="MSVCP140_1.dll_1" Component_="MSVCP140_1.dll_1" FileName="MSVCP1~1.DLL|MSVCP140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140_1.dll" SelfReg="false"/>
+    <ROW File="MSVCP140_2.dll_1" Component_="MSVCP140_2.dll_1" FileName="MSVCP1~2.DLL|MSVCP140_2.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\MSVCP140_2.dll" SelfReg="false"/>
+    <ROW File="opengl32sw.dll_1" Component_="opengl32sw.dll_1" FileName="OPENGL~1.DLL|opengl32sw.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\opengl32sw.dll" SelfReg="false"/>
+    <ROW File="Qt6Core.dll_1" Component_="Qt6Core.dll_1" FileName="Qt6Core.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Core.dll" SelfReg="false"/>
+    <ROW File="Qt6Gui.dll_1" Component_="Qt6Gui.dll_1" FileName="Qt6Gui.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Gui.dll" SelfReg="false"/>
+    <ROW File="Qt6Network.dll_1" Component_="Qt6Network.dll_1" FileName="QT6NET~1.DLL|Qt6Network.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Network.dll" SelfReg="false"/>
+    <ROW File="Qt6Pdf.dll_1" Component_="Qt6Pdf.dll_1" FileName="Qt6Pdf.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Pdf.dll" SelfReg="false"/>
+    <ROW File="Qt6Svg.dll_1" Component_="Qt6Svg.dll_1" FileName="Qt6Svg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Svg.dll" SelfReg="false"/>
+    <ROW File="Qt6Widgets.dll_1" Component_="Qt6Widgets.dll_1" FileName="QT6WID~1.DLL|Qt6Widgets.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\Qt6Widgets.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140.dll_2" Component_="VCRUNTIME140.dll_2" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140_1.dll_2" Component_="VCRUNTIME140_1.dll_2" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\bin\VCRUNTIME140_1.dll" SelfReg="false"/>
+    <ROW File="qtuiotouchplugin.dll_1" Component_="qtuiotouchplugin.dll_1" FileName="QTUIOT~1.DLL|qtuiotouchplugin.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\generic\qtuiotouchplugin.dll" SelfReg="false"/>
+    <ROW File="qsvgicon.dll_1" Component_="qsvgicon.dll_1" FileName="qsvgicon.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\iconengines\qsvgicon.dll" SelfReg="false"/>
+    <ROW File="qgif.dll_1" Component_="qgif.dll_1" FileName="qgif.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qgif.dll" SelfReg="false"/>
+    <ROW File="qicns.dll_1" Component_="qicns.dll_1" FileName="qicns.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qicns.dll" SelfReg="false"/>
+    <ROW File="qico.dll_1" Component_="qico.dll_1" FileName="qico.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qico.dll" SelfReg="false"/>
+    <ROW File="qjpeg.dll_1" Component_="qjpeg.dll_1" FileName="qjpeg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qjpeg.dll" SelfReg="false"/>
+    <ROW File="qpdf.dll_1" Component_="qpdf.dll_1" FileName="qpdf.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qpdf.dll" SelfReg="false"/>
+    <ROW File="qsvg.dll_1" Component_="qsvg.dll_1" FileName="qsvg.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qsvg.dll" SelfReg="false"/>
+    <ROW File="qtga.dll_1" Component_="qtga.dll_1" FileName="qtga.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qtga.dll" SelfReg="false"/>
+    <ROW File="qtiff.dll_1" Component_="qtiff.dll_1" FileName="qtiff.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qtiff.dll" SelfReg="false"/>
+    <ROW File="qwbmp.dll_1" Component_="qwbmp.dll_1" FileName="qwbmp.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qwbmp.dll" SelfReg="false"/>
+    <ROW File="qwebp.dll_1" Component_="qwebp.dll_1" FileName="qwebp.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\imageformats\qwebp.dll" SelfReg="false"/>
+    <ROW File="qminimal.dll_1" Component_="qminimal.dll_1" FileName="qminimal.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qminimal.dll" SelfReg="false"/>
+    <ROW File="qoffscreen.dll_1" Component_="qoffscreen.dll_1" FileName="QOFFSC~1.DLL|qoffscreen.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qoffscreen.dll" SelfReg="false"/>
+    <ROW File="qwindows.dll_1" Component_="qwindows.dll_1" FileName="qwindows.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\platforms\qwindows.dll" SelfReg="false"/>
+    <ROW File="qwindowsvistastyle.dll" Component_="qwindowsvistastyle.dll" FileName="QWINDO~1.DLL|qwindowsvistastyle.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\plugins\styles\qwindowsvistastyle.dll" SelfReg="false"/>
+    <ROW File="qtbase_ar.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~1.QM|qtbase_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ar.qm" SelfReg="false"/>
+    <ROW File="qtbase_bg.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~2.QM|qtbase_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_bg.qm" SelfReg="false"/>
+    <ROW File="qtbase_ca.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~3.QM|qtbase_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ca.qm" SelfReg="false"/>
+    <ROW File="qtbase_cs.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~4.QM|qtbase_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_cs.qm" SelfReg="false"/>
+    <ROW File="qtbase_da.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~5.QM|qtbase_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_da.qm" SelfReg="false"/>
+    <ROW File="qtbase_de.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~6.QM|qtbase_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_de.qm" SelfReg="false"/>
+    <ROW File="qtbase_en.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~7.QM|qtbase_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_en.qm" SelfReg="false"/>
+    <ROW File="qtbase_es.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~8.QM|qtbase_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_es.qm" SelfReg="false"/>
+    <ROW File="qtbase_fa.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBASE~9.QM|qtbase_fa.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fa.qm" SelfReg="false"/>
+    <ROW File="qtbase_fi.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~10.QM|qtbase_fi.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fi.qm" SelfReg="false"/>
+    <ROW File="qtbase_fr.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~11.QM|qtbase_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_fr.qm" SelfReg="false"/>
+    <ROW File="qtbase_gd.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~12.QM|qtbase_gd.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_gd.qm" SelfReg="false"/>
+    <ROW File="qtbase_he.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~13.QM|qtbase_he.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_he.qm" SelfReg="false"/>
+    <ROW File="qtbase_hr.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~14.QM|qtbase_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_hr.qm" SelfReg="false"/>
+    <ROW File="qtbase_hu.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~15.QM|qtbase_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_hu.qm" SelfReg="false"/>
+    <ROW File="qtbase_it.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~16.QM|qtbase_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_it.qm" SelfReg="false"/>
+    <ROW File="qtbase_ja.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~17.QM|qtbase_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ja.qm" SelfReg="false"/>
+    <ROW File="qtbase_ko.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~18.QM|qtbase_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ko.qm" SelfReg="false"/>
+    <ROW File="qtbase_lv.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~19.QM|qtbase_lv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_lv.qm" SelfReg="false"/>
+    <ROW File="qtbase_nl.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~20.QM|qtbase_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_nl.qm" SelfReg="false"/>
+    <ROW File="qtbase_nn.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~21.QM|qtbase_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_nn.qm" SelfReg="false"/>
+    <ROW File="qtbase_pl.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~22.QM|qtbase_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_pl.qm" SelfReg="false"/>
+    <ROW File="qtbase_pt_BR.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~23.QM|qtbase_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_pt_BR.qm" SelfReg="false"/>
+    <ROW File="qtbase_ru.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~24.QM|qtbase_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_ru.qm" SelfReg="false"/>
+    <ROW File="qtbase_sk.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~25.QM|qtbase_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_sk.qm" SelfReg="false"/>
+    <ROW File="qtbase_tr.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~26.QM|qtbase_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_tr.qm" SelfReg="false"/>
+    <ROW File="qtbase_uk.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~27.QM|qtbase_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_uk.qm" SelfReg="false"/>
+    <ROW File="qtbase_zh_CN.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~28.QM|qtbase_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_CN.qm" SelfReg="false"/>
+    <ROW File="qtbase_zh_TW.qm_1" Component_="qtbase_ar.qm_1" FileName="QTBAS~29.QM|qtbase_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qtbase_zh_TW.qm" SelfReg="false"/>
+    <ROW File="qt_ar.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ar.qm" SelfReg="false"/>
+    <ROW File="qt_bg.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_bg.qm" SelfReg="false"/>
+    <ROW File="qt_ca.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ca.qm" SelfReg="false"/>
+    <ROW File="qt_cs.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_cs.qm" SelfReg="false"/>
+    <ROW File="qt_da.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_da.qm" SelfReg="false"/>
+    <ROW File="qt_de.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_de.qm" SelfReg="false"/>
+    <ROW File="qt_en.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_en.qm" SelfReg="false"/>
+    <ROW File="qt_es.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_es.qm" SelfReg="false"/>
+    <ROW File="qt_fa.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_fa.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fa.qm" SelfReg="false"/>
+    <ROW File="qt_fi.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_fi.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fi.qm" SelfReg="false"/>
+    <ROW File="qt_fr.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_fr.qm" SelfReg="false"/>
+    <ROW File="qt_gd.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_gd.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gd.qm" SelfReg="false"/>
+    <ROW File="qt_gl.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_gl.qm" SelfReg="false"/>
+    <ROW File="qt_he.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_he.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_he.qm" SelfReg="false"/>
+    <ROW File="qt_help_ar.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~1.QM|qt_help_ar.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ar.qm" SelfReg="false"/>
+    <ROW File="qt_help_bg.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~2.QM|qt_help_bg.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_bg.qm" SelfReg="false"/>
+    <ROW File="qt_help_ca.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~3.QM|qt_help_ca.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ca.qm" SelfReg="false"/>
+    <ROW File="qt_help_cs.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~4.QM|qt_help_cs.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_cs.qm" SelfReg="false"/>
+    <ROW File="qt_help_da.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~5.QM|qt_help_da.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_da.qm" SelfReg="false"/>
+    <ROW File="qt_help_de.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~6.QM|qt_help_de.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_de.qm" SelfReg="false"/>
+    <ROW File="qt_help_en.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~7.QM|qt_help_en.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_en.qm" SelfReg="false"/>
+    <ROW File="qt_help_es.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~8.QM|qt_help_es.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_es.qm" SelfReg="false"/>
+    <ROW File="qt_help_fr.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HEL~9.QM|qt_help_fr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_fr.qm" SelfReg="false"/>
+    <ROW File="qt_help_gl.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~10.QM|qt_help_gl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_gl.qm" SelfReg="false"/>
+    <ROW File="qt_help_hr.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~11.QM|qt_help_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hr.qm" SelfReg="false"/>
+    <ROW File="qt_help_hu.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~12.QM|qt_help_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_hu.qm" SelfReg="false"/>
+    <ROW File="qt_help_it.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~13.QM|qt_help_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_it.qm" SelfReg="false"/>
+    <ROW File="qt_help_ja.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~14.QM|qt_help_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ja.qm" SelfReg="false"/>
+    <ROW File="qt_help_ko.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~15.QM|qt_help_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ko.qm" SelfReg="false"/>
+    <ROW File="qt_help_nl.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~16.QM|qt_help_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nl.qm" SelfReg="false"/>
+    <ROW File="qt_help_nn.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~17.QM|qt_help_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_nn.qm" SelfReg="false"/>
+    <ROW File="qt_help_pl.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~18.QM|qt_help_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pl.qm" SelfReg="false"/>
+    <ROW File="qt_help_pt_BR.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~19.QM|qt_help_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_pt_BR.qm" SelfReg="false"/>
+    <ROW File="qt_help_ru.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~20.QM|qt_help_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_ru.qm" SelfReg="false"/>
+    <ROW File="qt_help_sk.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~21.QM|qt_help_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sk.qm" SelfReg="false"/>
+    <ROW File="qt_help_sl.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~22.QM|qt_help_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_sl.qm" SelfReg="false"/>
+    <ROW File="qt_help_tr.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~23.QM|qt_help_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_tr.qm" SelfReg="false"/>
+    <ROW File="qt_help_uk.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~24.QM|qt_help_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_uk.qm" SelfReg="false"/>
+    <ROW File="qt_help_zh_CN.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~25.QM|qt_help_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_CN.qm" SelfReg="false"/>
+    <ROW File="qt_help_zh_TW.qm_1" Component_="qtbase_ar.qm_1" FileName="QT_HE~26.QM|qt_help_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_help_zh_TW.qm" SelfReg="false"/>
+    <ROW File="qt_hr.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_hr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hr.qm" SelfReg="false"/>
+    <ROW File="qt_hu.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_hu.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_hu.qm" SelfReg="false"/>
+    <ROW File="qt_it.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_it.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_it.qm" SelfReg="false"/>
+    <ROW File="qt_ja.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_ja.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ja.qm" SelfReg="false"/>
+    <ROW File="qt_ko.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_ko.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ko.qm" SelfReg="false"/>
+    <ROW File="qt_lt.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_lt.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lt.qm" SelfReg="false"/>
+    <ROW File="qt_lv.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_lv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_lv.qm" SelfReg="false"/>
+    <ROW File="qt_nl.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_nl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nl.qm" SelfReg="false"/>
+    <ROW File="qt_nn.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_nn.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_nn.qm" SelfReg="false"/>
+    <ROW File="qt_pl.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_pl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pl.qm" SelfReg="false"/>
+    <ROW File="qt_pt_BR.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_pt_BR.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_BR.qm" SelfReg="false"/>
+    <ROW File="qt_pt_PT.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_pt_PT.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_pt_PT.qm" SelfReg="false"/>
+    <ROW File="qt_ru.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_ru.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_ru.qm" SelfReg="false"/>
+    <ROW File="qt_sk.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_sk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sk.qm" SelfReg="false"/>
+    <ROW File="qt_sl.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_sl.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sl.qm" SelfReg="false"/>
+    <ROW File="qt_sv.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_sv.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_sv.qm" SelfReg="false"/>
+    <ROW File="qt_tr.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_tr.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_tr.qm" SelfReg="false"/>
+    <ROW File="qt_uk.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_uk.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_uk.qm" SelfReg="false"/>
+    <ROW File="qt_zh_CN.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_zh_CN.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_CN.qm" SelfReg="false"/>
+    <ROW File="qt_zh_TW.qm_1" Component_="qtbase_ar.qm_1" FileName="qt_zh_TW.qm" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\Qt6\translations\qt_zh_TW.qm" SelfReg="false"/>
+    <ROW File="QtCore.pyd_1" Component_="QtCore.pyd_1" FileName="QtCore.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtCore.pyd" SelfReg="false"/>
+    <ROW File="QtGui.pyd_1" Component_="QtCore.pyd_1" FileName="QtGui.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtGui.pyd" SelfReg="false"/>
+    <ROW File="QtWidgets.pyd_1" Component_="QtCore.pyd_1" FileName="QTWIDG~1.PYD|QtWidgets.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\QtWidgets.pyd" SelfReg="false"/>
+    <ROW File="sip.cp310win_amd64.pyd_1" Component_="QtCore.pyd_1" FileName="SIPCP3~1.PYD|sip.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\PyQt6\sip.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="python3.dll_1" Component_="python3.dll_1" FileName="python3.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\python3.dll" SelfReg="false"/>
+    <ROW File="python310.dll_1" Component_="python310.dll_1" FileName="PYTHON~1.DLL|python310.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\python310.dll" SelfReg="false"/>
+    <ROW File="select.pyd_1" Component_="base_library.zip_1" FileName="select.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\select.pyd" SelfReg="false"/>
+    <ROW File="settings.ini_1" Component_="base_library.zip_1" FileName="settings.ini" Attributes="0" SourcePath="..\..\Downloads\nback\app\settings.ini" SelfReg="false"/>
+    <ROW File="_simpleaudio.cp310win_amd64.pyd_1" Component_="_simpleaudio.cp310win_amd64.pyd_1" FileName="_SIMPL~1.PYD|_simpleaudio.cp310-win_amd64.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\simpleaudio\_simpleaudio.cp310-win_amd64.pyd" SelfReg="false"/>
+    <ROW File="back_button.png_1" Component_="back_button.png_1" FileName="BACK_B~1.PNG|back_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\back_button.png" SelfReg="false"/>
+    <ROW File="debug.png_1" Component_="back_button.png_1" FileName="debug.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\debug.png" SelfReg="false"/>
+    <ROW File="information_button.png_1" Component_="back_button.png_1" FileName="INFORM~1.PNG|information_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\information_button.png" SelfReg="false"/>
+    <ROW File="nback_example.png_1" Component_="back_button.png_1" FileName="NBACK_~1.PNG|nback_example.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\nback_example.png" SelfReg="false"/>
+    <ROW File="play_button.png_1" Component_="back_button.png_1" FileName="PLAY_B~1.PNG|play_button.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\play_button.png" SelfReg="false"/>
+    <ROW File="settings.png_1" Component_="back_button.png_1" FileName="settings.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\settings.png" SelfReg="false"/>
+    <ROW File="stop_button.jpg_1" Component_="back_button.png_1" FileName="STOP_B~1.JPG|stop_button.jpg" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\stop_button.jpg" SelfReg="false"/>
+    <ROW File="TDT_example.png_1" Component_="back_button.png_1" FileName="TDT_EX~1.PNG|TDT_example.png" Attributes="0" SourcePath="..\..\Downloads\nback\app\static\TDT_example.png" SelfReg="false"/>
+    <ROW File="app.mo_2" Component_="app.mo_2" FileName="app.mo" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\en\LC_MESSAGES\app.mo" SelfReg="false"/>
+    <ROW File="app.po_2" Component_="app.mo_2" FileName="app.po" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\en\LC_MESSAGES\app.po" SelfReg="false"/>
+    <ROW File="app.mo_3" Component_="app.mo_3" FileName="app.mo" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.mo" SelfReg="false"/>
+    <ROW File="app.po_3" Component_="app.mo_3" FileName="app.po" Attributes="0" SourcePath="..\..\Downloads\nback\app\translations\pt_BR\LC_MESSAGES\app.po" SelfReg="false"/>
+    <ROW File="unicodedata.pyd_1" Component_="base_library.zip_1" FileName="UNICOD~1.PYD|unicodedata.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\unicodedata.pyd" SelfReg="false"/>
+    <ROW File="VCRUNTIME140.dll_3" Component_="VCRUNTIME140.dll_3" FileName="VCRUNT~1.DLL|VCRUNTIME140.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140.dll" SelfReg="false"/>
+    <ROW File="VCRUNTIME140_1.dll_3" Component_="VCRUNTIME140_1.dll_3" FileName="VCRUNT~2.DLL|VCRUNTIME140_1.dll" Attributes="0" SourcePath="..\..\Downloads\nback\app\VCRUNTIME140_1.dll" SelfReg="false"/>
+    <ROW File="_asyncio.pyd_1" Component_="base_library.zip_1" FileName="_asyncio.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_asyncio.pyd" SelfReg="false"/>
+    <ROW File="_bz2.pyd_1" Component_="base_library.zip_1" FileName="_bz2.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_bz2.pyd" SelfReg="false"/>
+    <ROW File="_ctypes.pyd_1" Component_="base_library.zip_1" FileName="_ctypes.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_ctypes.pyd" SelfReg="false"/>
+    <ROW File="_decimal.pyd_1" Component_="base_library.zip_1" FileName="_decimal.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_decimal.pyd" SelfReg="false"/>
+    <ROW File="_hashlib.pyd_1" Component_="base_library.zip_1" FileName="_hashlib.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_hashlib.pyd" SelfReg="false"/>
+    <ROW File="_lzma.pyd_1" Component_="base_library.zip_1" FileName="_lzma.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_lzma.pyd" SelfReg="false"/>
+    <ROW File="_multiprocessing.pyd_1" Component_="base_library.zip_1" FileName="_MULTI~1.PYD|_multiprocessing.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_multiprocessing.pyd" SelfReg="false"/>
+    <ROW File="_overlapped.pyd_1" Component_="base_library.zip_1" FileName="_OVERL~1.PYD|_overlapped.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_overlapped.pyd" SelfReg="false"/>
+    <ROW File="_queue.pyd_1" Component_="base_library.zip_1" FileName="_queue.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_queue.pyd" SelfReg="false"/>
+    <ROW File="_socket.pyd_1" Component_="base_library.zip_1" FileName="_socket.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_socket.pyd" SelfReg="false"/>
+    <ROW File="_ssl.pyd_1" Component_="base_library.zip_1" FileName="_ssl.pyd" Attributes="0" SourcePath="..\..\Downloads\nback\app\_ssl.pyd" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -483,60 +481,60 @@
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
     <ROW Feature_="MainFeature" Component_="QuickLaunch"/>
-    <ROW Feature_="MainFeature" Component_="app.exe"/>
-    <ROW Feature_="MainFeature" Component_="base_library.zip"/>
-    <ROW Feature_="MainFeature" Component_="cacert.pem"/>
-    <ROW Feature_="MainFeature" Component_="ffmpeg.exe"/>
-    <ROW Feature_="MainFeature" Component_="ffprobe.exe"/>
-    <ROW Feature_="MainFeature" Component_="Piano.mf.A1.mp3"/>
-    <ROW Feature_="MainFeature" Component_="libcrypto1_1.dll"/>
-    <ROW Feature_="MainFeature" Component_="libffi7.dll"/>
-    <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll"/>
-    <ROW Feature_="MainFeature" Component_="libssl1_1.dll"/>
-    <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_1"/>
-    <ROW Feature_="MainFeature" Component_="_multiarray_tests.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="_pocketfft_internal.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="lapack_lite.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="bit_generator.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="MSVCP140.dll"/>
-    <ROW Feature_="MainFeature" Component_="MSVCP140_1.dll"/>
-    <ROW Feature_="MainFeature" Component_="MSVCP140_2.dll"/>
-    <ROW Feature_="MainFeature" Component_="opengl32sw.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Core.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Gui.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Network.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Pdf.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Svg.dll"/>
-    <ROW Feature_="MainFeature" Component_="Qt6Widgets.dll"/>
-    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll"/>
-    <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll"/>
-    <ROW Feature_="MainFeature" Component_="qtuiotouchplugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="qsvgicon.dll"/>
-    <ROW Feature_="MainFeature" Component_="qgif.dll"/>
-    <ROW Feature_="MainFeature" Component_="qicns.dll"/>
-    <ROW Feature_="MainFeature" Component_="qico.dll"/>
-    <ROW Feature_="MainFeature" Component_="qjpeg.dll"/>
-    <ROW Feature_="MainFeature" Component_="qpdf.dll"/>
-    <ROW Feature_="MainFeature" Component_="qsvg.dll"/>
-    <ROW Feature_="MainFeature" Component_="qtga.dll"/>
-    <ROW Feature_="MainFeature" Component_="qtiff.dll"/>
-    <ROW Feature_="MainFeature" Component_="qwbmp.dll"/>
-    <ROW Feature_="MainFeature" Component_="qwebp.dll"/>
-    <ROW Feature_="MainFeature" Component_="qminimal.dll"/>
-    <ROW Feature_="MainFeature" Component_="qoffscreen.dll"/>
-    <ROW Feature_="MainFeature" Component_="qwindows.dll"/>
-    <ROW Feature_="MainFeature" Component_="qmodernwindowsstyle.dll"/>
-    <ROW Feature_="MainFeature" Component_="qtbase_ar.qm"/>
-    <ROW Feature_="MainFeature" Component_="QtCore.pyd"/>
-    <ROW Feature_="MainFeature" Component_="python3.dll"/>
-    <ROW Feature_="MainFeature" Component_="python310.dll"/>
-    <ROW Feature_="MainFeature" Component_="_simpleaudio.cp310win_amd64.pyd"/>
-    <ROW Feature_="MainFeature" Component_="back_button.png"/>
-    <ROW Feature_="MainFeature" Component_="app.mo"/>
     <ROW Feature_="MainFeature" Component_="output"/>
-    <ROW Feature_="MainFeature" Component_="app.mo_1"/>
-    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll_1"/>
-    <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="app.exe_1"/>
+    <ROW Feature_="MainFeature" Component_="base_library.zip_1"/>
+    <ROW Feature_="MainFeature" Component_="cacert.pem_1"/>
+    <ROW Feature_="MainFeature" Component_="ffmpeg.exe_1"/>
+    <ROW Feature_="MainFeature" Component_="ffprobe.exe_1"/>
+    <ROW Feature_="MainFeature" Component_="piano.mf.A1.mp3"/>
+    <ROW Feature_="MainFeature" Component_="libcrypto1_1.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="libffi7.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_2"/>
+    <ROW Feature_="MainFeature" Component_="libssl1_1.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="libopenblas64__v0.3.21gcc_10_3_0.dll_3"/>
+    <ROW Feature_="MainFeature" Component_="_multiarray_tests.cp310win_amd64.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="_pocketfft_internal.cp310win_amd64.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="lapack_lite.cp310win_amd64.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="bit_generator.cp310win_amd64.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="MSVCP140.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="MSVCP140_1.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="MSVCP140_2.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="opengl32sw.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Core.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Gui.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Network.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Pdf.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Svg.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="Qt6Widgets.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll_2"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll_2"/>
+    <ROW Feature_="MainFeature" Component_="qtuiotouchplugin.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qsvgicon.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qgif.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qicns.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qico.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qjpeg.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qpdf.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qsvg.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qtga.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qtiff.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qwbmp.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qwebp.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qminimal.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qoffscreen.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qwindows.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="qwindowsvistastyle.dll"/>
+    <ROW Feature_="MainFeature" Component_="qtbase_ar.qm_1"/>
+    <ROW Feature_="MainFeature" Component_="QtCore.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="python3.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="python310.dll_1"/>
+    <ROW Feature_="MainFeature" Component_="_simpleaudio.cp310win_amd64.pyd_1"/>
+    <ROW Feature_="MainFeature" Component_="back_button.png_1"/>
+    <ROW Feature_="MainFeature" Component_="app.mo_2"/>
+    <ROW Feature_="MainFeature" Component_="app.mo_3"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140.dll_3"/>
+    <ROW Feature_="MainFeature" Component_="VCRUNTIME140_1.dll_3"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="nback_logo.exe" SourcePath="build\n-back_logo.ico" Index="0"/>
