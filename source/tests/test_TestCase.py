@@ -21,7 +21,7 @@ def test_VolumeTestCase():
 	volumeTestCase = VolumeTestCase(sample_tuple)
 
 def test_TestCase():
-	testCase = TestCase.TestCase(1, 10)
+	testCase = TestCase.RandomTestCase(1, 10)
 	notes_str = testCase.get_random_notes_str('piano')[0]
 	notes_str2 = testCase.get_random_notes_str('piano', sample_tuple)[0]
 	print(notes_str2)

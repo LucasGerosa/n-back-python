@@ -44,18 +44,40 @@ def list_widgets_in_layout(layout):
             
     return widgets
 
+def get_widgets_in_layout(layout):
+    widgets = []
+    for i in range(layout.count()):
+        widget = layout.itemAt(i).widget()
+        if widget is not None:
+            widgets.append(widget)
+    return widgets
+
+def widget_in_layout(widget, layout):
+    for i in range(layout.count()):
+        if layout.itemAt(i).widget() is widget:
+            return True
+    return False
+
 def test_tonal_nback_test(qtbot, app:MyGUI):
-	app.get_tonal_nback_test_button().click()
-	input()
-	frame = app.states[0]
-	layout_v = frame.layout()
-	assert QtWidgets.QVBoxLayout == type(layout_v)
-	layout_v_h = layout_v.itemAt(0)
-	assert QtWidgets.QHBoxLayout == type(layout_v_h)
-	layout_v_h_v = layout_v_h.itemAt(3)
-	assert QtWidgets.QVBoxLayout == type(layout_v_h_v)
-	#button = find_button_in_layout(frame, "t")
-	assert list_widgets_in_layout(layout_v_h_v)
+	menu_page = app.tonal_nback_test_menu_frame
+	menu_page.play_test_button.click()
+	qtbot.wait(500)
+	test_page = menu_page.test_page
+	assert test_page.number_of_trials == 6
+	assert test_page.number_of_sequences == 10
+
+	for trial in range(test_page.number_of_trials):
+		qtbot.waitUntil(lambda: test_page.layout_v_h2_v.count() == 1)
+		qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
+		for sequence in range(test_page.number_of_sequences):
+			qtbot.waitUntil(lambda: test_page.layout_v_h2_v.count() == 2)
+			qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
+			qtbot.wait(10000)
+			qtbot.waitUntil(lambda: test_page.layout_v_h2_v.count() == 2)
+			qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
+			# qtbot.waitSignal(test_page.notes_thread.done_testCase, timeout=5000)
+			# qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
+			# qtbot.wait(1000)
 
 
 if __name__ == "__main__":

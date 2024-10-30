@@ -81,12 +81,12 @@ class VolumeTestMenuPage(TestMenuPage):
 
 	def post_init_func(self) -> PlayTestThreadFunc:
 		
-		def play_test_thread(test_page:TestPage) -> None:
+		def play_test_thread() -> None:
 			
-			test_page.notes_thread = VolumeTestThread()
-			test_page.notes_thread.start_execution.connect(lambda: test_page.loading_label.deleteLater())
-			stop_button = self.get_stop_button(test_page.notes_thread)
-			test_page.layout_v_h2.addWidget(stop_button)
+			self.test_page.notes_thread = VolumeTestThread()
+			self.test_page.notes_thread.start_execution.connect(lambda: self.test_page.loading_label.deleteLater())
+			stop_button = self.get_stop_button(self.test_page.notes_thread)
+			self.test_page.layout_v_h2.addWidget(stop_button)
 		
 		return play_test_thread
 
@@ -123,7 +123,7 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 		bpm_field = form.create_bpm_field()
 		instrument_field = form.create_instrument_field() #TODO: add a dropdown menu with the available instruments instead.
 		form.summon_reset_button()
-		def play_test_thread(test_page:TestPage) -> None:
+		def play_test_thread() -> None:
 			
 			def ask_continue_test_between_note_groups():
 				# answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(layout_v, self.app.translate("Ready for the next sequence?"), self.app.translate("Yes"))
@@ -134,7 +134,7 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 				# 	countdown()
 				# yes_button.clicked.connect(continue_test)
 				time.sleep(1)
-				test_page.notes_thread.wait_condition.wakeOne()
+				self.test_page.notes_thread.wait_condition.wakeOne()
 			
 			number_of_trials = int(number_of_trials_field.text_box.text())
 			player_name = player_ID_field.text_box.text()
@@ -143,12 +143,12 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 			instrument = instrument_field.text_box.text()
 			@QtCore.pyqtSlot(TonalDiscriminationTaskTestCase)
 			def create_questions(testCase:TonalDiscriminationTaskTestCase):
-				test_page.create_question(self.app.translate("Are both the sequences the same?"), testCase)
+				self.test_page.create_question(self.app.translate("Are both the sequences the same?"), testCase)
 
-			test_page.notes_thread = TonalDiscriminationTaskTestThread(player_name, number_of_trials, number_of_notes, bpm, instrument)
-			test_page.notes_thread.start_execution.connect(lambda testCase: test_page.ask_continue_test(testCase, "Ready for the next trial?"))
-			test_page.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
-			test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
+			self.test_page.notes_thread = TonalDiscriminationTaskTestThread(player_name, number_of_trials, number_of_notes, bpm, instrument)
+			self.test_page.notes_thread.start_execution.connect(lambda testCase: self.test_page.ask_continue_test(testCase, "Ready for the next trial?"))
+			self.test_page.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
+			self.test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
 
 		return play_test_thread
 
@@ -166,15 +166,15 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 				return False, translate("The number of notes needs to be greater than or equal to the initial n-back + number of trials.")
 			return True, ""
 		
-		def play_test(test_page) -> None:
+		def play_test() -> None:
 			
-			number_of_sequences = int(number_of_sequences_field.text_box.text())
+			self.test_page.number_of_sequences = int(number_of_sequences_field.text_box.text())
 			initial_nback = int(initial_nback_field.text_box.text())
 			player_name = player_ID_field.text_box.text()
 			number_of_notes = int(number_of_notes_field.text_box.text())
 			bpm = float(Fraction((bpm_field.text_box.text())))
 			instrument = instrument_field.text_box.text()
-			number_of_trials = int(number_of_trials_field.text_box.text())
+			self.test_page.number_of_trials = int(number_of_trials_field.text_box.text())
 			
 			if True or random_c_major_radio_button.isChecked(): #TODO add more options; this radio button is just to show that the test uses the C major scale.
 				scale = scales.Scale.get_parallel_mode(scales.Diatonic_Modes, 'C', 0)
@@ -191,7 +191,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 						question_text = self.app.translate("Is the last played note the same as the note three places before it?")
 					case _:
 						question_text = self.app.translate("Is the last played note the same as the {}th note before the last?").format(testCase.nBack)
-				test_page.create_question(question_text, testCase)
+				self.test_page.create_question(question_text, testCase)
 
 			@QtCore.pyqtSlot(int)
 			def warn_user_different_trial(nback:int):
@@ -207,27 +207,27 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 				
 				question = QtWidgets.QLabel(question_text)
 				question.setStyleSheet("font-size: 50px;")
-				test_page.layout_v_h2_v.addWidget(question)
-				yes_button = QtWidgets.QPushButton(self.app.translate("Ok"))
-				yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+				self.test_page.layout_v_h2_v.addWidget(question)
+				self.test_page.yes_button = QtWidgets.QPushButton(self.app.translate("Ok"))
+				self.test_page.yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 				question.update()
-				QtCore.QTimer.singleShot(1000, lambda: test_page.layout_v_h2_v.addWidget(yes_button))
+				QtCore.QTimer.singleShot(1000, lambda: self.test_page.layout_v_h2_v.addWidget(self.test_page.yes_button))
 				timer = QtCore.QElapsedTimer()
 				timer.start()
 
 				def yes():
 					elapsed_seconds = TestPage.get_elapsed_seconds(timer)
-					test_page.notes_thread.different_trial_warning_delay_list.append(elapsed_seconds)
+					self.test_page.notes_thread.different_trial_warning_delay_list.append(elapsed_seconds)
 					question.deleteLater()
-					yes_button.deleteLater()
-					test_page.notes_thread.wait_condition.wakeOne()
+					self.test_page.yes_button.deleteLater()
+					self.test_page.notes_thread.wait_condition.wakeOne()
 			
-				yes_button.clicked.connect(yes)
+				self.test_page.yes_button.clicked.connect(yes)
 
-			test_page.notes_thread = TonalNbackTestThread(number_of_trials, player_name, number_of_sequences, initial_nback, number_of_notes, bpm, instrument, scale=scale)
-			test_page.notes_thread.start_execution.connect(lambda testCase: test_page.ask_continue_test(testCase, "Ready for the next sequence?"))
-			test_page.notes_thread.started_trial_signal.connect(lambda nback: warn_user_different_trial(nback))
-			test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
+			self.test_page.notes_thread = TonalNbackTestThread(self.test_page.number_of_trials, player_name, self.test_page.number_of_sequences, initial_nback, number_of_notes, bpm, instrument, scale=scale)
+			self.test_page.notes_thread.start_execution.connect(lambda testCase: self.test_page.ask_continue_test(testCase, "Ready for the next sequence?"))
+			self.test_page.notes_thread.started_trial_signal.connect(lambda nback: warn_user_different_trial(nback))
+			self.test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
 		
 		form = forms.FormPresets(self.layout_v_h2_v, self.app.translate)
 		player_ID_field = form.create_player_ID_field()
@@ -281,16 +281,16 @@ class VisuoTonalNbackTestMenuPage(NbackTestMenuPage): #FIXME
 			if hint_label is None:
 				raise ValueError(self.app.translate("hint_label should not be None. This means that you tried to delete the note without printing it to the interface first"))
 			hint_label.deleteLater()
-		test_page.notes_thread.test_started_signal.connect(lambda: self.goto_frame(self.test2_frame))
-		test_page.notes_thread.print_note_signal.connect(print_note_label)
-		test_page.notes_thread.print_hint_signal.connect(print_hint_label)
-		test_page.notes_thread.delete_note_signal.connect(delete_note_label)
-		test_page.notes_thread.delete_hint_signal.connect(delete_hint_label)
+		self.test_page.notes_thread.test_started_signal.connect(lambda: self.goto_frame(self.test2_frame))
+		self.test_page.notes_thread.print_note_signal.connect(print_note_label)
+		self.test_page.notes_thread.print_hint_signal.connect(print_hint_label)
+		self.test_page.notes_thread.delete_note_signal.connect(delete_note_label)
+		self.test_page.notes_thread.delete_hint_signal.connect(delete_hint_label)
 		def done_testCase(testCase):
 			self.go_back()
 			self.create_questions(layout_v, testCase)
 
-		test_page.notes_thread.done_testCase.connect(lambda testCase:done_testCase(testCase))
+		self.test_page.notes_thread.done_testCase.connect(lambda testCase:done_testCase(testCase))
 
 class VisuotonalNbackTestGUI: #FIXME: deprecated
 

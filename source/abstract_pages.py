@@ -49,9 +49,9 @@ class TestPage(Page):
 
 	def create_question(self, question_text:str, testCase:TestCase) -> None:
 			answers, question, layout_v_h, destroy_yes_no = PyQt6_utils.create_question(self.layout_v_h2_v, question_text, self.app.translate("Yes"), self.app.translate("No"))
-			yes_button, no_button = answers
-			yes_button.setStyleSheet("background-color: green; font-size: 50px;")
-			no_button.setStyleSheet("background-color: red; font-size: 50px;")
+			self.yes_button, self.no_button = answers
+			self.yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+			self.no_button.setStyleSheet("background-color: red; font-size: 50px;")
 			timer = QtCore.QElapsedTimer()
 			timer.start()
 
@@ -69,8 +69,8 @@ class TestPage(Page):
 				destroy_yes_no()
 				self.notes_thread.wait_condition.wakeOne()
 
-			yes_button.clicked.connect(yes)
-			no_button.clicked.connect(no)
+			self.yes_button.clicked.connect(yes)
+			self.no_button.clicked.connect(no)
 
 	def countdown(self):
 		seconds_remaining = 3
@@ -98,13 +98,13 @@ class TestPage(Page):
 		answers, question, layout_v_h, destroy_question = PyQt6_utils.create_question(self.layout_v_h2_v, self.app.translate(question_text), self.app.translate("Yes"))
 		timer = QtCore.QElapsedTimer()
 		timer.start()
-		yes_button = answers[0]
-		yes_button.setStyleSheet("background-color: green; font-size: 50px;")
+		self.yes_button = answers[0]
+		self.yes_button.setStyleSheet("background-color: green; font-size: 50px;")
 		def continue_test():
 			testCase.continue_test_delay = TestPage.get_elapsed_seconds(timer)
 			destroy_question()
 			self.countdown()
-		yes_button.clicked.connect(continue_test)
+		self.yes_button.clicked.connect(continue_test)
 
 PlayTestThreadFunc = typing.Callable[[Page], None]
 PostInitFunc = typing.Callable[[None], PlayTestThreadFunc]
@@ -143,30 +143,30 @@ class TestMenuPage(NonSettingsMenuPage):
 		self.layout_v_h2_v.addWidget(self.play_test_button)
 
 		def play_test():
-			test_page = TestPage(parent)
-			parent.stacked_widget.addWidget(test_page)
-			parent.stacked_widget.setCurrentWidget(test_page)
+			self.test_page = TestPage(parent)
+			parent.stacked_widget.addWidget(self.test_page)
+			parent.stacked_widget.setCurrentWidget(self.test_page)
 
-			play_test_thread(test_page)
+			play_test_thread()
 
 			def create_loading_label():
-				test_page.loading_label = parent.get_loading_label()
-				test_page.layout_v.addWidget(test_page.loading_label)
+				self.test_page.loading_label = parent.get_loading_label()
+				self.test_page.layout_v.addWidget(self.test_page.loading_label)
 			
 			@QtCore.pyqtSlot()
 			def on_execute_loop_thread_finished():
-				test_page.notes_thread.deleteLater()
+				self.test_page.notes_thread.deleteLater()
 				parent.stacked_widget.setCurrentWidget(self)
-				parent.stacked_widget.removeWidget(test_page)
+				parent.stacked_widget.removeWidget(self.test_page)
 			
-			test_page.notes_thread.pre_start_execution.connect(create_loading_label)
-			test_page.notes_thread.finished.connect(on_execute_loop_thread_finished)
-			test_page.notes_thread.start()
+			self.test_page.notes_thread.pre_start_execution.connect(create_loading_label)
+			self.test_page.notes_thread.finished.connect(on_execute_loop_thread_finished)
+			self.test_page.notes_thread.start()
 
 		self.play_test_button.clicked.connect(play_test)
 	
 	def post_init_func(self) -> PlayTestThreadFunc:
-		def play_test_thread(test_page:Page) -> None:
+		def play_test_thread() -> None:
 			pass
 		return play_test_thread
 	
