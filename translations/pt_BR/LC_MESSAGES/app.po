@@ -1,12 +1,12 @@
-# Portuguese (Brazil) translations for PROJECT.
-# Copyright (C) 2023 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+# Portuguese (Brazil) translations for n-back program.
+# Copyright (C) 2023 Lucas Figueiredo Gerosa
+# This file is distributed under the same license as the n-back project.
+# Lucas Figueiredo Gerosa <Lucas Figueiredo Gerosa>, 2023.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Project-Id-Version: 1.2.1\n"
+"Report-Msgid-Bugs-To: lucasfgerosa@gmail.com\n"
 "POT-Creation-Date: 2023-04-23 07:13-0300\n"
 "PO-Revision-Date: 2024-10-21 22:29-0300\n"
 "Last-Translator: \n"
@@ -194,17 +194,17 @@ msgstr "Teste de discriminação tonal"
 msgid "Tonal Discrimination Task"
 msgstr "Teste de Discriminação Tonal"
 
-msgid "Is the last played note the same as the note three places before it?"
-msgstr "A última nota tocada é igual à antepenúltima nota?"
+msgid "Is the last played note the same as the 3rd note before the last?"
+msgstr "A última nota tocada é igual à 3ª nota antes da última?"
 
 msgid "Is the last played note the same as the note before the previous note?"
-msgstr "A última nota tocada é igual à penúltima nota?"
+msgstr "A última nota tocada é igual à antepenúltima nota?"
 
 msgid "Is the last played note the same as the previous note?"
-msgstr "A última nota tocada é igual à nota anterior?"
+msgstr "A última nota tocada é igual à penúltima nota?"
 
 msgid "Is the last played note the same as the {}th note before the last?"
-msgstr "A última nota tocada é igual à nota {} antes da última?"
+msgstr "A última nota tocada é igual à {}ª nota antes da última?"
 
 msgid "Number of trials"
 msgstr "Quantidade de séries"
@@ -235,17 +235,14 @@ msgid "The following trial will have\n"
 msgstr "No próximo teste, você deve comparar\n"
 "a última nota com a penúltima nota."
 
-msgid "The following trial\n"
-"will have you compare the last note\n"
-"with the note before the previous note."
-msgstr "No próximo teste, você deve comparar\n"
-"a última nota com a penúltima nota."
+msgid "The following trial\nwill have you compare the last note\nwith the note before the previous note."
+msgstr "No próximo teste, você deve comparar\a última nota com a antepenúltima nota."
 
 msgid "The following trial\n"
 "will have you compare the last note with the note\n"
 "three places before it."
 msgstr "No próximo teste, você deve comparar\n"
-"a última nota com a antepenúltima nota."
+"a última nota com a 3ª nota antes da última."
 
 msgid "The following trial will have you\n"
 "compare the last note with the {}th note before the last."

@@ -188,7 +188,7 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 					case 2:
 						question_text = self.app.translate("Is the last played note the same as the note before the previous note?")
 					case 3:
-						question_text = self.app.translate("Is the last played note the same as the note three places before it?")
+						question_text = self.app.translate("Is the last played note the same as the 3rd note before the last?")
 					case _:
 						question_text = self.app.translate("Is the last played note the same as the {}th note before the last?").format(testCase.nBack)
 				self.test_page.create_question(question_text, testCase)
