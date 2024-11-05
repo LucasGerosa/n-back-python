@@ -105,7 +105,7 @@ def create_question(layout, question_str:str, *answer_str):
 
 
 class TextLabelWithLineSpacing(QLabel):
-	def __init__(self, text, font = QtGui.QFont(FONT, 13), line_spacing=1.5):
+	def __init__(self, text, font = QtGui.QFont(FONT, 13), line_spacing=1.5, text_alignment=QtCore.Qt.AlignmentFlag.AlignLeft):
 		super().__init__()
 
 		# Initialize text and document with custom line spacing and word wrap
@@ -125,6 +125,7 @@ class TextLabelWithLineSpacing(QLabel):
 		cursor = QtGui.QTextCursor(self.document)
 		block_format = QtGui.QTextBlockFormat()
 		block_format.setLineHeight(self.line_spacing * 100, QtGui.QTextBlockFormat.LineHeightTypes.ProportionalHeight.value)
+		block_format.setAlignment(text_alignment)
 		cursor.select(QtGui.QTextCursor.SelectionType.Document)
 		cursor.mergeBlockFormat(block_format)
 

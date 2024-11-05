@@ -125,10 +125,6 @@ msgstr "Teste interrompido"
 msgid "The test was stopped, just wait for the notes to finish playing before playing another test."
 msgstr "O teste foi interrompido. Aguarde as notas terminarem de tocar antes de iniciar outro teste."
 
-#: source/app.py:420
-msgid "Is the last played note the same as the note {} notes ago?"
-msgstr "A última nota tocada é igual à nota {} notas atrás?"
-
 #: source/app.py:422
 msgid "Yes"
 msgstr "Sim"
@@ -195,7 +191,7 @@ msgid "Tonal Discrimination Task"
 msgstr "Teste de Discriminação Tonal"
 
 msgid "Is the last played note the same as the 3rd note before the last?"
-msgstr "A última nota tocada é igual à 3ª nota antes da última?"
+msgstr "A última nota tocada é igual à 3ª nota antes\nda última?"
 
 msgid "Is the last played note the same as the note before the previous note?"
 msgstr "A última nota tocada é igual à antepenúltima nota?"
@@ -204,7 +200,7 @@ msgid "Is the last played note the same as the previous note?"
 msgstr "A última nota tocada é igual à penúltima nota?"
 
 msgid "Is the last played note the same as the {}th note before the last?"
-msgstr "A última nota tocada é igual à {}ª nota antes da última?"
+msgstr "A última nota tocada é igual à {}ª nota antes\nda última?"
 
 msgid "Number of trials"
 msgstr "Quantidade de séries"
@@ -236,7 +232,7 @@ msgstr "No próximo teste, você deve comparar\n"
 "a última nota com a penúltima nota."
 
 msgid "The following trial\nwill have you compare the last note\nwith the note before the previous note."
-msgstr "No próximo teste, você deve comparar\a última nota com a antepenúltima nota."
+msgstr "No próximo teste, você deve comparar\na última nota com a antepenúltima nota."
 
 msgid "The following trial\n"
 "will have you compare the last note with the note\n"
