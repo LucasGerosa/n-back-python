@@ -311,9 +311,13 @@ class TonalDiscriminationTaskTestCase(TestCase):
 		self.is_sequence_mismatch = sequence != sequence_mismatch
 		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
 		if self.is_sequence_mismatch:
-			self.mismatch_note = (set(sequence_mismatch) - set(sequence)).pop()
+			for i in range(len(sequence)):
+				if sequence[i] == sequence_mismatch[i]:
+					self.mismatch_note = sequence[i]
+					break
 		else:
 			self.mismatch_note = '-'
+		print(self.mismatch_note)
 		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):
