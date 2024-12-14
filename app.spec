@@ -1,12 +1,22 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs
 
 block_cipher = None
+
+#pyinstaller app.spec --distpath C:\Users\Lucas\Downloads\nback -y
+
+vlc_libs = collect_dynamic_libs('vlc')
+
+# Manually add VLC plugins folder
+vlc_plugins = [
+    (os.path.join('C:/Program Files/VideoLAN/VLC/plugins'), 'plugins')
+]
 
 a = Analysis(
     ['source\\app.py'],
     pathex=['source'],
-    binaries=[('ffmpeg/bin/ffmpeg.exe', 'ffmpeg/bin/'), ('ffmpeg/bin/ffprobe.exe', 'ffmpeg/bin/')],
+    #binaries=[('ffmpeg/bin/ffmpeg.exe', 'ffmpeg/bin/'), ('ffmpeg/bin/ffprobe.exe', 'ffmpeg/bin/')],
+    binaries=vlc_libs + vlc_plugins,
     datas=[
         ('input/piano/*.mp3', 'input/piano/'), 
         #('input/guitar/*.mp3', 'input/guitar/'), 

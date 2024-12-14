@@ -136,16 +136,16 @@ class TonalDiscriminationTaskMenuPage(TestMenuPage):
 				time.sleep(1)
 				self.test_page.notes_thread.wait_condition.wakeOne()
 			
-			number_of_trials = int(number_of_trials_field.text_box.text())
+			self.test_page.number_of_trials = int(number_of_trials_field.text_box.text())
 			player_name = player_ID_field.text_box.text()
 			number_of_notes = int(number_of_notes_field.text_box.text())
-			bpm = float(Fraction((bpm_field.text_box.text())))
+			self.test_page.bpm = float(Fraction((bpm_field.text_box.text())))
 			instrument = instrument_field.text_box.text()
 			@QtCore.pyqtSlot(TonalDiscriminationTaskTestCase)
 			def create_questions(testCase:TonalDiscriminationTaskTestCase):
 				self.test_page.create_question(self.app.translate("Are both the sequences the same?"), testCase)
 
-			self.test_page.notes_thread = TonalDiscriminationTaskTestThread(player_name, number_of_trials, number_of_notes, bpm, instrument)
+			self.test_page.notes_thread = TonalDiscriminationTaskTestThread(player_name, self.test_page.number_of_trials, number_of_notes, self.test_page.bpm, instrument)
 			self.test_page.notes_thread.start_execution.connect(lambda testCase: self.test_page.ask_continue_test(testCase, "Ready for the next trial?"))
 			self.test_page.notes_thread.between_note_groups.connect(ask_continue_test_between_note_groups)
 			self.test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
@@ -169,10 +169,10 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 		def play_test() -> None:
 			
 			self.test_page.number_of_sequences = int(number_of_sequences_field.text_box.text())
-			initial_nback = int(initial_nback_field.text_box.text())
+			self.test_page.initial_nback = int(initial_nback_field.text_box.text())
 			player_name = player_ID_field.text_box.text()
 			number_of_notes = int(number_of_notes_field.text_box.text())
-			bpm = float(Fraction((bpm_field.text_box.text())))
+			self.test_page.bpm = float(Fraction((bpm_field.text_box.text())))
 			instrument = instrument_field.text_box.text()
 			self.test_page.number_of_trials = int(number_of_trials_field.text_box.text())
 			
@@ -220,14 +220,15 @@ class TonalNbackTestMenuPage(NbackTestMenuPage):
 					self.test_page.notes_thread.different_trial_warning_delay_list.append(elapsed_seconds)
 					question.deleteLater()
 					self.test_page.yes_button.deleteLater()
+					self.test_page.yes_button = None
 					self.test_page.notes_thread.wait_condition.wakeOne()
 			
 				self.test_page.yes_button.clicked.connect(yes)
 
-			self.test_page.notes_thread = TonalNbackTestThread(self.test_page.number_of_trials, player_name, self.test_page.number_of_sequences, initial_nback, number_of_notes, bpm, instrument, scale=scale)
+			self.test_page.notes_thread = TonalNbackTestThread(self.test_page.number_of_trials, player_name, self.test_page.number_of_sequences, self.test_page.initial_nback, number_of_notes, self.test_page.bpm, instrument, scale=scale)
 			self.test_page.notes_thread.start_execution.connect(lambda testCase: self.test_page.ask_continue_test(testCase, "Ready for the next sequence?"))
 			self.test_page.notes_thread.started_trial_signal.connect(lambda nback: warn_user_different_trial(nback))
-			self.test_page.notes_thread.done_testCase.connect(lambda testCase:create_questions(testCase))
+			self.test_page.notes_thread.done_testCase.connect(lambda testCase: create_questions(testCase))
 		
 		form = forms.FormPresets(self.layout_v_h2_v, self.app.translate)
 		player_ID_field = form.create_player_ID_field()

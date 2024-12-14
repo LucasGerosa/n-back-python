@@ -207,11 +207,11 @@ class FormPresets(Form):
 		return self.create_field(self.translate("Instrument (piano or guitar)"), DEFAULT_INSTRUMENT, FormField.is_non_empty, validator=validator)
 	
 	def create_bpm_field(self):
-		validator = self.get_FractionValidator()
+		validator = self.get_FractionValidator(top=2147483647)
 		return self.create_field(self.translate("BPM (beats per minute)"), str(DEFAULT_BPM), FormField.is_non_empty, validator=validator)
 	
 	def create_number_of_notes_field(self, number_of_notes:str, is_number_of_notes_valid:validators.SimpleValidateCallable = FormField.is_non_empty):
-		validator = validators.StrictIntValidator(1, 99999, translate=self.translate)
+		validator = validators.StrictIntValidator(1, 2147483647, translate=self.translate)
 		return self.create_field(self.translate("Number of notes"), number_of_notes, is_number_of_notes_valid, validator=validator)
 
 	def create_number_of_trials_field(self, number_of_trials:str, is_number_of_trials_valid:validators.SimpleValidateCallable = FormField.is_non_empty):

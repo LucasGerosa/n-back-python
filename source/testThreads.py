@@ -75,8 +75,10 @@ class TestThread(QtCore.QThread):
 		self.bpm = bpm
 		self.instrument = instrument
 		self.id = 0
+		self.is_waiting = False
 	
 	def wait_for_signal(self):
+		self.is_waiting = True
 		self.mutex.lock()
 		self.wait_condition.wait(self.mutex)
 		self.mutex.unlock()
@@ -130,33 +132,38 @@ class TonalNbackTestThread(NbackTestThread):
 				self.wait_for_signal()
 
 				while testCaseId < self.test_case_n and not self.stop:
-					self.pre_start_execution.emit()
-					isLastNoteDifferent = boolean_list[testCaseId]
-					print()
-					if isLastNoteDifferent == True:
-						semitones = up_or_down_list[up_or_down_list_id] * self.semitones
-						up_or_down_list_id += 1
-						print("Last note is different.")
-					else:
-						semitones = self.semitones
-						print("Last note is equal.")
-					testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
-					testCaseList.append(testCase)
-					self.start_execution.emit(testCase)
-					self.wait_for_signal()
+						self.pre_start_execution.emit()
+						isLastNoteDifferent = boolean_list[testCaseId]
+						print()
+						if isLastNoteDifferent == True:
+							semitones = up_or_down_list[up_or_down_list_id] * self.semitones
+							up_or_down_list_id += 1
+							print("Last note is different.")
+						else:
+							semitones = self.semitones
+							print("Last note is equal.")
+						testCase = NbackTestCase(None, self.id, nback, self.notesQuantity, self.bpm, self.instrument, scale=self.scale, isLastNoteDifferent=isLastNoteDifferent, semitones=semitones)
+						testCaseList.append(testCase)
+						try:
+							self.start_execution.emit(testCase)
+							self.wait_for_signal()
+							for note in testCase.note_group.notes:
+								print(note.full_name)
+								note.play()
+								if self.stop:
+									print("Thread was interrupted. Stopping now.\n")
+									return
+							
+							self.done_testCase.emit(testCase)
+							self.wait_for_signal()
+							testCase.print_result()
+							testCaseId += 1
+							self.id += 1
 					
-					for note in testCase.note_group.notes:
-						print(note.full_name)
-						note.play()
-						if self.stop:
-							print("Thread was interrupted. Stopping now.\n")
-							return
-					
-					self.done_testCase.emit(testCase)
-					self.wait_for_signal()
-					testCase.print_result()
-					testCaseId += 1
-					self.id += 1
+						except Exception as e:
+							testCaseList_list.append(testCaseList)
+							raise e
+						
 				series_id += 1
 				testCaseId = 0
 				nback += 1
@@ -170,6 +177,19 @@ class TonalNbackTestThread(NbackTestThread):
 			return testCaseList
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
+		
+		except Exception as e:
+			import logging
+			logging.basicConfig(
+				filename='nback.log',  # Change this to None for console logging
+				level=logging.ERROR,
+				format='%(asctime)s - %(levelname)s - %(message)s'
+			)
+			print(testCaseList_list)
+			NbackTestCase.saveResults(testCaseList_list, self.playerName, self.different_trial_warning_delay_list)
+			logging.error("An error occurred", exc_info=True)
+			raise e
+
 
 class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
@@ -227,6 +247,7 @@ class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the 
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
 
+
 class TonalDiscriminationTaskTestThread(TestThread):
 	between_note_groups = QtCore.pyqtSignal()
 	
@@ -277,6 +298,18 @@ class TonalDiscriminationTaskTestThread(TestThread):
 
 			return testCaseList
 
-
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
+		
+		except Exception as e:
+			import logging
+			logging.basicConfig(
+				filename='tdt.log',  # Change this to None for console logging
+				level=logging.ERROR,
+				format='%(asctime)s - %(levelname)s - %(message)s'
+			)
+			TonalDiscriminationTaskTestCase.saveResults(testCaseList[:-1], self.playerName)
+			logging.error("An error occurred", exc_info=True)
+			raise e
+
+			

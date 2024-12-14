@@ -86,6 +86,10 @@ class TestCase:
 				return
 			print_csv(testCaseList)
 			return
+		
+		except Exception as e:
+			print_csv(testCaseList)
+		
 		cls.create_csv_file(f, testCaseList, *write_content_to_csv_args)
 class RandomTestCase(TestCase):
 	
@@ -311,9 +315,13 @@ class TonalDiscriminationTaskTestCase(TestCase):
 		self.is_sequence_mismatch = sequence != sequence_mismatch
 		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
 		if self.is_sequence_mismatch:
-			self.mismatch_note = (set(sequence_mismatch) - set(sequence)).pop()
+			for i in range(len(sequence)):
+				if sequence[i] == sequence_mismatch[i]:
+					self.mismatch_note = sequence[i]
+					break
 		else:
 			self.mismatch_note = '-'
+		print(self.mismatch_note)
 		return sequence, sequence_mismatch
 	
 	def slice_sequence(self, sequence, notesQuantity):

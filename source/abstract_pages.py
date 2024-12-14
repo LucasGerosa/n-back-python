@@ -60,6 +60,7 @@ class TestPage(Page):
 				testCase.answer_delay = elapsed_seconds
 				testCase.validateAnswer(answer=AnswerType.SAME)
 				destroy_yes_no()
+				self.yes_button = None
 				self.notes_thread.wait_condition.wakeOne()
 
 			def no():
@@ -104,6 +105,7 @@ class TestPage(Page):
 			testCase.continue_test_delay = TestPage.get_elapsed_seconds(timer)
 			destroy_question()
 			self.countdown()
+			self.yes_button = None
 		self.yes_button.clicked.connect(continue_test)
 
 PlayTestThreadFunc = typing.Callable[[Page], None]

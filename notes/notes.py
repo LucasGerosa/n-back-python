@@ -9,13 +9,14 @@ import sys
 from pydub import AudioSegment, playback
 from pydub.silence import detect_leading_silence
 import glob #module for getting files that match  requirement
-#import gc
+import gc
 #import pyaudio
 #from pydub import utils
 import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import note_str_utils
+import vlc
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
@@ -91,7 +92,7 @@ def check_ffmpeg():
 	raise OSError(f'ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
 #remove_silence_and_save_all_notes()
-check_ffmpeg()
+#check_ffmpeg()
 
 class Note:
 	'''Represents musical notes, pointing to an mp3 file that can be played, or other audio files that can't be played.'''
@@ -101,7 +102,9 @@ class Note:
 		self.bpm = bpm
 		self.note_value = note_value
 		self.intensity = self.get_intensity()
-		self._sound:AudioSegment = AudioSegment.from_file(self.path, self.extension)
+		#self._sound:AudioSegment = AudioSegment.from_file(self.path, self.extension)
+		#self._sound = vlc.MediaPlayer(self.path)
+		self._sound = vlc.MediaPlayer(self.path)
 
 	@property
 	def sound(self):
@@ -215,9 +218,12 @@ class Note:
 			raise NotImplementedError(f"Notes with extensions besides mp3 can't be played yet. Path of note: {self.path}")
 	
 		t = bpmToSeconds(self.bpm) * 4 * self.note_value
-		current_playback = playback._play_with_simpleaudio(self.sound)
+		self.sound.play()
+		# current_playback = playback._play_with_simpleaudio(self.sound)
 		time.sleep(t)
-		current_playback.stop()
+		self.sound.stop()
+		#self.sound.stop()
+		# current_playback.stop()
 		
 	# def change_extension(self, new_extension:str) -> None:
 	# 	new_path = os.path.join(self.directory, self.fileName + '.' + new_extension)
@@ -441,11 +447,19 @@ def getAllNotes(intensity=DEFAULT_INTENSITY, instrument:str = DEFAULT_INSTRUMENT
 
 
 if __name__ == '__main__':
-	
+	total_notes = 0
 	def test_all_notes():
+		global total_notes
 		note_group = getAllNotes(audio_folder='', extension=DEFAULT_NOTE_EXTENSION)
-		for note in note_group.play():
-			print("Played", note.full_name)
+		for note in note_group:
+			total_notes += 1
+			print("Played", note.full_name, total_notes)
 	
-	test_all_notes()
-	
+	note = Note.get_note_from_note_full_name('C4', bpm=75)
+	print(note.path)
+	for i in range(99999):
+		note.play()
+		print(i)
+	# sound = vlc.MediaPlayer(r"c:\Users\Lucas\GitHub\n-back-python\input\piano\piano.mf.C4.mp3")
+	# sound.play()
+	# time.sleep(60/75)
