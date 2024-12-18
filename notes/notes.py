@@ -92,7 +92,7 @@ def check_ffmpeg():
 	raise OSError(f'ffmpeg not installed or not in the required directories. After installation it should be put in either the environment variables or in the root directory of this project. Download ffmpeg and/or put it in the root directory of this project.')
 
 #remove_silence_and_save_all_notes()
-check_ffmpeg()
+#check_ffmpeg()
 
 class Note:
 	'''Represents musical notes, pointing to an mp3 file that can be played, or other audio files that can't be played.'''

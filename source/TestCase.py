@@ -86,6 +86,10 @@ class TestCase:
 				return
 			print_csv(testCaseList)
 			return
+		
+		except Exception as e:
+			print_csv(testCaseList)
+		
 		cls.create_csv_file(f, testCaseList, *write_content_to_csv_args)
 class RandomTestCase(TestCase):
 	
