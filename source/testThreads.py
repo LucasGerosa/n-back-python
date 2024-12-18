@@ -75,8 +75,10 @@ class TestThread(QtCore.QThread):
 		self.bpm = bpm
 		self.instrument = instrument
 		self.id = 0
+		self.is_waiting = False
 	
 	def wait_for_signal(self):
+		self.is_waiting = True
 		self.mutex.lock()
 		self.wait_condition.wait(self.mutex)
 		self.mutex.unlock()
@@ -170,6 +172,12 @@ class TonalNbackTestThread(NbackTestThread):
 			return testCaseList
 		except KeyboardInterrupt:
 			print("Ctrl+c was pressed. Stopping now.")
+		
+		except Exception as e:
+			print(f"Exception in TonalNbackTestThread: {e}")
+			import traceback
+			traceback.print_exc()
+	
 
 class VisuoTonalNbackTestThread(NbackTestThread): #needs to be updated like the test 1 in order to work
 	print_note_signal = QtCore.pyqtSignal(str)
