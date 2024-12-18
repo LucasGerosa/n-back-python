@@ -222,6 +222,7 @@ class Note:
 		# current_playback = playback._play_with_simpleaudio(self.sound)
 		time.sleep(t)
 		self.sound.stop()
+		time.sleep(0.1)
 		#self.sound.stop()
 		# current_playback.stop()
 		
