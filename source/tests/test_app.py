@@ -86,7 +86,7 @@ def test_tonal_nback_test(qtbot, app:MyGUI):
 		menu_page.play_test_button.click()
 		test_page = menu_page.test_page
 		qtbot.wait(500)
-		#test_page.yes_button = None
+		test_page.yes_button = None
 		
 		for trial_num in range(test_page.number_of_trials):
 			qtbot.waitUntil(lambda: test_page.yes_button != None, timeout=10**6)
