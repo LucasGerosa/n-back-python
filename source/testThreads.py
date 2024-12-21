@@ -157,6 +157,7 @@ class TonalNbackTestThread(NbackTestThread):
 							self.done_testCase.emit(testCase)
 							self.wait_for_signal()
 							testCase.print_result()
+							NbackTestCase.saveResults(testCaseList_list, self.playerName, self.different_trial_warning_delay_list, folder = "temporary")
 							testCaseId += 1
 							self.id += 1
 					
@@ -285,10 +286,11 @@ class TonalDiscriminationTaskTestThread(TestThread):
 					if self.stop:
 						print("Thread was interrupted. Stopping now.\n")
 						return
-					
+				
 				self.done_testCase.emit(testCase)
 				self.wait_for_signal()
 				testCase.print_result()
+				TonalDiscriminationTaskTestCase.saveResults(testCaseList, self.playerName, folder = "temporary")
 				self.id += 1
 
 			if self.stop:
