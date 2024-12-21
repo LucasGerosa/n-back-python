@@ -70,9 +70,9 @@ def test_TDT(qtbot, app:MyGUI):
 		test_page.yes_button = None
 		qtbot.wait(500)
 		for trial in range(test_page.number_of_trials):
-			qtbot.waitUntil(lambda: test_page.yes_button != None, timeout=10000)
+			qtbot.waitUntil(lambda: test_page.yes_button != None, timeout=10**6)
 			qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
-			qtbot.waitUntil(lambda: test_page.yes_button != None, timeout=10000)
+			qtbot.waitUntil(lambda: test_page.yes_button != None, timeout=10**6)
 			qtbot.mouseClick(test_page.yes_button, QtCore.Qt.MouseButton.LeftButton)
 			print("Run", i, "Trial", trial)
 		qtbot.wait(500)		

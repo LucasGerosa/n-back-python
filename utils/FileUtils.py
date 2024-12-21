@@ -27,12 +27,15 @@ def getFolder() -> str:
 def retrieveFilename() -> str:
 	return input("Give filename: ")
 
-def createfile(playerName, test = RESULT_FILENAME, outputDir = OUTPUT_DIR):
+def createfile(playerName, test = RESULT_FILENAME, outputDir = OUTPUT_DIR, folder = ""):
 	createOutputDirectoryIfNotExist()
 	createPlayerDirectoryIfNotExist(playerName)
+	full_dir = os.path.join(outputDir,playerName, folder)
+	if not os.path.exists(full_dir):
+		os.makedirs(full_dir, exist_ok=True)
 
 	# Initialize the base filename and the counter
-	base_filename = f'{outputDir}/{playerName}/{test}{EXTENSION}'
+	base_filename = os.path.join(full_dir, test + EXTENSION)
 
 	counter = 1
 	filename = base_filename

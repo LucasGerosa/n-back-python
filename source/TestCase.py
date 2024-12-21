@@ -59,7 +59,7 @@ class TestCase:
 		os.chmod(file_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
 	@classmethod
-	def try_create_file(cls, playerName:str, test_name:str, testCaseList:list, *write_content_to_csv_args):
+	def try_create_file(cls, playerName:str, test_name:str, testCaseList:list, *write_content_to_csv_args, folder = ""):
 
 		def print_csv(testCaseList):
 			print("Permission denied for creating the result file. Try running the program as administrator or putting it in the folder.")
@@ -70,15 +70,15 @@ class TestCase:
 			buffer.close()
 
 		try:
-			f, file_name = FileUtils.createfile(playerName, test_name)
-		
+			f, file_name = FileUtils.createfile(playerName, test_name, folder = folder)
+
 		except PermissionError:
 			if os.name == 'nt':
 				home_dir = os.path.expanduser('~')
 				documents_path = os.path.join(home_dir, 'Documents')
-				file_path = os.path.join(documents_path, file_name)
+				file_path = os.path.join(documents_path, file_name, folder)
 				try:
-					f = FileUtils.createfile(playerName, test_name, file_path)
+					f = FileUtils.createfile(playerName, test_name, os.path.join(file_path, folder))
 				except PermissionError:
 					print_csv(testCaseList)
 					return
@@ -89,6 +89,7 @@ class TestCase:
 		
 		except Exception as e:
 			print_csv(testCaseList)
+			return
 		
 		cls.create_csv_file(f, testCaseList, *write_content_to_csv_args)
 class RandomTestCase(TestCase):
@@ -262,8 +263,8 @@ class NbackTestCase(RandomTestCase): #FIXME the save function does not try to cr
 		i += 1
 
 	@staticmethod
-	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float]) -> None: #TODO: make it not overwrite the file with the same name
-		NbackTestCase.try_create_file(playerName, "nback", testCaseList_list, different_trial_warning_delay_list)
+	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float], folder = "") -> None: #TODO: make it not overwrite the file with the same name
+		NbackTestCase.try_create_file(playerName, "nback", testCaseList_list, different_trial_warning_delay_list, folder = folder)
 		
 class VolumeTestCase(RandomTestCase):
 	def __init__(self, config_notes_str:None|tuple[list, str, float]=None, numberOfNotes:int=20, bpm:float=DEFAULT_BPM, instrument=DEFAULT_INSTRUMENT, scale:None|scales.Scale=None, extension=notes.DEFAULT_NOTE_EXTENSION) -> None:
@@ -364,8 +365,8 @@ class TonalDiscriminationTaskTestCase(TestCase):
 			id_num += 1
 	
 	@staticmethod
-	def saveResults(testCaseList:list, playerName:str) -> None:
-		TonalDiscriminationTaskTestCase.try_create_file(playerName, "tonal_discrimination_task", testCaseList)
+	def saveResults(testCaseList:list, playerName:str, folder = "") -> None:
+		TonalDiscriminationTaskTestCase.try_create_file(playerName, "tonal_discrimination_task", testCaseList, folder = folder)
 		
 
 if __name__ == "__main__":

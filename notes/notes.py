@@ -16,7 +16,6 @@ import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.defaults import *
 from utils import note_str_utils
-import vlc
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.normpath(ROOT_DIR + '/..')
@@ -38,9 +37,11 @@ def get_app_path():
 		return app_path
 	# If the application is running as a script
 	return PROJECT_DIR
-	
+
+app_path = get_app_path()
+
 def check_ffmpeg():
-	app_path = get_app_path()  # Use the get_app_path() function we'll create in step 2
+	  # Use the get_app_path() function we'll create in step 2
 	ffmpeg_path = os.path.join(app_path, 'ffmpeg', 'bin')
 	#ffmpeg_path = f'{PROJECT_DIR}/ffmpeg/bin'
 	ffmpeg_in_root_dir = os.path.exists(ffmpeg_path)
@@ -94,6 +95,17 @@ def check_ffmpeg():
 #remove_silence_and_save_all_notes()
 #check_ffmpeg()
 
+# def check_vlc(): 
+# 	try:
+# 		version = vlc.libvlc_get_version()
+# 	except AttributeError:
+# 		os.environ['PATH'] += os.path.join(app_path, 'vlc')
+# check_vlc()
+
+os.environ['PATH'] += ";" + os.path.join(app_path, "vlc")
+# print(os.environ['PATH'])
+import vlc
+
 class Note:
 	'''Represents musical notes, pointing to an mp3 file that can be played, or other audio files that can't be played.'''
 
@@ -103,7 +115,6 @@ class Note:
 		self.note_value = note_value
 		self.intensity = self.get_intensity()
 		#self._sound:AudioSegment = AudioSegment.from_file(self.path, self.extension)
-		#self._sound = vlc.MediaPlayer(self.path)
 		self._sound = vlc.MediaPlayer(self.path)
 
 	@property
