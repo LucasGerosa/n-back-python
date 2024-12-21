@@ -69,9 +69,6 @@ class MyGUI(parent_GUI):
 		self.tests_menu = NonSettingsMenuPage(self, "Choose a test", widgets_v = v_buttons)
 		self.stacked_widget.addWidget(self.tests_menu)
 
-	# def get_play_button(self):
-	# 	return PyQt6_utils.get_button_with_image(self.play_image, lambda: self.goto_frame(self.tests_menu))
-
 def main():
 	app = QtWidgets.QApplication([])
 	gui = MyGUI()
@@ -79,4 +76,14 @@ def main():
 	sys.exit(app.exec())
 		
 if __name__ == "__main__":
-	main()
+	try:
+		main()
+	except Exception as e:
+		import logging
+		logging.basicConfig(
+			filename='interface.log',
+			level=logging.ERROR,
+			format='%(asctime)s - %(levelname)s - %(message)s'
+		)
+		logging.error("An error occurred", exc_info=True)
+		raise e
