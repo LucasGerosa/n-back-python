@@ -317,7 +317,7 @@ class TonalDiscriminationTaskTestCase(TestCase):
 		print(f"Is sequence mismatch:  {self.is_sequence_mismatch}")
 		if self.is_sequence_mismatch:
 			for i in range(len(sequence)):
-				if sequence[i] == sequence_mismatch[i]:
+				if sequence[i] != sequence_mismatch[i]:
 					self.mismatch_note = sequence[i]
 					break
 		else:
