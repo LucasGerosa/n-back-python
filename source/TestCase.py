@@ -260,7 +260,7 @@ class NbackTestCase(RandomTestCase): #FIXME the save function does not try to cr
 				writer.writerow([t.id_num, t.numberOfNotes, ' '.join(note.full_name for note in t.note_group), t.nBack, t.correct_answer, t.answer, t.result, t.answer_delay, t.continue_test_delay])
 			writer.writerow(['', '', '', '', '', '', '', '', '', different_trial_warning_delay_list[i], quantity_right_answers, quantity_wrong_answers, total_quantity_right_answers, total_quantity_wrong_answers, total_quantity_right_answers + total_quantity_wrong_answers])
 		
-		i += 1
+			i += 1
 
 	@staticmethod
 	def saveResults(testCaseList_list:list, playerName:str, different_trial_warning_delay_list:list[float], folder = "") -> None: #TODO: make it not overwrite the file with the same name
